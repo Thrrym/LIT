@@ -1,5 +1,7 @@
 package de.tuberlin.tkn.lit.model;
 
+import main.java.de.tuberlin.tkn.lit.model.Attachment;
+
 import java.util.HashMap;
 
 public class Object {
@@ -8,9 +10,10 @@ public class Object {
 	private String type;
 	
 	// TODO: Create missing classes
-	private Attachment[] attachment;
-	private AttributedTo[] attributedTo;
-	private Audience[] audience;
+	//private Attachment[] Hashmap<String, String>; // Eventuell String
+	private String[] Attachment;
+	private String[] attributedTo;
+	private String[] audience;
 	private String content;
 	private HashMap<String, String> contentMap;
 	private String context;
@@ -18,24 +21,24 @@ public class Object {
 	private HashMap<String, String> nameMap;
 	private String startTime;
 	private String endTime;
-	private Generator generator;
-	private Icon[] icon;
-	private Image[] image;
-	private InReplyTo[] inReplyTo;
-	private Location[] location;
-	private Preview preview;
+	private String[] generator;
+	private String[] icon;
+	private String[] image;
+	private String[] inReplyTo;
+	private String[] location;
+	private String[] preview;
 	private String published;
 	private Collection replies;
 	private String summary;
 	private HashMap<String, String> summaryMap;
-    private Tag[] tag;
+    private String[] tag;
     private String updated;
-    private Url[] url;
+    private String[] url;
     private String[] to;
     private String[] bto;
     private String[] cc;
     private String[] bcc;
     private String mediaType;
     private String duration;
-    
+
 }
