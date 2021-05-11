@@ -1,11 +1,12 @@
-package main.java.de.tuberlin.tkn.lit.model;
+package de.tuberlin.tkn.lit.model;
 
 public class Activity extends Object {
 
-    private String[] actor;
+    private Object actor;
     private Object object;
-    private String[] target;
-    private String[] origin;
-    private String[] instrument;
-    
+    private Object target;
+    private Object result;
+    private Object origin;
+    private Object instrument;
+
 }
