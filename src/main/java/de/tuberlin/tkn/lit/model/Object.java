@@ -7,7 +7,6 @@ import java.util.HashMap;
 public class Object {
     // All optional
 	private String id;
-	private String type;
 	
 	// TODO: Create missing classes
 	//private Attachment[] Hashmap<String, String>; // Eventuell String
