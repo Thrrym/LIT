@@ -14,23 +14,21 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import de.tuberlin.tkn.lit.model.objects.Note;
-
+import de.tuberlin.tkn.lit.model.actors.Person;
 
 class ParseJsonTest {
-//  "@context": "https://www.w3.org/ns/activitystreams",
-        /*  "actor": {
-        "type": "Person",
-                "name": "Sally"
-    }, */
+
     @Test
-    void testExampleJson() throws IOException {
+    void testExample3Json() throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
-        // Ignore @context
+
         ObjectMapper objectMapper = new ObjectMapper();//.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         File file = new File(classLoader.getResource("activity.json").getFile());
 
         Activity activity = objectMapper.readValue(file, Activity.class);
         assertEquals(activity.getObject().getName(), "A Note");
         MatcherAssert.assertThat(activity.getObject(), instanceOf(Note.class));
+        assertEquals(activity.getActor().getName(), "Sally");
+        MatcherAssert.assertThat(activity.getActor(), instanceOf(Person.class));
     }
 }
