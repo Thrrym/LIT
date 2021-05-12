@@ -1,8 +1,9 @@
-package de.tuberlin.tkn.lit.model.link;
+package de.tuberlin.tkn.lit.model.objects;
 
-import de.tuberlin.tkn.lit.model.objects.Link;
+import de.tuberlin.tkn.lit.model.ActivityPubObject;
 
+public class Mention extends ActivityPubObject {
 
-public class Mention extends Link {
+    private static final String type = "Mention";
 
 }
