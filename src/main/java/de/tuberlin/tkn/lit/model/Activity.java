@@ -1,10 +1,13 @@
 package de.tuberlin.tkn.lit.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-//@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(value = { "@context" })
 public class Activity extends ActivityPubObject {
+    private static final String type = "Activity";
 
+    @JsonProperty("@context")
     private String context;
     private ActivityPubObject actor;
     private ActivityPubObject object;
