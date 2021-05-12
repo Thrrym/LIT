@@ -3,9 +3,14 @@ package de.tuberlin.tkn.lit.model;
 import main.java.de.tuberlin.tkn.lit.model.Attachment;
 
 import java.util.HashMap;
+import java.net.URI;
 
 public class Object {
-    // All optional
+
+    // Link
+    private URI link;
+
+    // Object
 	private String id;
 	
 	// TODO: Create missing classes
