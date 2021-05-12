@@ -1,8 +1,8 @@
-package de.tuberlin.tkn.lit.model;
+package de.tuberlin.tkn.lit.model.objects;
 
-import de.tuberlin.tkn.lit.model.Object;
+import de.tuberlin.tkn.lit.model.ActivityPubObject;
 
 
-public class Note extends Object {
+public class Note extends ActivityPubObject {
 
 }
