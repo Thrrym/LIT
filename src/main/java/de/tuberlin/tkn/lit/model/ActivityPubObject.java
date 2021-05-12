@@ -2,19 +2,22 @@ package de.tuberlin.tkn.lit.model;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import de.tuberlin.tkn.lit.model.actors.Person;
 import de.tuberlin.tkn.lit.model.objects.Note;
 
 import java.util.HashMap;
 import java.net.URI;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
         property = "type")
 @JsonSubTypes( value = {
         @JsonSubTypes.Type(value = Note.class, name = "Note"),
+        @JsonSubTypes.Type(value = Person.class, name = "Person"),
+        // TODO: Add all possible types here
 })
 public class ActivityPubObject {
 
+    // TODO: Add all possible attributes + getter/setter
     private String summary;
     private String name;
 
@@ -33,6 +36,7 @@ public class ActivityPubObject {
     public void setName(String name) {
         this.name = name;
     }
+
     /*
     // Link
     private URI link;
