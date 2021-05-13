@@ -16,4 +16,8 @@ public class Link extends ActivityPubObject {
 	private String[] rel;
 	private int height;
 	private int width;
+
+	public String getType() {
+		return type;
+	}
 }

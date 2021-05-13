@@ -6,4 +6,8 @@ public class Mention extends ActivityPubObject {
 
     private static final String type = "Mention";
 
+    public String getType() {
+        return type;
+    }
+
 }
