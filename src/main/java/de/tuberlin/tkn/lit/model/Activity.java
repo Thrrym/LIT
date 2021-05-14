@@ -16,6 +16,29 @@ public class Activity extends ActivityPubObject {
     private ActivityPubObject origin;
     private ActivityPubObject instrument;
 
+    public Activity(String context, ActivityPubObject actor, ActivityPubObject object, ActivityPubObject target, ActivityPubObject result, ActivityPubObject origin, ActivityPubObject instrument) {
+        this.context = context;
+        this.actor = actor;
+        this.object = object;
+        this.target = target;
+        this.result = result;
+        this.origin = origin;
+        this.instrument = instrument;
+    }
+    public Activity(Activity activity) {
+        this.context = activity.context;
+        this.actor = activity.actor;
+        this.object = activity.object;
+        this.target = activity.target;
+        this.result = activity.result;
+        this.origin = activity.origin;
+        this.instrument = activity.instrument;
+    }
+
+    public String getType() {
+        return type;
+    }
+
     public String getContext() {
         return context;
     }

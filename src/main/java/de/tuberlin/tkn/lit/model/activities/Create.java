@@ -9,4 +9,8 @@ public class Create extends Activity {
         return type;
     }
 
+    public Create(Activity activity) {
+        super(activity);
+    }
+
 }
