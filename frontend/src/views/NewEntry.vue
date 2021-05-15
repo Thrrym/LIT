@@ -29,20 +29,20 @@ export default {
           author: "",
         },
       },
-    }
+    };
   },
   computed: {
-    getForm: function() {
+    getForm: function () {
       return "s";
     },
   },
   methods: {
-    setSelectedType: function(type) {
+    setSelectedType: function (type) {
       // Type as selected by the selector. To be set as variable in the NewEntry component.
       this.selectedType = type;
-    }
-  }
-}
+    },
+  },
+};
 </script>
 <style>
 </style>
