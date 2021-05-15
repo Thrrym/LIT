@@ -1,22 +1,21 @@
 package de.tuberlin.tkn.lit.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 //@JsonIgnoreProperties(value = { "@context" })
-public class Activity extends ActivityPubObject {
+public class Activity extends LitObject {
     private static final String type = "Activity";
 
     @JsonProperty("@context")
     private String context;
-    private ActivityPubObject actor;
-    private ActivityPubObject object;
-    private ActivityPubObject target;
-    private ActivityPubObject result;
-    private ActivityPubObject origin;
-    private ActivityPubObject instrument;
+    private LitObject actor;
+    private LitObject object;
+    private LitObject target;
+    private LitObject result;
+    private LitObject origin;
+    private LitObject instrument;
 
-    public Activity(String context, ActivityPubObject actor, ActivityPubObject object, ActivityPubObject target, ActivityPubObject result, ActivityPubObject origin, ActivityPubObject instrument) {
+    public Activity(String context, LitObject actor, LitObject object, LitObject target, LitObject result, LitObject origin, LitObject instrument) {
         this.context = context;
         this.actor = actor;
         this.object = object;
@@ -47,51 +46,51 @@ public class Activity extends ActivityPubObject {
         this.context = context;
     }
 
-    public ActivityPubObject getActor() {
+    public LitObject getActor() {
         return actor;
     }
 
-    public void setActor(ActivityPubObject actor) {
+    public void setActor(LitObject actor) {
         this.actor = actor;
     }
 
-    public ActivityPubObject getObject() {
+    public LitObject getObject() {
         return object;
     }
 
-    public void setObject(ActivityPubObject object) {
+    public void setObject(LitObject object) {
         this.object = object;
     }
 
-    public ActivityPubObject getTarget() {
+    public LitObject getTarget() {
         return target;
     }
 
-    public void setTarget(ActivityPubObject target) {
+    public void setTarget(LitObject target) {
         this.target = target;
     }
 
-    public ActivityPubObject getResult() {
+    public LitObject getResult() {
         return result;
     }
 
-    public void setResult(ActivityPubObject result) {
+    public void setResult(LitObject result) {
         this.result = result;
     }
 
-    public ActivityPubObject getOrigin() {
+    public LitObject getOrigin() {
         return origin;
     }
 
-    public void setOrigin(ActivityPubObject origin) {
+    public void setOrigin(LitObject origin) {
         this.origin = origin;
     }
 
-    public ActivityPubObject getInstrument() {
+    public LitObject getInstrument() {
         return instrument;
     }
 
-    public void setInstrument(ActivityPubObject instrument) {
+    public void setInstrument(LitObject instrument) {
         this.instrument = instrument;
     }
 }

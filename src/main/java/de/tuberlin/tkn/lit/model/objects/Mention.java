@@ -1,8 +1,8 @@
 package de.tuberlin.tkn.lit.model.objects;
 
-import de.tuberlin.tkn.lit.model.ActivityPubObject;
+import de.tuberlin.tkn.lit.model.LitObject;
 
-public class Mention extends ActivityPubObject {
+public class Mention extends LitObject {
 
     private static final String type = "Mention";
 

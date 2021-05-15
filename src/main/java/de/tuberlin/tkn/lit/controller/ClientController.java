@@ -1,6 +1,5 @@
 package de.tuberlin.tkn.lit.controller;
 import de.tuberlin.tkn.lit.model.Activity;
-import de.tuberlin.tkn.lit.model.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.Actor;
 import de.tuberlin.tkn.lit.model.OrderedCollection;
 import de.tuberlin.tkn.lit.model.activities.Create;

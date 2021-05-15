@@ -1,6 +1,6 @@
 package de.tuberlin.tkn.lit.model;
 
-public class OrderedCollection extends main.java.de.tuberlin.tkn.lit.model.Collection {
+public class OrderedCollection extends LitCollection {
 
     private String[] orderedItems;
 

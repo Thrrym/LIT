@@ -1,20 +1,20 @@
-package main.java.de.tuberlin.tkn.lit.model;
+package de.tuberlin.tkn.lit.model;
 
-public class Collection extends Object {
+public class LitCollection extends Object {
 
     private String[] items;
     private int totalItems;
     private String[] first;
     private String[] last;
 
-    public Collection(int totalItems, String[] first, String[] last, String[] current) {
+    public LitCollection(int totalItems, String[] first, String[] last, String[] current) {
         this.totalItems = totalItems;
         this.first = first;
         this.last = last;
         this.current = current;
     }
 
-    public Collection(String[] items, int totalItems, String[] first, String[] last, String[] current) {
+    public LitCollection(String[] items, int totalItems, String[] first, String[] last, String[] current) {
         this(totalItems,first,last,current);
         this.items = items;
     }

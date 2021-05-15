@@ -51,7 +51,7 @@ import java.net.URI;
 
         // TODO: Add all possible types here
 })
-public class ActivityPubObject {
+public class LitObject {
 
     // TODO: Add all possible attributes + getter/setter
     private String summary;
