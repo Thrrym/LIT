@@ -15,6 +15,9 @@ public class Activity extends LitObject {
     private LitObject origin;
     private LitObject instrument;
 
+    public Activity() {
+    }
+
     public Activity(String context, LitObject actor, LitObject object, LitObject target, LitObject result, LitObject origin, LitObject instrument) {
         this.context = context;
         this.actor = actor;
