@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-dropdown id="dropdown-1" text="Select your type of entry" class="m-md-2">
+    <b-dropdown id="dropdown-1" v-bind:text="buttonText" class="m-md-2">
       <b-dropdown-item
         v-for="x in entryTypes"
         v-bind:key="x.type"
@@ -29,6 +29,15 @@ export default {
     setSelectedType: function (type) {
       this.selectedType = type;
       this.$emit("selectedType", this.selectedType);
+    },
+  },
+  computed: {
+    buttonText: function () {
+      if (this.selectedType === "") {
+        return "Select your type of entry";
+      } else {
+        return this.selectedType;
+      }
     },
   },
 };
