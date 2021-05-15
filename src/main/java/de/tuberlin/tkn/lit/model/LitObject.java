@@ -52,17 +52,148 @@ import java.net.URI;
         // TODO: Add all possible types here
 })
 public class LitObject {
+    // Link
+    private URI link;
 
-    // TODO: Add all possible attributes + getter/setter
-    private String summary;
+    // Object
+    private String id;
+    private LitObject[] attachment;
+    private LitObject[] attributedTo;
+    private LitObject[] audience;
+    private String content;
+    private String context;
+    private String startTime;
+    private String endTime;
+    private LitObject generator;
+    private LitObject[] icon;
+    private LitObject[] image;
+    private LitObject[] inReplyTo;
+    private LitObject[] location;
     private String name;
+    private LitObject preview;
+    private String published;
+    private LitCollection replies;
+    private LitObject[] tag;
+    private String summary;
+    private String updated;
+    private URI[] url;
+    private URI[] to;
+    private URI[] bto;
+    private URI[] cc;
+    private URI[] bcc;
+    private String mediaType;
+    private String duration;
 
-    public String getSummary() {
-        return summary;
+    public URI getLink() {
+        return link;
     }
 
-    public void setSummary(String summary) {
-        this.summary = summary;
+    public void setLink(URI link) {
+        this.link = link;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public LitObject[] getAttachment() {
+        return attachment;
+    }
+
+    public void setAttachment(LitObject[] attachment) {
+        this.attachment = attachment;
+    }
+
+    public LitObject[] getAttributedTo() {
+        return attributedTo;
+    }
+
+    public void setAttributedTo(LitObject[] attributedTo) {
+        this.attributedTo = attributedTo;
+    }
+
+    public LitObject[] getAudience() {
+        return audience;
+    }
+
+    public void setAudience(LitObject[] audience) {
+        this.audience = audience;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getContext() {
+        return context;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public LitObject getGenerator() {
+        return generator;
+    }
+
+    public void setGenerator(LitObject generator) {
+        this.generator = generator;
+    }
+
+    public LitObject[] getIcon() {
+        return icon;
+    }
+
+    public void setIcon(LitObject[] icon) {
+        this.icon = icon;
+    }
+
+    public LitObject[] getImage() {
+        return image;
+    }
+
+    public void setImage(LitObject[] image) {
+        this.image = image;
+    }
+
+    public LitObject[] getInReplyTo() {
+        return inReplyTo;
+    }
+
+    public void setInReplyTo(LitObject[] inReplyTo) {
+        this.inReplyTo = inReplyTo;
+    }
+
+    public LitObject[] getLocation() {
+        return location;
+    }
+
+    public void setLocation(LitObject[] location) {
+        this.location = location;
     }
 
     public String getName() {
@@ -73,44 +204,107 @@ public class LitObject {
         this.name = name;
     }
 
-    /*
-    // Link
-    private URI link;
+    public LitObject getPreview() {
+        return preview;
+    }
 
-    // Object
-    private String id;
+    public void setPreview(LitObject preview) {
+        this.preview = preview;
+    }
 
-    // TODO: Create missing classes
-    //private Attachment[] Hashmap<String, String>; // Eventuell String
-    private String[] Attachment;
-    private String[] attributedTo;
-    private String[] audience;
-    private String content;
-    private HashMap<String, String> contentMap;
-    private String context;
-    private String name;
-    private HashMap<String, String> nameMap;
-    private String startTime;
-    private String endTime;
-    private String[] generator;
-    private String[] icon;
-    private String[] image;
-    private String[] inReplyTo;
-    private String[] location;
-    private String[] preview;
-    private String published;
-    //private Collection replies;
-    private String summary;
-    private HashMap<String, String> summaryMap;
-    private String[] tag;
-    private String updated;
-    private String[] url;
-    private String[] to;
-    private String[] bto;
-    private String[] cc;
-    private String[] bcc;
-    private String mediaType;
-    private String duration;
-     */
+    public String getPublished() {
+        return published;
+    }
 
+    public void setPublished(String published) {
+        this.published = published;
+    }
+
+    public LitCollection getReplies() {
+        return replies;
+    }
+
+    public void setReplies(LitCollection replies) {
+        this.replies = replies;
+    }
+
+    public LitObject[] getTag() {
+        return tag;
+    }
+
+    public void setTag(LitObject[] tag) {
+        this.tag = tag;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public String getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(String updated) {
+        this.updated = updated;
+    }
+
+    public URI[] getUrl() {
+        return url;
+    }
+
+    public void setUrl(URI[] url) {
+        this.url = url;
+    }
+
+    public URI[] getTo() {
+        return to;
+    }
+
+    public void setTo(URI[] to) {
+        this.to = to;
+    }
+
+    public URI[] getBto() {
+        return bto;
+    }
+
+    public void setBto(URI[] bto) {
+        this.bto = bto;
+    }
+
+    public URI[] getCc() {
+        return cc;
+    }
+
+    public void setCc(URI[] cc) {
+        this.cc = cc;
+    }
+
+    public URI[] getBcc() {
+        return bcc;
+    }
+
+    public void setBcc(URI[] bcc) {
+        this.bcc = bcc;
+    }
+
+    public String getMediaType() {
+        return mediaType;
+    }
+
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
+    }
+
+    public String getDuration() {
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
 }
