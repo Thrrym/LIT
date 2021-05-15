@@ -2,7 +2,7 @@
   <div>
     <TypeSelector :entryTypes="entryTypes" v-on:selectedType="setSelectedType">
     </TypeSelector>
-    <NewEntryForm :FormContent="getForm"></NewEntryForm>
+    <NewEntryForm :formContent="getForm"></NewEntryForm>
   </div>
 </template>
 
@@ -34,7 +34,10 @@ export default {
   },
   computed: {
     getForm: function () {
-      return "s";
+      if (this.selectedType === "") return "s";
+      else {
+        return this.formContent[this.selectedType];
+      };
     },
   },
   methods: {
