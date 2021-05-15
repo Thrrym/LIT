@@ -8,8 +8,10 @@
         v-bind:key="field.id"
         v-bind:label="field.label"
       >
-        <b-form-input v-model="field.content" v-bind:required="field.requiered">
-        </b-form-input>
+        <b-form-input
+          v-model="field.content"
+          v-bind:required="field.requiered"
+        ></b-form-input>
       </b-form-group>
       <b-button type="submit" variant="primary">Create new entry</b-button>
     </b-form>
