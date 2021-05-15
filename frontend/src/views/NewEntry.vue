@@ -2,7 +2,7 @@
   <div>
     <TypeSelector :entryTypes="entryTypes" v-on:selectedType="setSelectedType">
     </TypeSelector>
-    <NewEntryForm :formContent="getForm"></NewEntryForm>
+    <NewEntryForm v-bind:formContent="getForm" v-bind:showForm="true" v-on:entryToBeCreated="setEntryToBeCreated"></NewEntryForm>
   </div>
 </template>
 
@@ -19,16 +19,31 @@ export default {
   data() {
     return {
       selectedType: "",
+      newEntry: "",
+
       entryTypes: [
         { type: "article" },
         { type: "book" },
         { type: "incollection" },
       ],
+
       formContent: {
-        article: {
-          author: "",
-          title: "",
-        },
+        article: [
+          {
+            id: 0,
+            name: "author",
+            label: "Author",
+            content: "",
+            requiered: true,
+          },
+          {
+            id: 1,
+            name: "title",
+            label: "Title",
+            content: "",
+            requiered: true,
+          },
+        ],
       },
     };
   },
@@ -37,7 +52,7 @@ export default {
       if (this.selectedType === "") return "s";
       else {
         return this.formContent[this.selectedType];
-      };
+      }
     },
   },
   methods: {
@@ -45,6 +60,9 @@ export default {
       // Type as selected by the selector. To be set as variable in the NewEntry component.
       this.selectedType = type;
     },
+    setEntryToBeCreated: function (newEntry) {
+      this.newEntry = newEntry;
+    }
   },
 };
 </script>
