@@ -27,6 +27,7 @@ export default {
       formContent: {
         article: {
           author: "",
+          title: "",
         },
       },
     };
@@ -44,5 +45,4 @@ export default {
   },
 };
 </script>
-<style>
-</style>
+<style></style>
