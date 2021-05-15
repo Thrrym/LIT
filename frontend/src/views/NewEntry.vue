@@ -2,7 +2,11 @@
   <div>
     <TypeSelector :entryTypes="entryTypes" v-on:selectedType="setSelectedType">
     </TypeSelector>
-    <NewEntryForm v-bind:formContent="getForm" v-bind:showForm="true" v-on:entryToBeCreated="setEntryToBeCreated"></NewEntryForm>
+    <NewEntryForm
+      v-bind:formContent="getForm"
+      v-bind:showForm="true"
+      v-on:entryToBeCreated="setEntryToBeCreated"
+    ></NewEntryForm>
   </div>
 </template>
 
@@ -43,6 +47,27 @@ export default {
             content: "",
             requiered: true,
           },
+          {
+            id: 2,
+            name: "journal",
+            label: "Journal",
+            content: "",
+            requiered: true,
+          },
+          {
+            id: 3,
+            name: "year",
+            label: "Year",
+            content: "",
+            requiered: true,
+          },
+          {
+            id: 4,
+            name: "volume",
+            label: "Volume",
+            content: "",
+            requiered: false,
+          },
         ],
       },
     };
@@ -62,7 +87,7 @@ export default {
     },
     setEntryToBeCreated: function (newEntry) {
       this.newEntry = newEntry;
-    }
+    },
   },
 };
 </script>
