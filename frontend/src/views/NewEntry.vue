@@ -9,7 +9,8 @@
       v-bind:formContent="getForm"
       v-bind:showForm="activateForm"
       v-on:entryToBeCreated="setEntryToBeCreated"
-    ></NewEntryForm>
+    >
+    </NewEntryForm>
   </div>
 </template>
 
@@ -48,6 +49,8 @@ export default {
       return entryTypes;
     },
     activateForm: function () {
+      // Determine if the form for the selected can be shown.
+      // Np type seleceted -> false.
       if (this.selectedType === "") return false;
       else return true;
     },
