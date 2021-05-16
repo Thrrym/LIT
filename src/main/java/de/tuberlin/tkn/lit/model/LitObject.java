@@ -62,10 +62,6 @@ import java.util.List;
 })
 public abstract class LitObject {
 
-    // Link
-    private String link;
-
-    // Object
     private String id;
     private List<LinkOrObject> attachment;
     //@JsonDeserialize(using = ActorDeserializer.class)
@@ -97,19 +93,7 @@ public abstract class LitObject {
 
     public LitObject() {}
 
-    public LitObject(String link) {
-        this.link = link;
-    }
-
-    public String getType() { return "LitObject"; };
-
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String link) {
-        this.link = link;
-    }
+    public abstract String getType();
 
     public String getId() {
         return id;
