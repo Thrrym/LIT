@@ -37,6 +37,29 @@ export default {
         requiered: false,
       },
     ],
+    book: [
+      {
+        id: 0,
+        name: "author",
+        label: "Author",
+        content: "",
+        requiered: true,
+      },
+      {
+        id: 1,
+        name: "title",
+        label: "Title",
+        content: "",
+        requiered: true,
+      },
+      {
+        id: 2,
+        name: "journal",
+        label: "Journal",
+        content: "",
+        requiered: true,
+      },
+    ],
   }
 };
 
