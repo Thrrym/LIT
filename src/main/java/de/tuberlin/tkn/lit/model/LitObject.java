@@ -1,14 +1,21 @@
 package de.tuberlin.tkn.lit.model;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.tuberlin.tkn.lit.deserializer.ArrayDeserializer;
 import de.tuberlin.tkn.lit.model.activities.*;
 import de.tuberlin.tkn.lit.model.actors.*;
 import de.tuberlin.tkn.lit.model.objects.*;
 
-import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
-@JsonTypeInfo(use = JsonTypeInfo.Id.NAME,
+@JsonTypeInfo (use = JsonTypeInfo.Id.NAME,
         property = "type")
 @JsonSubTypes( value = {
         @JsonSubTypes.Type(value = Article.class, name = "Article"),
@@ -20,12 +27,14 @@ import java.net.URI;
         @JsonSubTypes.Type(value = Place.class, name = "Place"),
         @JsonSubTypes.Type(value = Tombstone.class, name = "Tombstone"),
 
+        @JsonSubTypes.Type(value = Actor.class, name = "Actor"),
         @JsonSubTypes.Type(value = Application.class, name = "Application"),
         @JsonSubTypes.Type(value = Group.class, name = "Group"),
         @JsonSubTypes.Type(value = Organization.class, name = "Organization"),
         @JsonSubTypes.Type(value = Person.class, name = "Person"),
         @JsonSubTypes.Type(value = Service.class, name = "Service"),
 
+        @JsonSubTypes.Type(value = Activity.class, name = "Activity"),
         @JsonSubTypes.Type(value = Accept.class, name = "Accept"),
         @JsonSubTypes.Type(value = Add.class, name = "Add"),
         @JsonSubTypes.Type(value = Announce.class, name = "Announce"),
@@ -51,44 +60,54 @@ import java.net.URI;
 
         // TODO: Add all possible types here
 })
-public class LitObject {
+public abstract class LitObject {
+
     // Link
-    private URI link;
+    private String link;
 
     // Object
     private String id;
-    private LitObject[] attachment;
-    private LitObject[] attributedTo;
-    private LitObject[] audience;
+    private List<LinkOrObject> attachment;
+    //@JsonDeserialize(using = ActorDeserializer.class)
+    private String attributedTo;
+    private List<LinkOrObject> audience;
     private String content;
     private String context;
     private String startTime;
     private String endTime;
-    private LitObject generator;
-    private LitObject[] icon;
-    private LitObject[] image;
-    private LitObject[] inReplyTo;
-    private LitObject[] location;
+    private List<LinkOrObject> generator;
+    private List<LinkOrObject> icon;
+    private List<LinkOrObject> image;
+    private List<LinkOrObject> inReplyTo;
+    private List<LinkOrObject> location;
     private String name;
-    private LitObject preview;
+    private LinkOrObject preview;
     private String published;
     private LitCollection replies;
-    private LitObject[] tag;
+    private List<LinkOrObject> tag;
     private String summary;
     private String updated;
-    private URI[] url;
-    private URI[] to;
-    private URI[] bto;
-    private URI[] cc;
-    private URI[] bcc;
+    private List<LinkOrObject> url;
+    private List<LinkOrObject> to;
+    private List<LinkOrObject> bto;
+    private List<LinkOrObject> cc;
+    private List<LinkOrObject> bcc;
     private String mediaType;
     private String duration;
 
-    public URI getLink() {
+    public LitObject() {}
+
+    public LitObject(String link) {
+        this.link = link;
+    }
+
+    public String getType() { return "LitObject"; };
+
+    public String getLink() {
         return link;
     }
 
-    public void setLink(URI link) {
+    public void setLink(String link) {
         this.link = link;
     }
 
@@ -100,27 +119,27 @@ public class LitObject {
         this.id = id;
     }
 
-    public LitObject[] getAttachment() {
+    public List<LinkOrObject> getAttachment() {
         return attachment;
     }
 
-    public void setAttachment(LitObject[] attachment) {
+    public void setAttachment(List<LinkOrObject> attachment) {
         this.attachment = attachment;
     }
 
-    public LitObject[] getAttributedTo() {
+    public String getAttributedTo() {
         return attributedTo;
     }
 
-    public void setAttributedTo(LitObject[] attributedTo) {
+    public void setAttributedTo(String attributedTo) {
         this.attributedTo = attributedTo;
     }
 
-    public LitObject[] getAudience() {
+    public List<LinkOrObject> getAudience() {
         return audience;
     }
 
-    public void setAudience(LitObject[] audience) {
+    public void setAudience(List<LinkOrObject> audience) {
         this.audience = audience;
     }
 
@@ -156,43 +175,43 @@ public class LitObject {
         this.endTime = endTime;
     }
 
-    public LitObject getGenerator() {
+    public List<LinkOrObject> getGenerator() {
         return generator;
     }
 
-    public void setGenerator(LitObject generator) {
+    public void setGenerator(List<LinkOrObject> generator) {
         this.generator = generator;
     }
 
-    public LitObject[] getIcon() {
+    public List<LinkOrObject> getIcon() {
         return icon;
     }
 
-    public void setIcon(LitObject[] icon) {
+    public void setIcon(List<LinkOrObject> icon) {
         this.icon = icon;
     }
 
-    public LitObject[] getImage() {
+    public List<LinkOrObject> getImage() {
         return image;
     }
 
-    public void setImage(LitObject[] image) {
+    public void setImage(List<LinkOrObject> image) {
         this.image = image;
     }
 
-    public LitObject[] getInReplyTo() {
+    public List<LinkOrObject> getInReplyTo() {
         return inReplyTo;
     }
 
-    public void setInReplyTo(LitObject[] inReplyTo) {
+    public void setInReplyTo(List<LinkOrObject> inReplyTo) {
         this.inReplyTo = inReplyTo;
     }
 
-    public LitObject[] getLocation() {
+    public List<LinkOrObject> getLocation() {
         return location;
     }
 
-    public void setLocation(LitObject[] location) {
+    public void setLocation(List<LinkOrObject> location) {
         this.location = location;
     }
 
@@ -204,11 +223,11 @@ public class LitObject {
         this.name = name;
     }
 
-    public LitObject getPreview() {
+    public LinkOrObject getPreview() {
         return preview;
     }
 
-    public void setPreview(LitObject preview) {
+    public void setPreview(LinkOrObject preview) {
         this.preview = preview;
     }
 
@@ -228,11 +247,11 @@ public class LitObject {
         this.replies = replies;
     }
 
-    public LitObject[] getTag() {
+    public List<LinkOrObject> getTag() {
         return tag;
     }
 
-    public void setTag(LitObject[] tag) {
+    public void setTag(List<LinkOrObject> tag) {
         this.tag = tag;
     }
 
@@ -252,44 +271,64 @@ public class LitObject {
         this.updated = updated;
     }
 
-    public URI[] getUrl() {
+    public List<LinkOrObject> getUrl() {
         return url;
     }
 
-    public void setUrl(URI[] url) {
+    public void setUrl(List<LinkOrObject> url) {
         this.url = url;
     }
 
-    public URI[] getTo() {
+    public List<LinkOrObject> getTo() {
         return to;
     }
 
-    public void setTo(URI[] to) {
+    public void setTo(List<LinkOrObject> to) {
         this.to = to;
     }
 
-    public URI[] getBto() {
+    @JsonSetter("to")
+    public void setTo(JsonNode s) throws JsonProcessingException {
+        to = ArrayDeserializer.deserialize(s);
+    }
+
+    public List<LinkOrObject> getBto() {
         return bto;
     }
 
-    public void setBto(URI[] bto) {
+    public void setBto(List<LinkOrObject> bto) {
         this.bto = bto;
     }
 
-    public URI[] getCc() {
+    @JsonSetter("bto")
+    public void setBto(JsonNode s) throws JsonProcessingException {
+        bto = ArrayDeserializer.deserialize(s);
+    }
+
+    public List<LinkOrObject> getCc() {
         return cc;
     }
 
-    public void setCc(URI[] cc) {
+    public void setCc(List<LinkOrObject> cc) {
         this.cc = cc;
     }
 
-    public URI[] getBcc() {
+    @JsonSetter("cc")
+    public void setCc(JsonNode s) throws JsonProcessingException {
+        cc = ArrayDeserializer.deserialize(s);
+    }
+
+    public List<LinkOrObject> getBcc() {
         return bcc;
     }
 
-    public void setBcc(URI[] bcc) {
+    public void setBcc(List<LinkOrObject> bcc) {
         this.bcc = bcc;
+    }
+
+    @JsonSetter("bcc")
+    public void setBcc(JsonNode s) throws JsonProcessingException {
+        bcc = ArrayDeserializer.deserialize(s);
     }
 
     public String getMediaType() {
