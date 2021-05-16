@@ -85,7 +85,8 @@ export default {
 
   methods: {
     emitNewEntry: function () {
-      this.$emit("entryToBeCreated", this.formContent);
+      let formResult = [].concat(this.getRequieredFields, this.getOptionalFields);
+      this.$emit("entryToBeCreated", formResult);
     },
     setShowOptionalFields: function () {
       this.showOptionalFields = !this.showOptionalFields;
