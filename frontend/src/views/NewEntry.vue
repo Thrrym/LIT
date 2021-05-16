@@ -7,7 +7,7 @@
     </TypeSelector>
     <NewEntryForm
       v-bind:formContent="getForm"
-      v-bind:showForm="true"
+      v-bind:showForm="activateForm"
       v-on:entryToBeCreated="setEntryToBeCreated"
     ></NewEntryForm>
   </div>
@@ -46,6 +46,10 @@ export default {
         entryTypes.push(i);
       }
       return entryTypes;
+    },
+    activateForm: function () {
+      if (this.selectedType === "") return false;
+      else return true;
     },
   },
 
