@@ -8,13 +8,13 @@ import de.tuberlin.tkn.lit.model.Actor;
 import de.tuberlin.tkn.lit.model.LinkOrObject;
 import de.tuberlin.tkn.lit.model.LitObject;
 
-public class ActorDeserializer {
+public class LinkOrObjectDeserializer {
     public static LinkOrObject deserialize(JsonNode s) throws JsonProcessingException {
         System.out.println("Deserialize actor: "+s);
         if (s.isObject()) {
             ObjectMapper objectMapper = new ObjectMapper();
-            LitObject actor = objectMapper.treeToValue(s, LitObject.class);
-            return new LinkOrObject(actor);
+            LitObject obj = objectMapper.treeToValue(s, LitObject.class);
+            return new LinkOrObject(obj);
         } else {
             return new LinkOrObject(s.asText());
         }
