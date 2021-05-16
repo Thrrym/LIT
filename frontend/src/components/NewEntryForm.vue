@@ -85,10 +85,13 @@ export default {
 
   methods: {
     emitNewEntry: function () {
+      // Gather the fields from the form. Requiered and optional fields.
+      // Combine both arrays with fields.
       let formResult = [].concat(
         this.getRequieredFields,
         this.getOptionalFields
       );
+      // Emit the appropiate event to superior component with the fields as content of event.
       this.$emit("entryToBeCreated", formResult);
     },
     setShowOptionalFields: function () {
