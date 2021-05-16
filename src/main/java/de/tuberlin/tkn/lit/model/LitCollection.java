@@ -1,30 +1,30 @@
 package de.tuberlin.tkn.lit.model;
 
-public class LitCollection extends Object {
+public class LitCollection extends LitObject {
 
-    private String[] items;
+    private LitObject[] items;
     private int totalItems;
-    private String[] first;
-    private String[] last;
+    private LitObject[] first;
+    private LitObject[] last;
 
-    public LitCollection(int totalItems, String[] first, String[] last, String[] current) {
+    public LitCollection(int totalItems, LitObject[] first, LitObject[] last, LitObject[] current) {
         this.totalItems = totalItems;
         this.first = first;
         this.last = last;
         this.current = current;
     }
 
-    public LitCollection(String[] items, int totalItems, String[] first, String[] last, String[] current) {
+    public LitCollection(LitObject[] items, int totalItems, LitObject[] first, LitObject[] last, LitObject[] current) {
         this(totalItems,first,last,current);
         this.items = items;
     }
 
 
-    public String[] getItems() {
+    public LitObject[] getItems() {
         return items;
     }
 
-    public void setItems(String[] items) {
+    public void setItems(LitObject[] items) {
         this.items = items;
     }
 
@@ -36,29 +36,29 @@ public class LitCollection extends Object {
         this.totalItems = totalItems;
     }
 
-    public String[] getFirst() {
+    public LitObject[] getFirst() {
         return first;
     }
 
-    public void setFirst(String[] first) {
+    public void setFirst(LitObject[] first) {
         this.first = first;
     }
 
-    public String[] getLast() {
+    public LitObject[] getLast() {
         return last;
     }
 
-    public void setLast(String[] last) {
+    public void setLast(LitObject[] last) {
         this.last = last;
     }
 
-    public String[] getCurrent() {
+    public LitObject[] getCurrent() {
         return current;
     }
 
-    public void setCurrent(String[] current) {
+    public void setCurrent(LitObject[] current) {
         this.current = current;
     }
 
-    private String[] current;
+    private LitObject[] current;
 }
