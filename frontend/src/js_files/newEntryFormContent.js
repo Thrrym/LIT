@@ -60,6 +60,22 @@ export default {
         requiered: true,
       },
     ],
+    booklet: [
+      {
+        id: 0,
+        name: "title",
+        label: "Title",
+        content: "",
+        requiered: true,
+      },
+      {
+        id: 1,
+        name: "author",
+        label: "Author",
+        content: "",
+        requiered: false,
+      },
+    ],
   }
 };
 
