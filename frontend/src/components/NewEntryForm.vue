@@ -16,7 +16,13 @@
         </b-form-group>
       </b-form-group>
 
-      <b-button variant="outline-primary" v-if="showOptionalFieldsButton" v-on:click="setShowOptionalFields">Advanced</b-button>
+      <b-button
+        variant="outline-primary"
+        v-if="showOptionalFieldsButton"
+        v-on:click="setShowOptionalFields"
+      >
+        Advanced
+      </b-button>
 
       <!-- Optional Fields. -->
       <b-form-group v-if="showOptionalFields" label="Optional Fields">
@@ -51,27 +57,30 @@ export default {
     },
   },
 
-  data () {
+  data() {
     return {
       showOptionalFields: false,
-    }
+    };
   },
 
   computed: {
     getRequieredFields: function () {
+      // Get the requiered fields for the selected type.
       return this.formContent.filter(function (elem) {
         if (elem.requiered === true) return true;
       });
     },
     getOptionalFields: function () {
+      // Get the fields for the form that are only optional.
       return this.formContent.filter(function (elem) {
         if (elem.requiered === false) return true;
       });
     },
     showOptionalFieldsButton: function () {
+      // Are there any optional fields -> Show the button indicating optional fields and make them available.
       if (this.getRequieredFields.length === 0) return false;
       else return true;
-    }
+    },
   },
 
   methods: {
