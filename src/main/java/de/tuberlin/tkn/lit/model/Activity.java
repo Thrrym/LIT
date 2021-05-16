@@ -4,11 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import de.tuberlin.tkn.lit.deserializer.ActorDeserializer;
-import de.tuberlin.tkn.lit.deserializer.ActorDeserializer2;
-import de.tuberlin.tkn.lit.model.objects.Link;
+import de.tuberlin.tkn.lit.deserializer.LinkOrObjectDeserializer;
 
 
 public abstract class Activity extends LitObject {
@@ -62,7 +58,7 @@ public abstract class Activity extends LitObject {
 
     @JsonSetter("actor")
     public void setActor(JsonNode s) throws JsonProcessingException {
-        actor = ActorDeserializer.deserialize(s);
+        actor = LinkOrObjectDeserializer.deserialize(s);
     }
 
     public LinkOrObject getObject() {
@@ -73,12 +69,22 @@ public abstract class Activity extends LitObject {
         this.object = object;
     }
 
+    @JsonSetter("object")
+    public void setObject(JsonNode s) throws JsonProcessingException {
+        object = LinkOrObjectDeserializer.deserialize(s);
+    }
+
     public LinkOrObject getTarget() {
         return target;
     }
 
     public void setTarget(LinkOrObject target) {
         this.target = target;
+    }
+
+    @JsonSetter("target")
+    public void setTarget(JsonNode s) throws JsonProcessingException {
+        target = LinkOrObjectDeserializer.deserialize(s);
     }
 
     public LinkOrObject getResult() {
@@ -89,6 +95,11 @@ public abstract class Activity extends LitObject {
         this.result = result;
     }
 
+    @JsonSetter("result")
+    public void setResult(JsonNode s) throws JsonProcessingException {
+        result = LinkOrObjectDeserializer.deserialize(s);
+    }
+
     public LinkOrObject getOrigin() {
         return origin;
     }
@@ -97,11 +108,21 @@ public abstract class Activity extends LitObject {
         this.origin = origin;
     }
 
+    @JsonSetter("origin")
+    public void setOrigin(JsonNode s) throws JsonProcessingException {
+        origin = LinkOrObjectDeserializer.deserialize(s);
+    }
+
     public LinkOrObject getInstrument() {
         return instrument;
     }
 
     public void setInstrument(LinkOrObject instrument) {
         this.instrument = instrument;
+    }
+
+    @JsonSetter("instrument")
+    public void setInstrument(JsonNode s) throws JsonProcessingException {
+        instrument = LinkOrObjectDeserializer.deserialize(s);
     }
 }
