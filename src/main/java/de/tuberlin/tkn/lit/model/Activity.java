@@ -1,24 +1,31 @@
 package de.tuberlin.tkn.lit.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import de.tuberlin.tkn.lit.deserializer.ActorDeserializer;
+import de.tuberlin.tkn.lit.deserializer.ActorDeserializer2;
+import de.tuberlin.tkn.lit.model.objects.Link;
 
-//@JsonIgnoreProperties(value = { "@context" })
-public class Activity extends LitObject {
-    private static final String type = "Activity";
 
+public abstract class Activity extends LitObject {
     @JsonProperty("@context")
     private String context;
-    private LitObject actor;
-    private LitObject object;
-    private LitObject target;
-    private LitObject result;
-    private LitObject origin;
-    private LitObject instrument;
+    //@JsonDeserialize(using = ActorDeserializer2.class)
+    private LinkOrObject actor;
+    private LinkOrObject object;
+    private LinkOrObject target;
+    private LinkOrObject result;
+    private LinkOrObject origin;
+    private LinkOrObject instrument;
 
     public Activity() {
     }
 
-    public Activity(String context, LitObject actor, LitObject object, LitObject target, LitObject result, LitObject origin, LitObject instrument) {
+    public Activity(String context, LinkOrObject actor, LinkOrObject object, LinkOrObject target, LinkOrObject result, LinkOrObject origin, LinkOrObject instrument) {
         this.context = context;
         this.actor = actor;
         this.object = object;
@@ -37,10 +44,6 @@ public class Activity extends LitObject {
         this.instrument = activity.instrument;
     }
 
-    public String getType() {
-        return type;
-    }
-
     public String getContext() {
         return context;
     }
@@ -49,51 +52,56 @@ public class Activity extends LitObject {
         this.context = context;
     }
 
-    public LitObject getActor() {
+    public LinkOrObject getActor() {
         return actor;
     }
 
-    public void setActor(LitObject actor) {
+    public void setActor(LinkOrObject actor) {
         this.actor = actor;
     }
 
-    public LitObject getObject() {
+    @JsonSetter("actor")
+    public void setActor(JsonNode s) throws JsonProcessingException {
+        actor = ActorDeserializer.deserialize(s);
+    }
+
+    public LinkOrObject getObject() {
         return object;
     }
 
-    public void setObject(LitObject object) {
+    public void setObject(LinkOrObject object) {
         this.object = object;
     }
 
-    public LitObject getTarget() {
+    public LinkOrObject getTarget() {
         return target;
     }
 
-    public void setTarget(LitObject target) {
+    public void setTarget(LinkOrObject target) {
         this.target = target;
     }
 
-    public LitObject getResult() {
+    public LinkOrObject getResult() {
         return result;
     }
 
-    public void setResult(LitObject result) {
+    public void setResult(LinkOrObject result) {
         this.result = result;
     }
 
-    public LitObject getOrigin() {
+    public LinkOrObject getOrigin() {
         return origin;
     }
 
-    public void setOrigin(LitObject origin) {
+    public void setOrigin(LinkOrObject origin) {
         this.origin = origin;
     }
 
-    public LitObject getInstrument() {
+    public LinkOrObject getInstrument() {
         return instrument;
     }
 
-    public void setInstrument(LitObject instrument) {
+    public void setInstrument(LinkOrObject instrument) {
         this.instrument = instrument;
     }
 }
