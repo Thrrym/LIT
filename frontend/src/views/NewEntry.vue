@@ -24,20 +24,15 @@ export default {
     TypeSelector,
     NewEntryForm,
   },
+
   data() {
     return {
       selectedType: "",
       newEntry: "",
-
-      // entryTypes: [
-      //   { type: "article" },
-      //   { type: "book" },
-      //   { type: "incollection" },
-      // ],
-
       formContent: newEntryFormContent.allTypes,
     };
   },
+
   computed: {
     getForm: function () {
       if (this.selectedType === "") return [];
@@ -53,6 +48,7 @@ export default {
       return entryTypes;
     },
   },
+
   methods: {
     setSelectedType: function (type) {
       // Type as selected by the selector. To be set as variable in the NewEntry component.
