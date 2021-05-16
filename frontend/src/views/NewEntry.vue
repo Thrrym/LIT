@@ -1,6 +1,9 @@
 <template>
   <div>
-    <TypeSelector :entryTypes="entryTypes" v-on:selectedType="setSelectedType">
+    <TypeSelector
+      :entryTypes="getEntryTypes"
+      v-on:selectedType="setSelectedType"
+    >
     </TypeSelector>
     <NewEntryForm
       v-bind:formContent="getForm"
@@ -26,21 +29,28 @@ export default {
       selectedType: "",
       newEntry: "",
 
-      entryTypes: [
-        { type: "article" },
-        { type: "book" },
-        { type: "incollection" },
-      ],
+      // entryTypes: [
+      //   { type: "article" },
+      //   { type: "book" },
+      //   { type: "incollection" },
+      // ],
 
       formContent: newEntryFormContent.allTypes,
     };
   },
   computed: {
     getForm: function () {
-      if (this.selectedType === "") return "s";
+      if (this.selectedType === "") return [];
       else {
         return this.formContent[this.selectedType];
       }
+    },
+    getEntryTypes: function () {
+      var entryTypes = [];
+      for (let i in this.formContent) {
+        entryTypes.push(i);
+      }
+      return entryTypes;
     },
   },
   methods: {
