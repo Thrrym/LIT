@@ -1,20 +1,30 @@
 package de.tuberlin.tkn.lit.model;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import de.tuberlin.tkn.lit.deserializer.ArrayDeserializer;
+
+import java.util.List;
+
 public class LitCollection extends LitObject {
 
-    private LitObject[] items;
+    private List<LinkOrObject> items;
     private int totalItems;
-    private LitObject[] first;
-    private LitObject[] last;
+    private LinkOrObject first;
+    private LinkOrObject last;
+    private LinkOrObject current;
 
-    public LitCollection(int totalItems, LitObject[] first, LitObject[] last, LitObject[] current) {
+    public LitCollection() {}
+
+    public LitCollection(int totalItems, LinkOrObject first, LinkOrObject last, LinkOrObject current) {
         this.totalItems = totalItems;
         this.first = first;
         this.last = last;
         this.current = current;
     }
 
-    public LitCollection(LitObject[] items, int totalItems, LitObject[] first, LitObject[] last, LitObject[] current) {
+    public LitCollection(List<LinkOrObject> items, int totalItems, LinkOrObject first, LinkOrObject last, LinkOrObject current) {
         this(totalItems,first,last,current);
         this.items = items;
     }
@@ -24,12 +34,17 @@ public class LitCollection extends LitObject {
         return "Collection";
     }
 
-    public LitObject[] getItems() {
+    public List<LinkOrObject> getItems() {
         return items;
     }
 
-    public void setItems(LitObject[] items) {
+    public void setItems(List<LinkOrObject>  items) {
         this.items = items;
+    }
+
+    @JsonSetter("items")
+    public void setItems(JsonNode s) throws JsonProcessingException {
+        items = ArrayDeserializer.deserialize(s);
     }
 
     public int getTotalItems() {
@@ -40,29 +55,27 @@ public class LitCollection extends LitObject {
         this.totalItems = totalItems;
     }
 
-    public LitObject[] getFirst() {
+    public LinkOrObject getFirst() {
         return first;
     }
 
-    public void setFirst(LitObject[] first) {
+    public void setFirst(LinkOrObject first) {
         this.first = first;
     }
 
-    public LitObject[] getLast() {
+    public LinkOrObject getLast() {
         return last;
     }
 
-    public void setLast(LitObject[] last) {
+    public void setLast(LinkOrObject last) {
         this.last = last;
     }
 
-    public LitObject[] getCurrent() {
+    public LinkOrObject getCurrent() {
         return current;
     }
 
-    public void setCurrent(LitObject[] current) {
+    public void setCurrent(LinkOrObject current) {
         this.current = current;
     }
-
-    private LitObject[] current;
 }
