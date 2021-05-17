@@ -18,21 +18,35 @@ class ParseJsonTest {
     void testExample3Json() throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
 
-        ObjectMapper objectMapper = new ObjectMapper();;//.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        /*SimpleModule module = new SimpleModule();
-        module.addDeserializer(Actor.class, new ActorDeserializer2());
-        objectMapper.registerModule(module);*/
-        //File file = new File(classLoader.getResource("activity.json").getFile());
-        //File file = new File(classLoader.getResource("create.json").getFile());
-        File file = new File(classLoader.getResource("create_2.json").getFile());
+        ObjectMapper objectMapper = new ObjectMapper();//.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
+        File file = new File(classLoader.getResource("example_3_create_note.json").getFile());
         Activity activity = objectMapper.readValue(file, Activity.class);
-        //assertEquals(activity.getObject().getContent(), "This is a note");
-        System.out.println("Activity Type: "+activity.getType());
-        //System.out.println("Actor type: "+activity.getActor().getLink());
-        System.out.println("Object class: "+activity.getObject().getObject().getClass());
-        //MatcherAssert.assertThat(activity.getObject(), instanceOf(Note.class));
-        //assertEquals(activity.getActor().getName(), "Sally");
-        //MatcherAssert.assertThat(object.getActor(), instanceOf(Person.class));
+
+        System.out.println("Activity Type: "+activity.getActor().getLink());
+        System.out.println("Actor: "+activity.getTo().get(0).getLink());
+        System.out.println("Object type: "+activity.getObject().getObject().getType());
+        System.out.println("Object content: "+activity.getObject().getObject().getContent());
+
+        assertEquals(activity.getType(), "Create");
+        assertEquals(activity.getActor().getLink(), "https://social.example/alyssa/");
+        assertEquals(activity.getObject().getObject().getType(), "Note");
+        assertEquals(activity.getObject().getObject().getContent(), "Say, did you finish reading that book I lent you?");
+    }
+
+    @Test
+    void testExample5Json() throws IOException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        ObjectMapper objectMapper = new ObjectMapper();
+        File file = new File(classLoader.getResource("example_5_like.json").getFile());
+        Activity activity = objectMapper.readValue(file, Activity.class);
+
+        System.out.println("Activity Type: "+activity.getActor().getLink());
+        System.out.println("Actor: "+activity.getTo().get(0).getLink());
+        System.out.println("To: "+activity.getTo().get(0).getLink());
+
+        assertEquals(activity.getType(), "Like");
+        assertEquals(activity.getActor().getLink(), "https://social.example/alyssa/");
+        assertEquals(activity.getTo().get(0).getLink(), "https://chatty.example/ben/");
     }
 }
