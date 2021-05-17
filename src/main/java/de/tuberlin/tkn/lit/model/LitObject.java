@@ -91,8 +91,6 @@ public abstract class LitObject {
     private String mediaType;
     private String duration;
 
-    public LitObject() {}
-
     public abstract String getType();
 
     public String getId() {
