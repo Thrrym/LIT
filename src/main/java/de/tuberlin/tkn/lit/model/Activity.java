@@ -9,8 +9,7 @@ import de.tuberlin.tkn.lit.deserializer.LinkOrObjectDeserializer;
 
 // TODO: Resolve getObject() with LitObject (renaming?)
 public abstract class Activity extends LitObject {
-    @JsonProperty("@context")
-    private String context;
+
     //@JsonDeserialize(using = ActorDeserializer2.class)
     private LinkOrObject actor;
     private LinkOrObject object;
@@ -22,8 +21,7 @@ public abstract class Activity extends LitObject {
     public Activity() {
     }
 
-    public Activity(String context, LinkOrObject actor, LinkOrObject object, LinkOrObject target, LinkOrObject result, LinkOrObject origin, LinkOrObject instrument) {
-        this.context = context;
+    public Activity(LinkOrObject actor, LinkOrObject object, LinkOrObject target, LinkOrObject result, LinkOrObject origin, LinkOrObject instrument) {
         this.actor = actor;
         this.object = object;
         this.target = target;
@@ -32,21 +30,12 @@ public abstract class Activity extends LitObject {
         this.instrument = instrument;
     }
     public Activity(Activity activity) {
-        this.context = activity.context;
         this.actor = activity.actor;
         this.object = activity.object;
         this.target = activity.target;
         this.result = activity.result;
         this.origin = activity.origin;
         this.instrument = activity.instrument;
-    }
-
-    public String getContext() {
-        return context;
-    }
-
-    public void setContext(String context) {
-        this.context = context;
     }
 
     public LinkOrObject getActor() {
