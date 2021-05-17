@@ -16,7 +16,8 @@ public class ArrayDeserializer {
         ObjectMapper objectMapper = new ObjectMapper();
         for (JsonNode sN : s) {
             if (sN.isObject()) {
-                objOrLink.add(objectMapper.treeToValue(sN, LinkOrObject.class));
+                LitObject litObj = objectMapper.treeToValue(sN, LitObject.class);
+                objOrLink.add(new LinkOrObject(litObj));
             } else {
                 objOrLink.add(new LinkOrObject(sN.asText()));
             }
