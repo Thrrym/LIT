@@ -19,6 +19,10 @@ public class LitCollection extends LitObject {
         this.items = items;
     }
 
+    @Override
+    public String getType() {
+        return "Collection";
+    }
 
     public LitObject[] getItems() {
         return items;
