@@ -2,6 +2,7 @@ package de.tuberlin.tkn.lit.model;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.MatcherAssert;
@@ -48,5 +49,24 @@ class ParseJsonTest {
         assertEquals(activity.getType(), "Like");
         assertEquals(activity.getActor().getLink(), "https://social.example/alyssa/");
         assertEquals(activity.getTo().get(0).getLink(), "https://chatty.example/ben/");
+    }
+
+    @Test
+    void testExample5CollectionJson() throws IOException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        ObjectMapper objectMapper = new ObjectMapper();
+        File file = new File(classLoader.getResource("example_5_collection.json").getFile());
+        LitCollection collection = objectMapper.readValue(file, LitCollection.class);
+
+        System.out.println("Type: "+collection.getType());
+        System.out.println("Total items: "+collection.getTotalItems());
+        System.out.println("First item type: "+collection.getItems().get(0).getObject().getType());
+        System.out.println("Note name: "+collection.getItems().get(0).getObject().getName());
+
+        assertEquals(collection.getType(), "Collection");
+        assertEquals(collection.getTotalItems(), 2);
+        assertEquals(collection.getItems().get(0).getObject().getType(), "Note");
+        assertEquals(collection.getItems().get(0).getObject().getName(), "A Simple Note");
+
     }
 }
