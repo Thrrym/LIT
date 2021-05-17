@@ -12,8 +12,8 @@ public class LinkOrObjectDeserializer {
     public static LinkOrObject deserialize(JsonNode s) throws JsonProcessingException {
         if (s.isObject()) {
             ObjectMapper objectMapper = new ObjectMapper();
-            LitObject obj = objectMapper.treeToValue(s, LitObject.class);
-            return new LinkOrObject(obj);
+            LitObject litObj = objectMapper.treeToValue(s, LitObject.class);
+            return new LinkOrObject(litObj);
         } else {
             return new LinkOrObject(s.asText());
         }
