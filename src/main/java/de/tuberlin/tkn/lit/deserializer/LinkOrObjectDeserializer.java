@@ -10,7 +10,6 @@ import de.tuberlin.tkn.lit.model.LitObject;
 
 public class LinkOrObjectDeserializer {
     public static LinkOrObject deserialize(JsonNode s) throws JsonProcessingException {
-        System.out.println("Deserialize actor: "+s);
         if (s.isObject()) {
             ObjectMapper objectMapper = new ObjectMapper();
             LitObject obj = objectMapper.treeToValue(s, LitObject.class);

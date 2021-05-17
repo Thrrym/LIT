@@ -12,16 +12,13 @@ import java.util.List;
 
 public class ArrayDeserializer {
     public static List<LinkOrObject> deserialize(JsonNode s) throws JsonProcessingException {
-        System.out.println("Deserialize array: "+s);
         List<LinkOrObject> objOrLink = new ArrayList<LinkOrObject>();
         ObjectMapper objectMapper = new ObjectMapper();
         for (JsonNode sN : s) {
-            System.out.println(sN);
             if (sN.isObject()) {
                 objOrLink.add(objectMapper.treeToValue(sN, LinkOrObject.class));
             } else {
-                LinkOrObject new_objOrLink = new LinkOrObject(s.asText());
-                objOrLink.add(new_objOrLink);
+                objOrLink.add(new LinkOrObject(sN.asText()));
             }
         }
         return objOrLink;
