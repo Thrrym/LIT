@@ -1,5 +1,6 @@
 package de.tuberlin.tkn.lit.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -17,7 +18,10 @@ import java.util.List;
 
 @JsonTypeInfo (use = JsonTypeInfo.Id.NAME,
         property = "type")
-@JsonSubTypes( value = {
+
+@JsonSubTypes(value = {
+        @JsonSubTypes.Type(value = LitCollection.class, name = "Collection"),
+
         @JsonSubTypes.Type(value = Article.class, name = "Article"),
         @JsonSubTypes.Type(value = Document.class, name = "Document"),
         @JsonSubTypes.Type(value = Event.class, name = "Event"),
@@ -62,13 +66,14 @@ import java.util.List;
 })
 public abstract class LitObject {
 
+    @JsonProperty("@context")
+    private String context;
     private String id;
     private List<LinkOrObject> attachment;
     //@JsonDeserialize(using = ActorDeserializer.class)
     private String attributedTo;
     private List<LinkOrObject> audience;
     private String content;
-    private String context;
     private String startTime;
     private String endTime;
     private List<LinkOrObject> generator;
