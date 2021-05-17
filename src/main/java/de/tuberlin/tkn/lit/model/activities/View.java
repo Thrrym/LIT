@@ -8,6 +8,10 @@ public class View extends Activity {
     public View(Activity activity) {
         super(activity);
     }
+
+    public View() {
+    }
+
     public String getType() {
         return type;
     }

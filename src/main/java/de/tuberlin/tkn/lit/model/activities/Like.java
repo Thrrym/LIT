@@ -5,6 +5,9 @@ import de.tuberlin.tkn.lit.model.Activity;
 public class Like extends Activity {
     private static final String type = "Like";
 
+    public Like() {
+    }
+
     public Like(Activity activity) {
         super(activity);
     }
