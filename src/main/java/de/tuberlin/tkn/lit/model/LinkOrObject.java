@@ -16,6 +16,10 @@ public class LinkOrObject {
         link = null;
     }
 
+    public boolean isObject() {
+        return object != null ? true : false;
+    }
+
     public String getLink() {
         return link;
     }
