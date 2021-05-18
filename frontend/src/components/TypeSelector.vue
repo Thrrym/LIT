@@ -22,7 +22,7 @@ export default {
   },
   props: {
     entryTypes: {
-      requiered: true,
+      required: true,
     },
   },
   methods: {

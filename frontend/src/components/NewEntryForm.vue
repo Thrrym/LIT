@@ -2,16 +2,16 @@
   <div>
     <!-- Create the form the get the information for the selected type. -->
     <b-form v-if="showForm" v-on:submit="emitNewEntry">
-      <b-form-group label="Requiered fields">
+      <b-form-group label="Required fields">
         <!-- Create the individual field based on the provided objects. -->
         <b-form-group
-          v-for="field in getRequieredFields"
+          v-for="field in getRequiredFields"
           v-bind:key="field.id"
           v-bind:label="field.label"
         >
           <b-form-input
             v-model="field.content"
-            v-bind:required="field.requiered"
+            v-bind:required="field.required"
           ></b-form-input>
         </b-form-group>
       </b-form-group>
@@ -33,7 +33,7 @@
         >
           <b-form-input
             v-model="field.content"
-            v-bind:required="field.requiered"
+            v-bind:required="field.required"
           ></b-form-input>
         </b-form-group>
       </b-form-group>
@@ -49,11 +49,11 @@ export default {
 
   props: {
     formContent: {
-      requiered: true,
+      required: true,
     },
     showForm: {
       type: Boolean,
-      requiered: true,
+      required: true,
     },
   },
 
@@ -64,31 +64,31 @@ export default {
   },
 
   computed: {
-    getRequieredFields: function () {
-      // Get the requiered fields for the selected type.
+    getRequiredFields: function () {
+      // Get the required fields for the selected type.
       return this.formContent.filter(function (elem) {
-        if (elem.requiered === true) return true;
+        if (elem.required === true) return true;
       });
     },
     getOptionalFields: function () {
       // Get the fields for the form that are only optional.
       return this.formContent.filter(function (elem) {
-        if (elem.requiered === false) return true;
+        if (elem.required === false) return true;
       });
     },
     showOptionalFieldsButton: function () {
       // Are there any optional fields -> Show the button indicating optional fields and make them available.
-      if (this.getRequieredFields.length === 0) return false;
+      if (this.getRequiredFields.length === 0) return false;
       else return true;
     },
   },
 
   methods: {
     emitNewEntry: function () {
-      // Gather the fields from the form. Requiered and optional fields.
+      // Gather the fields from the form. Required and optional fields.
       // Combine both arrays with fields.
       let formResult = [].concat(
-        this.getRequieredFields,
+        this.getRequiredFields,
         this.getOptionalFields
       );
       // Emit the appropiate event to superior component with the fields as content of event.
