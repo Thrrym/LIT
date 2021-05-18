@@ -4,20 +4,20 @@ import de.tuberlin.tkn.lit.model.objects.Link;
 
 public class LinkOrObject {
     private String link;
-    private LitObject object;
+    private LitObject litObject;
 
     public LinkOrObject(String link) {
         this.link = link;
-        object = null;
+        litObject = null;
     }
 
     public LinkOrObject(LitObject object) {
-        this.object = object;
+        this.litObject = object;
         link = null;
     }
 
     public boolean isObject() {
-        return object != null ? true : false;
+        return litObject != null ? true : false;
     }
 
     public String getLink() {
@@ -28,11 +28,11 @@ public class LinkOrObject {
         this.link = link;
     }
 
-    public LitObject getObject() {
-        return object;
+    public LitObject getLitObject() {
+        return litObject;
     }
 
-    public void setObject(LitObject object) {
-        this.object = object;
+    public void setLitObject(LitObject object) {
+        this.litObject = object;
     }
 }
