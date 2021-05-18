@@ -1,8 +1,8 @@
 package de.tuberlin.tkn.lit.model.objects;
 
-import de.tuberlin.tkn.lit.model.ActivityPubObject;
+import de.tuberlin.tkn.lit.model.LitObject;
 
-public class Link extends ActivityPubObject {
+public class Link extends LitObject {
 	private static final String type = "Link";
 
 	// Required

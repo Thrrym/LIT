@@ -1,23 +1,27 @@
 package de.tuberlin.tkn.lit.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import de.tuberlin.tkn.lit.deserializer.LinkOrObjectDeserializer;
 
-//@JsonIgnoreProperties(value = { "@context" })
-public class Activity extends ActivityPubObject {
-    private static final String type = "Activity";
 
-    @JsonProperty("@context")
-    private String context;
-    private ActivityPubObject actor;
-    private ActivityPubObject object;
-    private ActivityPubObject target;
-    private ActivityPubObject result;
-    private ActivityPubObject origin;
-    private ActivityPubObject instrument;
+// TODO: Resolve getObject() with LitObject (renaming?)
+public abstract class Activity extends LitObject {
 
-    public Activity(String context, ActivityPubObject actor, ActivityPubObject object, ActivityPubObject target, ActivityPubObject result, ActivityPubObject origin, ActivityPubObject instrument) {
-        this.context = context;
+    //@JsonDeserialize(using = ActorDeserializer2.class)
+    private LinkOrObject actor;
+    private LinkOrObject object;
+    private LinkOrObject target;
+    private LinkOrObject result;
+    private LinkOrObject origin;
+    private LinkOrObject instrument;
+
+    public Activity() {
+    }
+
+    public Activity(LinkOrObject actor, LinkOrObject object, LinkOrObject target, LinkOrObject result, LinkOrObject origin, LinkOrObject instrument) {
         this.actor = actor;
         this.object = object;
         this.target = target;
@@ -26,7 +30,6 @@ public class Activity extends ActivityPubObject {
         this.instrument = instrument;
     }
     public Activity(Activity activity) {
-        this.context = activity.context;
         this.actor = activity.actor;
         this.object = activity.object;
         this.target = activity.target;
@@ -35,63 +38,81 @@ public class Activity extends ActivityPubObject {
         this.instrument = activity.instrument;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public String getContext() {
-        return context;
-    }
-
-    public void setContext(String context) {
-        this.context = context;
-    }
-
-    public ActivityPubObject getActor() {
+    public LinkOrObject getActor() {
         return actor;
     }
 
-    public void setActor(ActivityPubObject actor) {
+    public void setActor(LinkOrObject actor) {
         this.actor = actor;
     }
 
-    public ActivityPubObject getObject() {
+    @JsonSetter("actor")
+    public void setActor(JsonNode s) throws JsonProcessingException {
+        actor = LinkOrObjectDeserializer.deserialize(s);
+    }
+
+    public LinkOrObject getObject() {
         return object;
     }
 
-    public void setObject(ActivityPubObject object) {
+    public void setObject(LinkOrObject object) {
         this.object = object;
     }
 
-    public ActivityPubObject getTarget() {
+    @JsonSetter("object")
+    public void setObject(JsonNode s) throws JsonProcessingException {
+        object = LinkOrObjectDeserializer.deserialize(s);
+    }
+
+    public LinkOrObject getTarget() {
         return target;
     }
 
-    public void setTarget(ActivityPubObject target) {
+    public void setTarget(LinkOrObject target) {
         this.target = target;
     }
 
-    public ActivityPubObject getResult() {
+    @JsonSetter("target")
+    public void setTarget(JsonNode s) throws JsonProcessingException {
+        target = LinkOrObjectDeserializer.deserialize(s);
+    }
+
+    public LinkOrObject getResult() {
         return result;
     }
 
-    public void setResult(ActivityPubObject result) {
+    public void setResult(LinkOrObject result) {
         this.result = result;
     }
 
-    public ActivityPubObject getOrigin() {
+    @JsonSetter("result")
+    public void setResult(JsonNode s) throws JsonProcessingException {
+        result = LinkOrObjectDeserializer.deserialize(s);
+    }
+
+    public LinkOrObject getOrigin() {
         return origin;
     }
 
-    public void setOrigin(ActivityPubObject origin) {
+    public void setOrigin(LinkOrObject origin) {
         this.origin = origin;
     }
 
-    public ActivityPubObject getInstrument() {
+    @JsonSetter("origin")
+    public void setOrigin(JsonNode s) throws JsonProcessingException {
+        origin = LinkOrObjectDeserializer.deserialize(s);
+    }
+
+    public LinkOrObject getInstrument() {
         return instrument;
     }
 
-    public void setInstrument(ActivityPubObject instrument) {
+    public void setInstrument(LinkOrObject instrument) {
         this.instrument = instrument;
+    }
+
+    @JsonSetter("instrument")
+    public void setInstrument(JsonNode s) throws JsonProcessingException {
+        instrument = LinkOrObjectDeserializer.deserialize(s);
     }
 }
