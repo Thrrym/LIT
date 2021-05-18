@@ -4,15 +4,18 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.tuberlin.tkn.lit.model.Actor;
 
 public class Person extends Actor {
+
     @JsonIgnore
     private static final String TYPE_NAME = "Person";
 
-    public Person() {}
+    public Person() {
+    }
 
-    public Person(Actor actor) { super(actor); }
+    public Person(String name) {
+        super(name);
+    }
 
-    @Override
-    public String getType() {
-        return TYPE_NAME;
+    public Person(Actor actor) {
+        super(actor);
     }
 }

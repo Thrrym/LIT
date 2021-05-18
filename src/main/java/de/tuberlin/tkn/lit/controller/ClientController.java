@@ -1,10 +1,10 @@
 package de.tuberlin.tkn.lit.controller;
 
-import de.tuberlin.tkn.lit.model.Activity;
-import de.tuberlin.tkn.lit.model.Actor;
-import de.tuberlin.tkn.lit.model.LinkOrObject;
-import de.tuberlin.tkn.lit.model.OrderedCollection;
+import de.tuberlin.tkn.lit.model.*;
+import de.tuberlin.tkn.lit.model.actors.Person;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -12,13 +12,22 @@ import java.util.*;
 @RestController
 public class ClientController {
 
-    private Map<String, List<Activity>> outboxes;
-    private Map<String, OrderedCollection> inboxes;
+    // STUB PROPERTIES
+
+    private final Map<String, List<Activity>> outboxes;
+    private final Map<String, OrderedCollection> inboxes;
+    private List<LitObject> actors;
+
+    // STUB END
+
     // authentication: oauth2 maybe? https://spring.io/guides/tutorials/spring-boot-oauth2/
     //private final Map<String, Function<Activity, ?>> activityMap = new HashMap<>();
 
     @Autowired
     public ClientController() {
+
+        //STUB START
+
         outboxes = new HashMap<>();
         outboxes.put("testuser01", new ArrayList<>());
         outboxes.put("testuser02", new ArrayList<>());
@@ -26,6 +35,15 @@ public class ClientController {
         inboxes = new HashMap<>();
         inboxes.put("testuser01", new OrderedCollection(new ArrayList<>()));
         inboxes.put("testuser02", new OrderedCollection(new ArrayList<>()));
+
+        Person testuser01 = new Person("testuser01");
+        Person testuser02 = new Person("testuser02");
+
+        actors = new ArrayList<>();
+        actors.add(testuser01);
+        actors.add(testuser02);
+
+        //STUB END
     }
 
     @RequestMapping(value = "/{actorname}/outbox", method = RequestMethod.POST)
@@ -64,7 +82,6 @@ public class ClientController {
 
         //STUB END
 
-        // was schicken die uns um den Actor zu identifizieren?
         //return inbox as OrderedCollection
         // Datenbankabfrage von actor dessen Inbox, paging abfrage geregelt von datenbank gruppe, wir geben Page-ID weiter
         // Weitergabe von Inbox an Frontend, paging wir bekommen Page-ID
@@ -74,6 +91,17 @@ public class ClientController {
     public Actor getActor(@PathVariable("actor") String actor) {
         // ist das so, dass das auch andere Server Aufrufen sollen?
         return null;
+    }
+
+    @RequestMapping(value = "/actor", method = RequestMethod.POST)
+    public ResponseEntity<Actor> postActor(@RequestBody Actor actor) {
+        if (actors.stream().noneMatch(a -> a.getName().equals(actor.getName()))) {
+            actor.instantiateFields();
+            actors.add(actor);
+            return new ResponseEntity<>(actor, HttpStatus.CREATED);
+        }
+
+        return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
 
     /*@RequestMapping(value = "/{actorname}/following", method = RequestMethod.GET)

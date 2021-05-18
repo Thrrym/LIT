@@ -101,6 +101,10 @@ public abstract class LitObject {
 
     public String getType(){return type;}
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public String getId() {
         return id;
     }

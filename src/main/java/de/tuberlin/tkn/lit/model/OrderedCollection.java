@@ -14,6 +14,7 @@ public class OrderedCollection extends LitCollection {
     public OrderedCollection(List<LinkOrObject> orderedItems) {
         super();
         this.orderedItems = orderedItems;
+        this.setType("OrderedCollection");
     }
 
     public List<LinkOrObject> getOrderedItems() {
