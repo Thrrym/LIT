@@ -2,16 +2,11 @@ package de.tuberlin.tkn.lit.model;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
-import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import de.tuberlin.tkn.lit.model.objects.Note;
 
 class ParseJsonTest {
 
@@ -26,13 +21,13 @@ class ParseJsonTest {
 
         System.out.println("Activity Type: "+activity.getActor().getLink());
         System.out.println("Actor: "+activity.getTo().get(0).getLink());
-        System.out.println("Object type: "+activity.getObject().getObject().getType());
-        System.out.println("Object content: "+activity.getObject().getObject().getContent());
+        System.out.println("Object type: "+activity.getObject().getLitObject().getType());
+        System.out.println("Object content: "+activity.getObject().getLitObject().getContent());
 
         assertEquals(activity.getType(), "Create");
         assertEquals(activity.getActor().getLink(), "https://social.example/alyssa/");
-        assertEquals(activity.getObject().getObject().getType(), "Note");
-        assertEquals(activity.getObject().getObject().getContent(), "Say, did you finish reading that book I lent you?");
+        assertEquals(activity.getObject().getLitObject().getType(), "Note");
+        assertEquals(activity.getObject().getLitObject().getContent(), "Say, did you finish reading that book I lent you?");
     }
 
     @Test
@@ -60,13 +55,13 @@ class ParseJsonTest {
 
         System.out.println("Type: "+collection.getType());
         System.out.println("Total items: "+collection.getTotalItems());
-        System.out.println("First item type: "+collection.getItems().get(0).getObject().getType());
-        System.out.println("Note name: "+collection.getItems().get(0).getObject().getName());
+        System.out.println("First item type: "+collection.getItems().get(0).getLitObject().getType());
+        System.out.println("Note name: "+collection.getItems().get(0).getLitObject().getName());
 
         assertEquals(collection.getType(), "Collection");
         assertEquals(collection.getTotalItems(), 2);
-        assertEquals(collection.getItems().get(0).getObject().getType(), "Note");
-        assertEquals(collection.getItems().get(0).getObject().getName(), "A Simple Note");
+        assertEquals(collection.getItems().get(0).getLitObject().getType(), "Note");
+        assertEquals(collection.getItems().get(0).getLitObject().getName(), "A Simple Note");
 
     }
 }
