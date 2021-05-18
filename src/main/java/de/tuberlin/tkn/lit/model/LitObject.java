@@ -18,7 +18,6 @@ import java.util.List;
 
 @JsonTypeInfo (use = JsonTypeInfo.Id.NAME,
         property = "type")
-
 @JsonSubTypes(value = {
         @JsonSubTypes.Type(value = LitCollection.class, name = "Collection"),
 

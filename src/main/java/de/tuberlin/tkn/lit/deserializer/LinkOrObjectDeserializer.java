@@ -14,8 +14,7 @@ public class LinkOrObjectDeserializer {
             ObjectMapper objectMapper = new ObjectMapper();
             LitObject litObj = objectMapper.treeToValue(s, LitObject.class);
             return new LinkOrObject(litObj);
-        } else {
-            return new LinkOrObject(s.asText());
-        }
+        } 
+        return new LinkOrObject(s.asText());
     }
 }
