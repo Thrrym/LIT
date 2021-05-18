@@ -1,9 +1,11 @@
 package de.tuberlin.tkn.lit.model.actors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.tuberlin.tkn.lit.model.Actor;
 
 public class Person extends Actor {
-    private static final String type = "Person";
+    @JsonIgnore
+    private static final String TYPE_NAME = "Person";
 
     public Person() {}
 
@@ -11,6 +13,6 @@ public class Person extends Actor {
 
     @Override
     public String getType() {
-        return type;
+        return TYPE_NAME;
     }
 }
