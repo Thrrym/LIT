@@ -1,6 +1,5 @@
 package de.tuberlin.tkn.lit.controller;
 import de.tuberlin.tkn.lit.model.Activity;
-import de.tuberlin.tkn.lit.model.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.Actor;
 import de.tuberlin.tkn.lit.model.OrderedCollection;
 import de.tuberlin.tkn.lit.model.activities.Create;
@@ -38,14 +37,16 @@ public class ClientController {
         //return inbox as OrderedCollection
         // Datenbankabfrage von actor dessen Inbox, paging abfrage geregelt von datenbank gruppe, wir geben Page-ID weiter
         // Weitergabe von Inbox an Frontend, paging wir bekommen Page-ID
+        return null;
     }
 
     @RequestMapping(value = "/{actor}", method = RequestMethod.GET)
     public Actor getActor(@PathVariable("actor") String actor) {
         // ist das so, dass das auch andere Server Aufrufen sollen?
+        return null;
     }
 
-    @RequestMapping(value = "/{actorname}/following", method = RequestMethod.GET)
+    /*@RequestMapping(value = "/{actorname}/following", method = RequestMethod.GET)
     public OrderedCollection getInbox(@PathVariable("actorname") String actorname) {
 
     }
@@ -58,5 +59,5 @@ public class ClientController {
     @RequestMapping(value = "/{actorname}/liked", method = RequestMethod.GET)
     public OrderedCollection getInbox(@PathVariable("actorname") String actorname) {
 
-    }
+    }*/
 }

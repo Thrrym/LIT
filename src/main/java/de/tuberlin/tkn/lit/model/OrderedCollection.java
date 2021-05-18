@@ -1,10 +1,12 @@
 package de.tuberlin.tkn.lit.model;
 
-public class OrderedCollection extends main.java.de.tuberlin.tkn.lit.model.Collection {
+import java.util.List;
 
-    private String[] orderedItems;
+public class OrderedCollection extends LitCollection {
 
-    public OrderedCollection(String[] orderedItems, int totalItems, String[] first, String[] last, String[] current) {
+    private List<LinkOrObject> orderedItems;
+
+    public OrderedCollection(List<LinkOrObject> orderedItems, int totalItems, LinkOrObject first, LinkOrObject last, LinkOrObject current) {
         super(totalItems, first, last, current);
         this.orderedItems=orderedItems;
     }
