@@ -78,7 +78,7 @@ export default {
     },
     showOptionalFieldsButton: function () {
       // Are there any optional fields -> Show the button indicating optional fields and make them available.
-      if (this.getRequiredFields.length === 0) return false;
+      if (this.getOptionalFields.length === 0) return false;
       else return true;
     },
   },
