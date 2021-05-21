@@ -1,6 +1,5 @@
 package de.tuberlin.tkn.lit.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,6 +28,7 @@ public abstract class Activity extends LitObject {
         this.origin = origin;
         this.instrument = instrument;
     }
+
     public Activity(Activity activity) {
         this.actor = activity.actor;
         this.object = activity.object;

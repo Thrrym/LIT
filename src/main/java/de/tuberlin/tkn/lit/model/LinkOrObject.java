@@ -1,7 +1,8 @@
 package de.tuberlin.tkn.lit.model;
 
-import de.tuberlin.tkn.lit.model.objects.Link;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LinkOrObject {
     private String link;
     private LitObject object;
@@ -17,7 +18,7 @@ public class LinkOrObject {
     }
 
     public boolean isObject() {
-        return object != null ? true : false;
+        return object != null;
     }
 
     public String getLink() {

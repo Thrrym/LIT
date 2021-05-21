@@ -1,6 +1,8 @@
 package de.tuberlin.tkn.lit.model;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.tuberlin.tkn.lit.deserializer.ArrayDeserializer;
@@ -15,7 +17,8 @@ public class LitCollection extends LitObject {
     private LinkOrObject last;
     private LinkOrObject current;
 
-    public LitCollection() {}
+    public LitCollection() {
+    }
 
     public LitCollection(int totalItems, LinkOrObject first, LinkOrObject last, LinkOrObject current) {
         this.totalItems = totalItems;
@@ -25,20 +28,15 @@ public class LitCollection extends LitObject {
     }
 
     public LitCollection(List<LinkOrObject> items, int totalItems, LinkOrObject first, LinkOrObject last, LinkOrObject current) {
-        this(totalItems,first,last,current);
+        this(totalItems, first, last, current);
         this.items = items;
-    }
-
-    @Override
-    public String getType() {
-        return "Collection";
     }
 
     public List<LinkOrObject> getItems() {
         return items;
     }
 
-    public void setItems(List<LinkOrObject>  items) {
+    public void setItems(List<LinkOrObject> items) {
         this.items = items;
     }
 
