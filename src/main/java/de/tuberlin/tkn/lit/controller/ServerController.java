@@ -12,17 +12,13 @@ import java.util.function.Function;
 @RestController
 public class ServerController {
 
-    private final Map<String, Function<Activity, Activity>> activityMap = new HashMap<>();
-
     public ServerController() {
-        activityMap.put("Create", Create::new);
+
     }
 
     @RequestMapping(value = "/{actorname}/inbox", method = RequestMethod.POST)
     public void postInbox(@PathVariable("actorname") String actorname, @RequestBody Activity activity) {
-        String activityType = activity.getType();
-        Function<Activity, Activity> activityFunc = activityMap.get(activityType);
-        Activity res = activityFunc.apply(activity);
+        System.out.println(activity.getActor().getLink()); // example
     }
 
     @RequestMapping(value = "/{actorname}/outbox", method = RequestMethod.GET)
