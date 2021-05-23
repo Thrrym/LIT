@@ -20,7 +20,7 @@ export default {
   },
   data () {
     return {
-      userUnknown: true,
+      userUnknown: false, // Variable to indicate if user is locked in.
     }
   }
 }
