@@ -41,7 +41,7 @@
           label-cols-lg="3"
           label-size="lg"
           lable-class="font-weight-bold pt-0"
-          >
+        >
           <b-form-group
             v-for="field in getOptionalFields"
             v-bind:key="field.id"
