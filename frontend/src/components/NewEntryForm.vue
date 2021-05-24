@@ -34,7 +34,7 @@
       </b-button>
 
       <!-- Optional Fields. -->
-      <b-card bg-varint="light">
+      <b-card bg-varint="light" v-if="showOptionalFields">
         <b-form-group
           v-if="showOptionalFields"
           label="Optional Fields"
@@ -77,6 +77,14 @@ export default {
     },
   },
 
+  watch: {
+    formContent: function () {
+      // Watch prop with content of the form for change.
+      // On change: Reset the Button for optional fields.
+      this.resetOptionalFieldsButton();
+    },
+  },
+
   data() {
     return {
       showOptionalFields: false,
@@ -116,6 +124,9 @@ export default {
     },
     setShowOptionalFields: function () {
       this.showOptionalFields = !this.showOptionalFields;
+    },
+    resetOptionalFieldsButton: function () {
+      this.showOptionalFields = false;
     },
   },
 };
