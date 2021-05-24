@@ -2,19 +2,28 @@
   <div>
     <!-- Create the form the get the information for the selected type. -->
     <b-form v-if="showForm" v-on:submit="emitNewEntry">
-      <b-form-group label="Required fields">
-        <!-- Create the individual field based on the provided objects. -->
+      <b-card bg-varint="light">
         <b-form-group
-          v-for="field in getRequiredFields"
-          v-bind:key="field.id"
-          v-bind:label="field.label"
+          label-cols-lg="3"
+          label="Required fields"
+          label-size="lg"
+          lable-class="font-weight-bold pt-0"
         >
-          <b-form-input
-            v-model="field.content"
-            v-bind:required="field.required"
-          ></b-form-input>
+          <!-- Create the individual field based on the provided objects. -->
+          <b-form-group
+            v-for="field in getRequiredFields"
+            v-bind:key="field.id"
+            v-bind:label="field.label"
+            label-cols-sm="3"
+            label-align-sm="right"
+          >
+            <b-form-input
+              v-model="field.content"
+              v-bind:required="field.required"
+            ></b-form-input>
+          </b-form-group>
         </b-form-group>
-      </b-form-group>
+      </b-card>
 
       <b-button
         variant="outline-primary"
@@ -25,19 +34,30 @@
       </b-button>
 
       <!-- Optional Fields. -->
-      <b-form-group v-if="showOptionalFields" label="Optional Fields">
+      <b-card bg-varint="light">
         <b-form-group
-          v-for="field in getOptionalFields"
-          v-bind:key="field.id"
-          v-bind:label="field.label"
-        >
-          <b-form-input
-            v-model="field.content"
-            v-bind:required="field.required"
-          ></b-form-input>
+          v-if="showOptionalFields"
+          label="Optional Fields"
+          label-cols-lg="3"
+          label-size="lg"
+          lable-class="font-weight-bold pt-0"
+          >
+          <b-form-group
+            v-for="field in getOptionalFields"
+            v-bind:key="field.id"
+            v-bind:label="field.label"
+            label-cols-sm="3"
+            label-align-sm="right"
+          >
+            <b-form-input
+              v-model="field.content"
+              v-bind:required="field.required"
+            ></b-form-input>
+          </b-form-group>
         </b-form-group>
-      </b-form-group>
+      </b-card>
 
+      <!-- Submit Button -->
       <b-button type="submit" variant="primary">Create new entry</b-button>
     </b-form>
   </div>
