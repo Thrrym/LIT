@@ -12,6 +12,8 @@ import NavBar from "@/components/NavBar.vue"
 import Footer from "@/components/Footer.vue"
 import SignIn from "@/components/SignIn.vue"
 
+
+
 export default {
   components: {
     NavBar,
@@ -27,6 +29,18 @@ export default {
 
 </script>
 
+<style lang="scss">
+  // Import custom SASS variable overrides, or alternatively
+  // define your variable overrides here instead
+   @import 'styles/_custom.scss';
+
+  // Import Bootstrap and BootstrapVue source SCSS files
+  @import '~bootstrap/scss/bootstrap.scss';
+  @import '~bootstrap-vue/src/index.scss';
+
+ 
+  // General style overrides and custom classes
+</style>
 
 <style>
 #app {
