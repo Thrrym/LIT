@@ -11,7 +11,11 @@
       v-on:entryToBeCreated="setEntryToBeCreated"
     >
     </NewEntryForm>
-    <NewEntryModal ref="modal" v-bind:newEntry="newEntry" v-bind:selectedType="selectedType"></NewEntryModal>
+    <NewEntryModal
+      ref="modal"
+      v-bind:newEntry="newEntry"
+      v-bind:selectedType="selectedType"
+    ></NewEntryModal>
   </div>
 </template>
 
