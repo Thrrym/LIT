@@ -1,9 +1,6 @@
 package de.tuberlin.tkn.lit.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,11 +13,12 @@ import de.tuberlin.tkn.lit.model.objects.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@JsonTypeInfo (use = JsonTypeInfo.Id.NAME,
-        property = "type")
+@JsonTypeInfo (use = JsonTypeInfo.Id.NAME,include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "type",visible = true)
 
 @JsonSubTypes(value = {
         @JsonSubTypes.Type(value = LitCollection.class, name = "Collection"),
+        @JsonSubTypes.Type(value = OrderedCollection.class, name = "OrderedCollection"),
 
         @JsonSubTypes.Type(value = Article.class, name = "Article"),
         @JsonSubTypes.Type(value = Document.class, name = "Document"),
@@ -64,11 +62,16 @@ import java.util.List;
 
         // TODO: Add all possible types here
 })
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class LitObject {
+
+    public LitObject() {
+    }
 
     @JsonProperty("@context")
     private String context;
     private String id;
+    private String type;
     private List<LinkOrObject> attachment;
     //@JsonDeserialize(using = ActorDeserializer.class)
     private String attributedTo;
@@ -96,7 +99,11 @@ public abstract class LitObject {
     private String mediaType;
     private String duration;
 
-    public abstract String getType();
+    public String getType(){return type;}
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getId() {
         return id;
