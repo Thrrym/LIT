@@ -4,10 +4,20 @@ import java.util.List;
 
 public class OrderedCollection extends LitCollection {
 
-    private List<LinkOrObject> orderedItems;
+    private final List<LinkOrObject> orderedItems;
 
     public OrderedCollection(List<LinkOrObject> orderedItems, int totalItems, LinkOrObject first, LinkOrObject last, LinkOrObject current) {
         super(totalItems, first, last, current);
-        this.orderedItems=orderedItems;
+        this.orderedItems = orderedItems;
+    }
+
+    public OrderedCollection(List<LinkOrObject> orderedItems) {
+        super();
+        this.orderedItems = orderedItems;
+        this.setType("OrderedCollection");
+    }
+
+    public List<LinkOrObject> getOrderedItems() {
+        return orderedItems;
     }
 }
