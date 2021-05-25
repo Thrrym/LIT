@@ -8,9 +8,9 @@
 </template>
 
 <script>
-import NavBar from "@/components/NavBar.vue"
-import Footer from "@/components/Footer.vue"
-import SignIn from "@/components/SignIn.vue"
+import NavBar from "@/components/NavBar.vue";
+import Footer from "@/components/Footer.vue";
+import SignIn from "@/components/SignIn.vue";
 
 export default {
   components: {
@@ -18,15 +18,23 @@ export default {
     Footer,
     SignIn,
   },
-  data () {
+  data() {
     return {
-      userUnknown: true,
-    }
-  }
-}
-
+      userUnknown: false, // Variable to indicate if user is locked in.
+    };
+  },
+};
 </script>
 
+<style lang="scss">
+// Import custom SASS variable overrides, or alternatively
+// define your variable overrides here instead
+@import "styles/custom.scss";
+
+// Import Bootstrap and BootstrapVue source SCSS files
+@import "~bootstrap/scss/bootstrap.scss";
+@import "~bootstrap-vue/src/index.scss";
+</style>
 
 <style>
 #app {
