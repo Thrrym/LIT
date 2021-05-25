@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import de.tuberlin.tkn.lit.processing.IActivitySender;
 
 import java.util.*;
 
@@ -19,6 +20,13 @@ public class ClientController {
     private List<LitObject> actors;
 
     // STUB END
+	
+	// Dependency Injection
+	
+	@Autowired
+	IActivitySender activitySender;
+	
+	// Dependency Injection END
 
     // authentication: oauth2 maybe? https://spring.io/guides/tutorials/spring-boot-oauth2/
     //private final Map<String, Function<Activity, ?>> activityMap = new HashMap<>();
@@ -60,6 +68,9 @@ public class ClientController {
         if (actorname.equals("testuser01")) {
             inboxes.get("testuser02").getOrderedItems().add(new LinkOrObject(activity));
         }
+		else {
+			activitySender.send(activity);
+		}
 
         //STUB END
 
