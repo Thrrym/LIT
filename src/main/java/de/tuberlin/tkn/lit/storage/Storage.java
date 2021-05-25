@@ -28,4 +28,24 @@ public class Storage implements IStorage {
 	public OrderedCollection GetOutbox(Actor actor) {
 		return outboxes.get(actor);
 	}
+
+	@Override
+	public boolean AddActor(Actor actor) {
+		if(actors.contains(actor))
+			return false;
+		actors.add(actor);
+		outboxes.putIfAbsent(actor, new OrderedCollection(new ArrayList<>()));
+		inboxes.putIfAbsent(actor, new OrderedCollection(new ArrayList<>()));
+		return true;
+	}
+
+	@Override
+	public boolean RemoveActor(Actor actor) {
+		if(!actors.contains(actor))
+			return false;
+		actors.remove(actor);
+		outboxes.remove(actor);
+		inboxes.remove(actor);
+		return true;
+	}
 }
