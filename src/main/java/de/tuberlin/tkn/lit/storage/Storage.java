@@ -10,8 +10,8 @@ import de.tuberlin.tkn.lit.model.OrderedCollection;
 
 @Service
 public class Storage implements IStorage {
-    private final Map<Actor, OrderedCollection> outboxes = new HashMap<Actor, OrderedCollection>();
-    private final Map<Actor, OrderedCollection> inboxes = new HashMap<Actor, OrderedCollection>();
+    private final Map<String, OrderedCollection> outboxes = new HashMap<String, OrderedCollection>();
+    private final Map<String, OrderedCollection> inboxes = new HashMap<String, OrderedCollection>();
     private List<Actor> actors = new ArrayList<Actor>();
 	
 	@Override
@@ -20,13 +20,13 @@ public class Storage implements IStorage {
 	}
 
 	@Override
-	public OrderedCollection GetInbox(Actor actor) {
-		return inboxes.get(actor);
+	public OrderedCollection GetInbox(String actorName) {
+		return inboxes.get(actorName);
 	}
 
 	@Override
-	public OrderedCollection GetOutbox(Actor actor) {
-		return outboxes.get(actor);
+	public OrderedCollection GetOutbox(String actorName) {
+		return outboxes.get(actorName);
 	}
 
 	@Override
@@ -34,8 +34,8 @@ public class Storage implements IStorage {
 		if(actors.contains(actor))
 			return false;
 		actors.add(actor);
-		outboxes.putIfAbsent(actor, new OrderedCollection(new ArrayList<>()));
-		inboxes.putIfAbsent(actor, new OrderedCollection(new ArrayList<>()));
+		outboxes.putIfAbsent(actor.getName(), new OrderedCollection(new ArrayList<>()));
+		inboxes.putIfAbsent(actor.getName(), new OrderedCollection(new ArrayList<>()));
 		return true;
 	}
 
@@ -44,8 +44,8 @@ public class Storage implements IStorage {
 		if(!actors.contains(actor))
 			return false;
 		actors.remove(actor);
-		outboxes.remove(actor);
-		inboxes.remove(actor);
+		outboxes.remove(actor.getName());
+		inboxes.remove(actor.getName());
 		return true;
 	}
 }

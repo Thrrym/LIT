@@ -8,6 +8,6 @@ public interface IStorage {
 	boolean AddActor(Actor actor);
 	boolean RemoveActor(Actor actor);
 	List<Actor> GetActors();
-	OrderedCollection GetInbox(Actor actor);
-	OrderedCollection GetOutbox(Actor actor);
+	OrderedCollection GetInbox(String actorName);
+	OrderedCollection GetOutbox(String actorName);
 }
