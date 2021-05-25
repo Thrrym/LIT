@@ -32,12 +32,14 @@ public class ClientController {
     //private final Map<String, Function<Activity, ?>> activityMap = new HashMap<>();
 
     @Autowired
-    public ClientController() {
+    public ClientController(IStorage storage) {
 
         //STUB START
 
-        storage.AddActor(new Person("testuser01"));
-        storage.AddActor(new Person("testuser02"));
+    	this.storage = storage;
+    	
+        this.storage.AddActor(new Person("testuser01"));
+        this.storage.AddActor(new Person("testuser02"));
 
         //STUB END
     }
