@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.stereotype.Service;
 import de.tuberlin.tkn.lit.model.Actor;
 import de.tuberlin.tkn.lit.model.OrderedCollection;
+import de.tuberlin.tkn.lit.model.LinkOrObject;
 
 @Service
 public class Storage implements IStorage {
@@ -27,6 +28,16 @@ public class Storage implements IStorage {
 	@Override
 	public OrderedCollection GetOutbox(String actorName) {
 		return outboxes.get(actorName);
+	}
+
+	@Override
+	public void AddInbox(String actorName, LinkOrObject toAdd) {
+        inboxes.get(actorName).getOrderedItems().add(toAdd);
+	}
+
+	@Override
+	public void AddOutbox(String actorName, LinkOrObject toAdd) {
+		outboxes.get(actorName).getOrderedItems().add(toAdd);
 	}
 
 	@Override
