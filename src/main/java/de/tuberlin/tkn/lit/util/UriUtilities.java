@@ -1,15 +1,24 @@
 package de.tuberlin.tkn.lit.util;
 
-public class UriUtilities {
-    // TODO: must be made configurable...
-    private static final String LOCALE_ADDRESS = "http://localhost:8080/";
+import de.tuberlin.tkn.lit.constants.UriConstants;
 
+import java.util.UUID;
+
+public class UriUtilities {
     public static boolean isLocaleServer(String uri) {
-        return uri.startsWith(LOCALE_ADDRESS);
+        return uri.startsWith(UriConstants.HOST);
     }
 
     public static String getActor(String uri) {
         String[] strings = uri.split("/");
         return strings[3];
+    }
+
+    public static String generateId(String[] idParameter) {
+        return UriConstants.HOST + String.join("/", idParameter) + "/" + UUID.randomUUID();
+    }
+
+    public static String generateId(String[] idParameter, UUID id) {
+        return UriConstants.HOST + String.join("/", idParameter) + "/" + id;
     }
 }

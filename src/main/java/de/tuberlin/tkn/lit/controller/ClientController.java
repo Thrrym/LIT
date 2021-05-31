@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RestController
 public class ClientController {
 
@@ -40,39 +42,41 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/{actorname}/outbox", method = RequestMethod.POST)
-    public void postActivity(@PathVariable("actorname") String actorname, @RequestBody Activity activity) {
+    public ResponseEntity<String> postActivity(@PathVariable("actorname") String actorName, @RequestBody Activity activity) {
 
         // TODO: Check if all actors are present
 
-        //STUB START
+        Activity createdActivity = storage.createActivity(actorName, activity);
+        storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
-        OrderedCollection outbox = storage.getOutbox(actorname);
-        activity.setId(new String[]{actorname}, true);
-        outbox.getOrderedItems().add(new LinkOrObject(activity));
-
-        if (activity.getTo() != null) {
-            for (LinkOrObject linkOrObject : activity.getTo()) {
+        if (createdActivity.getTo() != null) {
+            for (LinkOrObject linkOrObject : createdActivity.getTo()) {
                 if (UriUtilities.isLocaleServer(linkOrObject.getLink())) {
                     OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
-                    inbox.getOrderedItems().add(new LinkOrObject(activity));
+                    inbox.getOrderedItems().add(new LinkOrObject(createdActivity));
                 } else {
-                    activitySender.send(activity);
+                    activitySender.send(createdActivity);
                 }
             }
         }
 
-        if (activity.getCc() != null) {
-            for (LinkOrObject linkOrObject : activity.getCc()) {
+        if (createdActivity.getCc() != null) {
+            for (LinkOrObject linkOrObject : createdActivity.getCc()) {
                 if (UriUtilities.isLocaleServer(linkOrObject.getLink())) {
                     OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
-                    inbox.getOrderedItems().add(new LinkOrObject(activity));
+                    inbox.getOrderedItems().add(new LinkOrObject(createdActivity));
                 } else {
-                    activitySender.send(activity);
+                    activitySender.send(createdActivity);
                 }
             }
         }
 
-        //STUB END
+        return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/{actorname}/{id}", method = RequestMethod.GET)
+    public Activity getActivity(@PathVariable("actorname") String actorname, @PathVariable("id") UUID id) {
+        return storage.getActivity(id);
     }
 
     @RequestMapping(value = "/{actorname}/inbox", method = RequestMethod.GET)

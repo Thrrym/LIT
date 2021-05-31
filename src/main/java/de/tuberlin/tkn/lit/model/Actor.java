@@ -1,6 +1,7 @@
 package de.tuberlin.tkn.lit.model;
 
 import de.tuberlin.tkn.lit.constants.UriConstants;
+import de.tuberlin.tkn.lit.util.UriUtilities;
 
 public abstract class Actor extends LitObject {
 
@@ -30,7 +31,7 @@ public abstract class Actor extends LitObject {
     }
 
     public Actor(String actorName) {
-        setId(new String[]{actorName}, false);
+        setId(UriUtilities.generateId(new String[]{actorName}));
         setName(actorName);
         inbox = UriConstants.HOST + actorName + UriConstants.INBOX;
         outbox = UriConstants.HOST + actorName + UriConstants.OUTBOX;

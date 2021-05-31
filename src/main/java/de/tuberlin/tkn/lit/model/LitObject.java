@@ -3,7 +3,6 @@ package de.tuberlin.tkn.lit.model;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import de.tuberlin.tkn.lit.constants.UriConstants;
 import de.tuberlin.tkn.lit.deserializer.ArrayDeserializer;
 import de.tuberlin.tkn.lit.model.activities.*;
 import de.tuberlin.tkn.lit.model.actors.*;
@@ -11,7 +10,6 @@ import de.tuberlin.tkn.lit.model.litobjects.BibTeXArticle;
 import de.tuberlin.tkn.lit.model.objects.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "type", visible = true)
@@ -97,7 +95,6 @@ public abstract class LitObject {
     private List<LinkOrObject> bcc;
     private String mediaType;
     private String duration;
-
     public LitObject() {
     }
 
@@ -113,12 +110,7 @@ public abstract class LitObject {
         return id;
     }
 
-    //TODO: IDs should be set from DB site
-    public void setId(String[] idParameter, boolean shouldGuidBeAppended) {
-        String id = UriConstants.HOST + String.join("/", idParameter) + "/";
-        if (shouldGuidBeAppended) {
-            id += UUID.randomUUID();
-        }
+    public void setId(String id) {
         this.id = id;
     }
 

@@ -1,24 +1,23 @@
 package de.tuberlin.tkn.lit.storage;
 
+import de.tuberlin.tkn.lit.model.Activity;
 import de.tuberlin.tkn.lit.model.Actor;
 import de.tuberlin.tkn.lit.model.LinkOrObject;
 import de.tuberlin.tkn.lit.model.OrderedCollection;
+import de.tuberlin.tkn.lit.util.UriUtilities;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class Storage implements IStorage {
     private final Map<String, OrderedCollection> outboxes = new HashMap<>();
     private final Map<String, OrderedCollection> inboxes = new HashMap<>();
     private final Map<String, Actor> actors = new HashMap<>();
-
-    //@Override
-    //public Map<String, Actor> getActors() {
-    //return actors;
-    //}
+    private final Map<UUID, Activity> activities = new HashMap<>();
 
     @Override
     public Actor getActor(String actorName) {
@@ -36,12 +35,12 @@ public class Storage implements IStorage {
     }
 
     @Override
-    public void addInbox(String actorName, LinkOrObject toAdd) {
+    public void addToInbox(String actorName, LinkOrObject toAdd) {
         inboxes.get(actorName).getOrderedItems().add(toAdd);
     }
 
     @Override
-    public void addOutbox(String actorName, LinkOrObject toAdd) {
+    public void addToOutbox(String actorName, LinkOrObject toAdd) {
         outboxes.get(actorName).getOrderedItems().add(toAdd);
     }
 
@@ -65,5 +64,19 @@ public class Storage implements IStorage {
         outboxes.remove(actor.getName());
         inboxes.remove(actor.getName());
         return true;
+    }
+
+    @Override
+    public Activity getActivity(UUID id) {
+        return activities.get(id);
+    }
+
+    @Override
+    public Activity createActivity(String actorName, Activity activity) {
+        UUID uuid = UUID.randomUUID();
+        String id = UriUtilities.generateId(new String[]{actorName}, uuid);
+        activity.setId(id);
+        activities.put(uuid, activity);
+        return activities.get(uuid);
     }
 }

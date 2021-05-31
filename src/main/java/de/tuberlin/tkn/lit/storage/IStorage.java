@@ -1,19 +1,28 @@
 package de.tuberlin.tkn.lit.storage;
 
-import java.util.List;
-import java.util.Map;
-
+import de.tuberlin.tkn.lit.model.Activity;
 import de.tuberlin.tkn.lit.model.Actor;
-import de.tuberlin.tkn.lit.model.OrderedCollection;
 import de.tuberlin.tkn.lit.model.LinkOrObject;
+import de.tuberlin.tkn.lit.model.OrderedCollection;
+
+import java.util.UUID;
 
 public interface IStorage {
-	Actor createActor(Actor actor);
-	boolean removeActor(Actor actor);
-	//Map<String, Actor> getActors();
-	Actor getActor(String actorName);
-	OrderedCollection getInbox(String actorName);
-	OrderedCollection getOutbox(String actorName);
-	void addInbox(String actorName, LinkOrObject toAdd);
-	void addOutbox(String actorName, LinkOrObject toAdd);
+    Actor getActor(String actorName);
+
+    Actor createActor(Actor actor);
+
+    boolean removeActor(Actor actor);
+
+    OrderedCollection getInbox(String actorName);
+
+    OrderedCollection getOutbox(String actorName);
+
+    void addToInbox(String actorName, LinkOrObject toAdd);
+
+    void addToOutbox(String actorName, LinkOrObject toAdd);
+
+    Activity getActivity(UUID id);
+
+    Activity createActivity(String actorName, Activity activity);
 }
