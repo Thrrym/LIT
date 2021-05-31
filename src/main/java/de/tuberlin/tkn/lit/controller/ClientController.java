@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import de.tuberlin.tkn.lit.processing.IActivitySender;
+import de.tuberlin.tkn.lit.storage.IStorage;
 
 import java.util.*;
 
@@ -15,10 +16,6 @@ public class ClientController {
 
     // STUB PROPERTIES
 
-    private final Map<String, List<Activity>> outboxes;
-    private final Map<String, OrderedCollection> inboxes;
-    private List<LitObject> actors;
-
     // STUB END
 	
 	// Dependency Injection
@@ -26,30 +23,23 @@ public class ClientController {
 	@Autowired
 	IActivitySender activitySender;
 	
+	@Autowired
+	IStorage storage;
+	
 	// Dependency Injection END
 
     // authentication: oauth2 maybe? https://spring.io/guides/tutorials/spring-boot-oauth2/
     //private final Map<String, Function<Activity, ?>> activityMap = new HashMap<>();
 
     @Autowired
-    public ClientController() {
+    public ClientController(IStorage storage) {
 
         //STUB START
 
-        outboxes = new HashMap<>();
-        outboxes.put("testuser01", new ArrayList<>());
-        outboxes.put("testuser02", new ArrayList<>());
-
-        inboxes = new HashMap<>();
-        inboxes.put("testuser01", new OrderedCollection(new ArrayList<>()));
-        inboxes.put("testuser02", new OrderedCollection(new ArrayList<>()));
-
-        Person testuser01 = new Person("testuser01");
-        Person testuser02 = new Person("testuser02");
-
-        actors = new ArrayList<>();
-        actors.add(testuser01);
-        actors.add(testuser02);
+    	this.storage = storage;
+    	
+        this.storage.AddActor(new Person("testuser01"));
+        this.storage.AddActor(new Person("testuser02"));
 
         //STUB END
     }
@@ -59,14 +49,12 @@ public class ClientController {
 
         //STUB START
 
-        if (!outboxes.containsKey(actorname)) {
-            outboxes.put(actorname, new ArrayList<>(Collections.singletonList(activity)));
-        } else {
-            outboxes.get(actorname).add(activity);
-        }
+        OrderedCollection outbox = storage.GetOutbox(actorname);
+        outbox.getOrderedItems().add(new LinkOrObject(activity));
 
         if (actorname.equals("testuser01")) {
-            inboxes.get("testuser02").getOrderedItems().add(new LinkOrObject(activity));
+            OrderedCollection inbox = storage.GetOutbox("testuser02");
+            inbox.getOrderedItems().add(new LinkOrObject(activity));
         }
 		else {
 			activitySender.send(activity);
@@ -89,7 +77,7 @@ public class ClientController {
 
         //STUB START
 
-        return inboxes.get(actorname);
+        return storage.GetInbox(actorname);
 
         //STUB END
 
@@ -106,6 +94,7 @@ public class ClientController {
 
     @RequestMapping(value = "/actor", method = RequestMethod.POST)
     public ResponseEntity<Actor> postActor(@RequestBody Actor actor) {
+    	List<Actor> actors = storage.GetActors();
         if (actors.stream().noneMatch(a -> a.getName().equals(actor.getName()))) {
             actor.instantiateFields();
             actors.add(actor);
