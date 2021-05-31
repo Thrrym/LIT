@@ -31,7 +31,7 @@ public abstract class Actor extends LitObject {
     }
 
     public Actor(String actorName) {
-        setId(UriUtilities.generateId(new String[]{actorName}));
+        setId(UriUtilities.generateId(new String[]{actorName}, false));
         setName(actorName);
         inbox = UriConstants.HOST + actorName + UriConstants.INBOX;
         outbox = UriConstants.HOST + actorName + UriConstants.OUTBOX;

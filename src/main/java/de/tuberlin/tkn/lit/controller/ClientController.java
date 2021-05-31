@@ -17,11 +17,7 @@ import java.util.UUID;
 
 @RestController
 public class ClientController {
-
-    // STUB PROPERTIES
-
-    // STUB END
-
+    
     @Autowired
     IActivitySender activitySender;
 
@@ -81,12 +77,7 @@ public class ClientController {
 
     @RequestMapping(value = "/{actorname}/inbox", method = RequestMethod.GET)
     public OrderedCollection getInbox(@PathVariable("actorname") String actorname) {
-
-        //STUB START
-
         return storage.getInbox(actorname);
-
-        //STUB END
     }
 
     @RequestMapping(value = "/{actor}", method = RequestMethod.GET)

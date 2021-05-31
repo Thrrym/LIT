@@ -59,8 +59,6 @@ import java.util.List;
         @JsonSubTypes.Type(value = Undo.class, name = "Undo"),
         @JsonSubTypes.Type(value = Update.class, name = "Update"),
         @JsonSubTypes.Type(value = View.class, name = "View"),
-
-        // TODO: Add all possible types here
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class LitObject {
@@ -70,7 +68,6 @@ public abstract class LitObject {
     private String id;
     private String type;
     private List<LinkOrObject> attachment;
-    //@JsonDeserialize(using = ActorDeserializer.class)
     private String attributedTo;
     private List<LinkOrObject> audience;
     private String content;
@@ -95,6 +92,7 @@ public abstract class LitObject {
     private List<LinkOrObject> bcc;
     private String mediaType;
     private String duration;
+
     public LitObject() {
     }
 
