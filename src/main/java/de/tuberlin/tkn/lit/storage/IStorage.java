@@ -1,9 +1,6 @@
 package de.tuberlin.tkn.lit.storage;
 
-import de.tuberlin.tkn.lit.model.Activity;
-import de.tuberlin.tkn.lit.model.Actor;
-import de.tuberlin.tkn.lit.model.LinkOrObject;
-import de.tuberlin.tkn.lit.model.OrderedCollection;
+import de.tuberlin.tkn.lit.model.*;
 
 import java.util.UUID;
 
@@ -25,4 +22,8 @@ public interface IStorage {
     Activity getActivity(UUID id);
 
     Activity createActivity(String actorName, Activity activity);
+
+    LitObject getObject(UUID id);
+
+    LitObject createObject(String actorName, String objectType, LitObject object);
 }

@@ -1,9 +1,6 @@
 package de.tuberlin.tkn.lit.storage;
 
-import de.tuberlin.tkn.lit.model.Activity;
-import de.tuberlin.tkn.lit.model.Actor;
-import de.tuberlin.tkn.lit.model.LinkOrObject;
-import de.tuberlin.tkn.lit.model.OrderedCollection;
+import de.tuberlin.tkn.lit.model.*;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +15,7 @@ public class Storage implements IStorage {
     private final Map<String, OrderedCollection> inboxes = new HashMap<>();
     private final Map<String, Actor> actors = new HashMap<>();
     private final Map<UUID, Activity> activities = new HashMap<>();
+    private final Map<UUID, LitObject> objects = new HashMap<>();
 
     @Override
     public Actor getActor(String actorName) {
@@ -78,5 +76,19 @@ public class Storage implements IStorage {
         activity.setId(id);
         activities.put(uuid, activity);
         return activities.get(uuid);
+    }
+
+    @Override
+    public LitObject getObject(UUID id) {
+        return objects.get(id);
+    }
+
+    @Override
+    public LitObject createObject(String actorName, String objectType, LitObject object) {
+        UUID uuid = UUID.randomUUID();
+        String id = UriUtilities.generateId(new String[]{actorName, objectType}, uuid);
+        object.setId(id);
+        objects.put(uuid, object);
+        return objects.get(uuid);
     }
 }

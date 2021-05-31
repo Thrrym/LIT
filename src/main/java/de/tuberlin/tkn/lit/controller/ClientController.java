@@ -1,9 +1,6 @@
 package de.tuberlin.tkn.lit.controller;
 
-import de.tuberlin.tkn.lit.model.Activity;
-import de.tuberlin.tkn.lit.model.Actor;
-import de.tuberlin.tkn.lit.model.LinkOrObject;
-import de.tuberlin.tkn.lit.model.OrderedCollection;
+import de.tuberlin.tkn.lit.model.*;
 import de.tuberlin.tkn.lit.model.actors.Person;
 import de.tuberlin.tkn.lit.processing.IActivitySender;
 import de.tuberlin.tkn.lit.storage.IStorage;
@@ -17,7 +14,7 @@ import java.util.UUID;
 
 @RestController
 public class ClientController {
-    
+
     @Autowired
     IActivitySender activitySender;
 
@@ -37,11 +34,49 @@ public class ClientController {
         //STUB END
     }
 
+    @RequestMapping(value = "/{actor}", method = RequestMethod.GET)
+    public Actor getActor(@PathVariable("actor") String actorName) {
+
+        return storage.getActor(actorName);
+    }
+
+    @RequestMapping(value = "/actor", method = RequestMethod.POST)
+    public ResponseEntity<Actor> createActor(@RequestBody Actor actor) {
+        Actor newActor = storage.createActor(actor);
+        if (newActor != null) {
+            return new ResponseEntity<>(newActor, HttpStatus.CONFLICT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
+    }
+
+    @RequestMapping(value = "/{actorname}/inbox", method = RequestMethod.GET)
+    public OrderedCollection getInbox(@PathVariable("actorname") String actorname) {
+        return storage.getInbox(actorname);
+    }
+
+    @RequestMapping(value = "/{actorname}/{id}", method = RequestMethod.GET)
+    public Activity getActivity(@PathVariable("actorname") String actorname, @PathVariable("id") UUID id) {
+        return storage.getActivity(id);
+    }
+
+    @RequestMapping(value = "/{actorname}/{objecttype}/{id}", method = RequestMethod.GET)
+    public LitObject getObject(@PathVariable("actorname") String actorname, @PathVariable("objecttype") String objectType, @PathVariable("id") UUID id) {
+        return storage.getObject(id);
+    }
+
     @RequestMapping(value = "/{actorname}/outbox", method = RequestMethod.POST)
     public ResponseEntity<String> postActivity(@PathVariable("actorname") String actorName, @RequestBody Activity activity) {
 
         // TODO: Check if all actors are present
-
+        LitObject createdObject;
+        if (activity.getObject().isObject()) {
+            createdObject = storage.createObject(actorName, activity.getObject().getObject().getType(), activity.getObject().getObject());
+        } else {
+            //TODO: Get object from link and persist it?
+            createdObject = storage.createObject(actorName, activity.getObject().getObject().getType(), activity.getObject().getObject());
+        }
+        activity.setObject(new LinkOrObject(createdObject));
         Activity createdActivity = storage.createActivity(actorName, activity);
         storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
@@ -68,32 +103,6 @@ public class ClientController {
         }
 
         return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
-    }
-
-    @RequestMapping(value = "/{actorname}/{id}", method = RequestMethod.GET)
-    public Activity getActivity(@PathVariable("actorname") String actorname, @PathVariable("id") UUID id) {
-        return storage.getActivity(id);
-    }
-
-    @RequestMapping(value = "/{actorname}/inbox", method = RequestMethod.GET)
-    public OrderedCollection getInbox(@PathVariable("actorname") String actorname) {
-        return storage.getInbox(actorname);
-    }
-
-    @RequestMapping(value = "/{actor}", method = RequestMethod.GET)
-    public Actor getActor(@PathVariable("actor") String actorName) {
-
-        return storage.getActor(actorName);
-    }
-
-    @RequestMapping(value = "/actor", method = RequestMethod.POST)
-    public ResponseEntity<Actor> createActor(@RequestBody Actor actor) {
-        Actor newActor = storage.createActor(actor);
-        if (newActor != null) {
-            return new ResponseEntity<>(newActor, HttpStatus.CONFLICT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
     }
 
     /*@RequestMapping(value = "/{actorname}/following", method = RequestMethod.GET)
