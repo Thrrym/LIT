@@ -29,24 +29,14 @@ public abstract class Actor extends LitObject {
         this.liked = actor.liked;
     }
 
-    public Actor(String name) {
-        setId(UriConstants.HOST + name);
-        setName(name);
-        inbox = UriConstants.HOST + name + UriConstants.INBOX;
-        outbox = UriConstants.HOST + name + UriConstants.OUTBOX;
-        following = UriConstants.HOST + name + UriConstants.FOLLOWING;
-        followers = UriConstants.HOST + name + UriConstants.FOLLOWERS;
-        liked = UriConstants.HOST + name + UriConstants.LIKED;
-    }
-
-    public void instantiateFields() {
-        String name = getName();
-        setId(UriConstants.HOST + name);
-        inbox = UriConstants.HOST + name + UriConstants.INBOX;
-        outbox = UriConstants.HOST + name + UriConstants.OUTBOX;
-        following = UriConstants.HOST + name + UriConstants.FOLLOWING;
-        followers = UriConstants.HOST + name + UriConstants.FOLLOWERS;
-        liked = UriConstants.HOST + name + UriConstants.LIKED;
+    public Actor(String actorName) {
+        setId(new String[]{actorName}, false);
+        setName(actorName);
+        inbox = UriConstants.HOST + actorName + UriConstants.INBOX;
+        outbox = UriConstants.HOST + actorName + UriConstants.OUTBOX;
+        following = UriConstants.HOST + actorName + UriConstants.FOLLOWING;
+        followers = UriConstants.HOST + actorName + UriConstants.FOLLOWERS;
+        liked = UriConstants.HOST + actorName + UriConstants.LIKED;
     }
 
     public String getInbox() {

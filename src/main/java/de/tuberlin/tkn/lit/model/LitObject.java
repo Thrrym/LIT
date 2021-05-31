@@ -2,23 +2,25 @@ package de.tuberlin.tkn.lit.model;
 
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import de.tuberlin.tkn.lit.constants.UriConstants;
 import de.tuberlin.tkn.lit.deserializer.ArrayDeserializer;
 import de.tuberlin.tkn.lit.model.activities.*;
 import de.tuberlin.tkn.lit.model.actors.*;
+import de.tuberlin.tkn.lit.model.litobjects.BibTeXArticle;
 import de.tuberlin.tkn.lit.model.objects.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-@JsonTypeInfo (use = JsonTypeInfo.Id.NAME,include = JsonTypeInfo.As.EXISTING_PROPERTY,
-        property = "type",visible = true)
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "type", visible = true)
 
 @JsonSubTypes(value = {
         @JsonSubTypes.Type(value = LitCollection.class, name = "Collection"),
         @JsonSubTypes.Type(value = OrderedCollection.class, name = "OrderedCollection"),
+
+        @JsonSubTypes.Type(value = BibTeXArticle.class, name = "bibtex_article"),
 
         @JsonSubTypes.Type(value = Article.class, name = "Article"),
         @JsonSubTypes.Type(value = Document.class, name = "Document"),
@@ -65,9 +67,6 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class LitObject {
 
-    public LitObject() {
-    }
-
     @JsonProperty("@context")
     private String context;
     private String id;
@@ -99,7 +98,12 @@ public abstract class LitObject {
     private String mediaType;
     private String duration;
 
-    public String getType(){return type;}
+    public LitObject() {
+    }
+
+    public String getType() {
+        return type;
+    }
 
     public void setType(String type) {
         this.type = type;
@@ -109,7 +113,12 @@ public abstract class LitObject {
         return id;
     }
 
-    public void setId(String id) {
+    //TODO: IDs should be set from DB site
+    public void setId(String[] idParameter, boolean shouldGuidBeAppended) {
+        String id = UriConstants.HOST + String.join("/", idParameter) + "/";
+        if (shouldGuidBeAppended) {
+            id += UUID.randomUUID();
+        }
         this.id = id;
     }
 

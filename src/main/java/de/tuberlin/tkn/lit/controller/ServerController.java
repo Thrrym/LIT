@@ -37,9 +37,9 @@ public class ServerController {
     public void postInbox(@PathVariable("actorname") String actorname, @RequestBody Activity activity) {
         //STUB START
 
-    	this.storage.AddInbox(actorname, new LinkOrObject(activity));
+    	this.storage.addInbox(actorname, new LinkOrObject(activity));
         
-        OrderedCollection inbox = this.storage.GetInbox(actorname);
+        OrderedCollection inbox = this.storage.getInbox(actorname);
         System.out.println(inbox.getOrderedItems());
 
         //STUB END
