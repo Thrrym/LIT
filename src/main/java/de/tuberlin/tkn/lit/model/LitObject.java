@@ -68,7 +68,7 @@ public abstract class LitObject {
     private String id;
     private String type;
     private List<LinkOrObject> attachment;
-    private String attributedTo;
+    private List<LinkOrObject> attributedTo;
     private List<LinkOrObject> audience;
     private String content;
     private String startTime;
@@ -120,12 +120,23 @@ public abstract class LitObject {
         this.attachment = attachment;
     }
 
-    public String getAttributedTo() {
+    public List<LinkOrObject> getAttributedTo() {
         return attributedTo;
     }
 
-    public void setAttributedTo(String attributedTo) {
+    @JsonGetter("attributedTo")
+    public List<String> toJSONAttributedTo() throws JsonProcessingException {
+        if (attributedTo == null) return null;
+        return ArraySerializer.serialize(attributedTo);
+    }
+
+    public void setAttributedTo(List<LinkOrObject> attributedTo) {
         this.attributedTo = attributedTo;
+    }
+
+    @JsonSetter("attributedTo")
+    public void attributedTo(JsonNode s) throws JsonProcessingException {
+        attributedTo = ArrayDeserializer.deserialize(s);
     }
 
     public List<LinkOrObject> getAudience() {
