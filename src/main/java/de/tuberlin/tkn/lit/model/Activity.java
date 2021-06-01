@@ -5,11 +5,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.tuberlin.tkn.lit.deserializer.LinkOrObjectDeserializer;
 
-
 // TODO: Resolve getObject() with LitObject (renaming?)
 public abstract class Activity extends LitObject {
 
-    //@JsonDeserialize(using = ActorDeserializer2.class)
     private LinkOrObject actor;
     private LinkOrObject object;
     private LinkOrObject target;

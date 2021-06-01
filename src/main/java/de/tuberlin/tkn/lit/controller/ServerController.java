@@ -5,8 +5,6 @@ import de.tuberlin.tkn.lit.model.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
-
 @RestController
 public class ServerController {
 
@@ -37,9 +35,9 @@ public class ServerController {
     public void postInbox(@PathVariable("actorname") String actorname, @RequestBody Activity activity) {
         //STUB START
 
-    	this.storage.AddInbox(actorname, new LinkOrObject(activity));
+    	this.storage.addToInbox(actorname, new LinkOrObject(activity));
         
-        OrderedCollection inbox = this.storage.GetInbox(actorname);
+        OrderedCollection inbox = this.storage.getInbox(actorname);
         System.out.println(inbox.getOrderedItems());
 
         //STUB END
