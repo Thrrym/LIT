@@ -69,16 +69,9 @@ class ParseJsonTest {
     void testExample3JavaToJson() throws IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         ObjectMapper objectMapper = new ObjectMapper();
-        //objectMapper.configure(JsonGenerator.Feature.QUOTE_FIELD_NAMES, false);
-        //objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         File file = new File(classLoader.getResource("example_3_create_note.json").getFile());
         Activity activity = objectMapper.readValue(file, Activity.class);
         String json = objectMapper.writeValueAsString(activity);
         System.out.println(json);
-        //String abc = JSONValue.escape(json);
-        //System.out.println(abc);
-       /* JSONParser parser = new JSONParser();
-        JSONObject jO = (JSONObject) parser.parse(json);
-        System.out.println(jO);*/
     }
 }

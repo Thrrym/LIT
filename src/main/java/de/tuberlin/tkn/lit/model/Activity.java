@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.tuberlin.tkn.lit.deserializer.LinkOrObjectDeserializer;
 import de.tuberlin.tkn.lit.serializer.LinkOrObjectSerializer;
 
@@ -38,12 +39,11 @@ public abstract class Activity extends LitObject {
     }
 
     public LinkOrObject getActor() {
-        System.out.println("ACTOR");
         return actor;
     }
 
     @JsonGetter("actor")
-    public String toJSONActor() throws JsonProcessingException {
+    public JsonNode toJSONActor() throws JsonProcessingException {
         return LinkOrObjectSerializer.serialize(actor);
     }
 
@@ -60,8 +60,14 @@ public abstract class Activity extends LitObject {
         return object;
     }
 
+    /*@JsonGetter("object")
+    public LitObject toJSONObject() throws JsonProcessingException {
+        LitObject litObject = LinkOrObjectSerializer.serialize(object);
+        return litObject;
+    }*/
+
     @JsonGetter("object")
-    public String toJSONObject() throws JsonProcessingException {
+    public JsonNode toJSONObject() throws JsonProcessingException {
         return LinkOrObjectSerializer.serialize(object);
     }
 
