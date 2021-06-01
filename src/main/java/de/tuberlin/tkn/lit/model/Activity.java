@@ -1,15 +1,12 @@
 package de.tuberlin.tkn.lit.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.tuberlin.tkn.lit.deserializer.LinkOrObjectDeserializer;
 
-
 public abstract class Activity extends LitObject {
 
-    //@JsonDeserialize(using = ActorDeserializer2.class)
     private LinkOrObject actor;
     private LinkOrObject object;
     private LinkOrObject target;
@@ -28,6 +25,7 @@ public abstract class Activity extends LitObject {
         this.origin = origin;
         this.instrument = instrument;
     }
+
     public Activity(Activity activity) {
         this.actor = activity.actor;
         this.object = activity.object;

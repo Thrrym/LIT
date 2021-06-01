@@ -1,49 +1,108 @@
 package de.tuberlin.tkn.lit.controller;
-import de.tuberlin.tkn.lit.model.Activity;
-import de.tuberlin.tkn.lit.model.Actor;
-import de.tuberlin.tkn.lit.model.OrderedCollection;
-import de.tuberlin.tkn.lit.model.activities.Create;
+
+import de.tuberlin.tkn.lit.model.*;
+import de.tuberlin.tkn.lit.model.actors.Person;
+import de.tuberlin.tkn.lit.processing.IActivitySender;
+import de.tuberlin.tkn.lit.storage.IStorage;
+import de.tuberlin.tkn.lit.util.UriUtilities;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.UUID;
 
 @RestController
 public class ClientController {
 
-    // authentication: oauth2 maybe? https://spring.io/guides/tutorials/spring-boot-oauth2/
-    private final Map<String, Function<Activity, Activity>> activityMap = new HashMap<>();
+    @Autowired
+    IActivitySender activitySender;
 
-    public ClientController() {
-        activityMap.put("Create", Create::new);
+    @Autowired
+    IStorage storage;
+
+    @Autowired
+    public ClientController(IStorage storage) {
+
+        //STUB START
+
+        this.storage = storage;
+
+        this.storage.createActor(new Person("testuser01"));
+        this.storage.createActor(new Person("testuser02"));
+
+        //STUB END
     }
 
-    @RequestMapping(value = "/{actorname}/outbox", method = RequestMethod.POST)
-    public void postActivity(@PathVariable("actorname") String actorname, @RequestBody Activity activity) {
-        // schicken die uns das wie EXAMPLE 14?
-        // TODO: lege activity in collection und update datenbank
-        // activityMap.get(activity.getType());
-        if(activity.getType().equals("Create")){ // Das gleiche mit allen anderen Activities
-            Create create = new Create(activity);
-            // TODO:Datenbank Eintrag mit nur bestimmten Json Attributen
-            // TODO:Methode bla(create) von server-server leuten
+    @RequestMapping(value = "/{actor}", method = RequestMethod.GET)
+    public Actor getActor(@PathVariable("actor") String actorName) {
+
+        return storage.getActor(actorName);
+    }
+
+    @RequestMapping(value = "/actor", method = RequestMethod.POST)
+    public ResponseEntity<Actor> createActor(@RequestBody Actor actor) {
+        Actor newActor = storage.createActor(actor);
+        if (newActor != null) {
+            return new ResponseEntity<>(newActor, HttpStatus.CONFLICT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 
     @RequestMapping(value = "/{actorname}/inbox", method = RequestMethod.GET)
     public OrderedCollection getInbox(@PathVariable("actorname") String actorname) {
-        // was schicken die uns um den Actor zu identifizieren?
-        //return inbox as OrderedCollection
-        // Datenbankabfrage von actor dessen Inbox, paging abfrage geregelt von datenbank gruppe, wir geben Page-ID weiter
-        // Weitergabe von Inbox an Frontend, paging wir bekommen Page-ID
-        return null;
+        return storage.getInbox(actorname);
     }
 
-    @RequestMapping(value = "/{actor}", method = RequestMethod.GET)
-    public Actor getActor(@PathVariable("actor") String actor) {
-        // ist das so, dass das auch andere Server Aufrufen sollen?
-        return null;
+    @RequestMapping(value = "/{actorname}/{id}", method = RequestMethod.GET)
+    public Activity getActivity(@PathVariable("actorname") String actorname, @PathVariable("id") UUID id) {
+        return storage.getActivity(id);
+    }
+
+    @RequestMapping(value = "/{actorname}/{objecttype}/{id}", method = RequestMethod.GET)
+    public LitObject getObject(@PathVariable("actorname") String actorname, @PathVariable("objecttype") String objectType, @PathVariable("id") UUID id) {
+        return storage.getObject(id);
+    }
+
+    @RequestMapping(value = "/{actorname}/outbox", method = RequestMethod.POST)
+    public ResponseEntity<String> postActivity(@PathVariable("actorname") String actorName, @RequestBody Activity activity) {
+
+        // TODO: Check if all actors are present
+        LitObject createdObject;
+        if (activity.getObject().isObject()) {
+            createdObject = storage.createObject(actorName, activity.getObject().getObject().getType(), activity.getObject().getObject());
+        } else {
+            //TODO: Get object from link and persist it?
+            createdObject = storage.createObject(actorName, activity.getObject().getObject().getType(), activity.getObject().getObject());
+        }
+        activity.setObject(new LinkOrObject(createdObject));
+        Activity createdActivity = storage.createActivity(actorName, activity);
+        storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
+
+        if (createdActivity.getTo() != null) {
+            for (LinkOrObject linkOrObject : createdActivity.getTo()) {
+                if (UriUtilities.isLocaleServer(linkOrObject.getLink())) {
+                    OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
+                    inbox.getOrderedItems().add(new LinkOrObject(createdActivity));
+                } else {
+                    activitySender.send(createdActivity);
+                }
+            }
+        }
+
+        if (createdActivity.getCc() != null) {
+            for (LinkOrObject linkOrObject : createdActivity.getCc()) {
+                if (UriUtilities.isLocaleServer(linkOrObject.getLink())) {
+                    OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
+                    inbox.getOrderedItems().add(new LinkOrObject(createdActivity));
+                } else {
+                    activitySender.send(createdActivity);
+                }
+            }
+        }
+
+        return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
     }
 
     /*@RequestMapping(value = "/{actorname}/following", method = RequestMethod.GET)

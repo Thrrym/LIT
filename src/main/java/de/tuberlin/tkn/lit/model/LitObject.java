@@ -1,25 +1,23 @@
 package de.tuberlin.tkn.lit.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.tuberlin.tkn.lit.deserializer.ArrayDeserializer;
 import de.tuberlin.tkn.lit.model.activities.*;
 import de.tuberlin.tkn.lit.model.actors.*;
+import de.tuberlin.tkn.lit.model.litobjects.BibTeXArticle;
 import de.tuberlin.tkn.lit.model.objects.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
-@JsonTypeInfo (use = JsonTypeInfo.Id.NAME,
-        property = "type")
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY,
+        property = "type", visible = true)
 @JsonSubTypes(value = {
         @JsonSubTypes.Type(value = LitCollection.class, name = "Collection"),
+        @JsonSubTypes.Type(value = OrderedCollection.class, name = "OrderedCollection"),
+
+        @JsonSubTypes.Type(value = BibTeXArticle.class, name = "bibtex_article"),
 
         @JsonSubTypes.Type(value = Article.class, name = "Article"),
         @JsonSubTypes.Type(value = Document.class, name = "Document"),
@@ -60,16 +58,15 @@ import java.util.List;
         @JsonSubTypes.Type(value = Undo.class, name = "Undo"),
         @JsonSubTypes.Type(value = Update.class, name = "Update"),
         @JsonSubTypes.Type(value = View.class, name = "View"),
-
-        // TODO: Add all possible types here
 })
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class LitObject {
 
     @JsonProperty("@context")
     private String context;
     private String id;
+    private String type;
     private List<LinkOrObject> attachment;
-    //@JsonDeserialize(using = ActorDeserializer.class)
     private String attributedTo;
     private List<LinkOrObject> audience;
     private String content;
@@ -95,7 +92,16 @@ public abstract class LitObject {
     private String mediaType;
     private String duration;
 
-    public abstract String getType();
+    public LitObject() {
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getId() {
         return id;

@@ -1,5 +1,8 @@
 package de.tuberlin.tkn.lit.model;
 
+import de.tuberlin.tkn.lit.constants.UriConstants;
+import de.tuberlin.tkn.lit.util.UriUtilities;
+
 public abstract class Actor extends LitObject {
 
     private String inbox;
@@ -8,7 +11,8 @@ public abstract class Actor extends LitObject {
     private String followers;
     private String liked;
 
-    public Actor() {}
+    public Actor() {
+    }
 
     public Actor(String inbox, String outbox, String following, String followers, String liked) {
         this.inbox = inbox;
@@ -24,6 +28,16 @@ public abstract class Actor extends LitObject {
         this.following = actor.following;
         this.followers = actor.followers;
         this.liked = actor.liked;
+    }
+
+    public Actor(String actorName) {
+        setId(UriUtilities.generateId(new String[]{actorName}, false));
+        setName(actorName);
+        inbox = UriConstants.HOST + actorName + UriConstants.INBOX;
+        outbox = UriConstants.HOST + actorName + UriConstants.OUTBOX;
+        following = UriConstants.HOST + actorName + UriConstants.FOLLOWING;
+        followers = UriConstants.HOST + actorName + UriConstants.FOLLOWERS;
+        liked = UriConstants.HOST + actorName + UriConstants.LIKED;
     }
 
     public String getInbox() {
