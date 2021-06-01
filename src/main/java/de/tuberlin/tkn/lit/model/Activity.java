@@ -1,9 +1,11 @@
 package de.tuberlin.tkn.lit.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.tuberlin.tkn.lit.deserializer.LinkOrObjectDeserializer;
+import de.tuberlin.tkn.lit.serializer.LinkOrObjectSerializer;
 
 public abstract class Activity extends LitObject {
 
@@ -36,7 +38,13 @@ public abstract class Activity extends LitObject {
     }
 
     public LinkOrObject getActor() {
+        System.out.println("ACTOR");
         return actor;
+    }
+
+    @JsonGetter("actor")
+    public String toJSONActor() throws JsonProcessingException {
+        return LinkOrObjectSerializer.serialize(actor);
     }
 
     public void setActor(LinkOrObject actor) {
@@ -50,6 +58,11 @@ public abstract class Activity extends LitObject {
 
     public LinkOrObject getObject() {
         return object;
+    }
+
+    @JsonGetter("object")
+    public String toJSONObject() throws JsonProcessingException {
+        return LinkOrObjectSerializer.serialize(object);
     }
 
     public void setObject(LinkOrObject object) {

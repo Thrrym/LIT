@@ -12,8 +12,8 @@ public class LinkOrObject {
         litObject = null;
     }
 
-    public LinkOrObject(LitObject object) {
-        this.litObject = object;
+    public LinkOrObject(LitObject litObject) {
+        this.litObject = litObject;
         link = null;
     }
 
@@ -33,7 +33,7 @@ public class LinkOrObject {
         return litObject;
     }
 
-    public void setLitObject(LitObject object) {
-        this.litObject = object;
+    public void setLitObject(LitObject litObject) {
+        this.litObject = litObject;
     }
 }

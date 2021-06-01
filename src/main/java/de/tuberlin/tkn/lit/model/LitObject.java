@@ -8,6 +8,7 @@ import de.tuberlin.tkn.lit.model.activities.*;
 import de.tuberlin.tkn.lit.model.actors.*;
 import de.tuberlin.tkn.lit.model.litobjects.BibTeXArticle;
 import de.tuberlin.tkn.lit.model.objects.*;
+import de.tuberlin.tkn.lit.serializer.ArraySerializer;
 
 import java.util.List;
 
@@ -275,6 +276,12 @@ public abstract class LitObject {
         return to;
     }
 
+    @JsonGetter("to")
+    public List<String> toJSONTo() throws JsonProcessingException {
+        if (to == null) return null;
+        return ArraySerializer.serialize(to);
+    }
+
     public void setTo(List<LinkOrObject> to) {
         this.to = to;
     }
@@ -286,6 +293,12 @@ public abstract class LitObject {
 
     public List<LinkOrObject> getBto() {
         return bto;
+    }
+
+    @JsonGetter("bto")
+    public List<String> toJSONBto() throws JsonProcessingException {
+        if (bto == null) return null;
+        return ArraySerializer.serialize(bto);
     }
 
     public void setBto(List<LinkOrObject> bto) {
@@ -305,6 +318,12 @@ public abstract class LitObject {
         this.cc = cc;
     }
 
+    @JsonGetter("cc")
+    public List<String> toJSONCc() throws JsonProcessingException {
+        if (cc == null) return null;
+        return ArraySerializer.serialize(cc);
+    }
+
     @JsonSetter("cc")
     public void setCc(JsonNode s) throws JsonProcessingException {
         cc = ArrayDeserializer.deserialize(s);
@@ -312,6 +331,12 @@ public abstract class LitObject {
 
     public List<LinkOrObject> getBcc() {
         return bcc;
+    }
+
+    @JsonGetter("bcc")
+    public List<String> toJSONBcc() throws JsonProcessingException {
+        if (bcc == null) return null;
+        return ArraySerializer.serialize(bcc);
     }
 
     public void setBcc(List<LinkOrObject> bcc) {
