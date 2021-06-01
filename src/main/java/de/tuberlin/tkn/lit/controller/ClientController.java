@@ -71,10 +71,10 @@ public class ClientController {
         // TODO: Check if all actors are present
         LitObject createdObject;
         if (activity.getObject().isObject()) {
-            createdObject = storage.createObject(actorName, activity.getObject().getObject().getType(), activity.getObject().getObject());
+            createdObject = storage.createObject(actorName, activity.getObject().getLitObject().getType(), activity.getObject().getLitObject());
         } else {
             //TODO: Get object from link and persist it?
-            createdObject = storage.createObject(actorName, activity.getObject().getObject().getType(), activity.getObject().getObject());
+            createdObject = storage.createObject(actorName, activity.getObject().getLitObject().getType(), activity.getObject().getLitObject());
         }
         activity.setObject(new LinkOrObject(createdObject));
         Activity createdActivity = storage.createActivity(actorName, activity);
