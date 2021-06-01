@@ -5,20 +5,20 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LinkOrObject {
     private String link;
-    private LitObject object;
+    private LitObject litObject;
 
     public LinkOrObject(String link) {
         this.link = link;
-        object = null;
+        litObject = null;
     }
 
-    public LinkOrObject(LitObject object) {
-        this.object = object;
+    public LinkOrObject(LitObject litObject) {
+        this.litObject = litObject;
         link = null;
     }
 
     public boolean isObject() {
-        return object != null;
+        return litObject != null;
     }
 
     public String getLink() {
@@ -29,11 +29,11 @@ public class LinkOrObject {
         this.link = link;
     }
 
-    public LitObject getObject() {
-        return object;
+    public LitObject getLitObject() {
+        return litObject;
     }
 
-    public void setObject(LitObject object) {
-        this.object = object;
+    public void setLitObject(LitObject litObject) {
+        this.litObject = litObject;
     }
 }

@@ -1,11 +1,13 @@
 package de.tuberlin.tkn.lit.model;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import de.tuberlin.tkn.lit.deserializer.LinkOrObjectDeserializer;
+import de.tuberlin.tkn.lit.serializer.LinkOrObjectSerializer;
 
-// TODO: Resolve getObject() with LitObject (renaming?)
 public abstract class Activity extends LitObject {
 
     private LinkOrObject actor;
@@ -40,6 +42,11 @@ public abstract class Activity extends LitObject {
         return actor;
     }
 
+    @JsonGetter("actor")
+    public JsonNode toJSONActor() throws JsonProcessingException {
+        return LinkOrObjectSerializer.serialize(actor);
+    }
+
     public void setActor(LinkOrObject actor) {
         this.actor = actor;
     }
@@ -51,6 +58,17 @@ public abstract class Activity extends LitObject {
 
     public LinkOrObject getObject() {
         return object;
+    }
+
+    /*@JsonGetter("object")
+    public LitObject toJSONObject() throws JsonProcessingException {
+        LitObject litObject = LinkOrObjectSerializer.serialize(object);
+        return litObject;
+    }*/
+
+    @JsonGetter("object")
+    public JsonNode toJSONObject() throws JsonProcessingException {
+        return LinkOrObjectSerializer.serialize(object);
     }
 
     public void setObject(LinkOrObject object) {
