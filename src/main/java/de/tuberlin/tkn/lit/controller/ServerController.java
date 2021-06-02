@@ -26,7 +26,7 @@ public class ServerController {
     }
 
     /**
-    *  Http route for others servers to use, to post activities to an inbox, belonging to
+    *  Http route for other servers to use, to post activities to an inbox, belonging to
     *  an actor, held by this server. Also all side effects of the activity are processed.
     * @param  actorname name of the actor whose inbox is the target
     * @param  activity  activity to post and process
@@ -35,9 +35,10 @@ public class ServerController {
     public void postInbox(@PathVariable("actorname") String actorname, @RequestBody Activity activity) {
         //STUB START
 
-    	this.storage.addToInbox(actorname, new LinkOrObject(activity));
+        Activity uuidActivity = storage.createActivity(actorname, activity);
+    	storage.addToInbox(actorname, new LinkOrObject(uuidActivity));
         
-        OrderedCollection inbox = this.storage.getInbox(actorname);
+        OrderedCollection inbox = storage.getInbox(actorname);
         System.out.println(inbox.getOrderedItems());
 
         //STUB END
@@ -51,6 +52,6 @@ public class ServerController {
     */
     @RequestMapping(value = "/{actorname}/outbox", method = RequestMethod.GET)
     public OrderedCollection getOutbox(@PathVariable("actorname") String actorname) {
-        return null;
+        return storage.getOutbox(actorname);
     }
 }
