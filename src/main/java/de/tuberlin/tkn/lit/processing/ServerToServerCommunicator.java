@@ -23,7 +23,6 @@ public class ServerToServerCommunicator implements IActivitySender{
 	public Future<Boolean> send(Activity activity, LinkOrObject sendTo) {	
 		return executor.submit(() -> {
 			String url = sendTo.getLink() + "/inbox"; // link is guranteed
-			System.out.println(url);
 
 			// send post request
     		RestTemplate restTemplate = new RestTemplate();
@@ -40,7 +39,7 @@ public class ServerToServerCommunicator implements IActivitySender{
 
 	/**
     *  Allows getting the outbox of an actor on another server
-    * @param  getFrom actor who's supposed to receive the activity 
+    * @param  getFrom actor who's outbox shall be retrieved 
 	* @return the ordered collection that is the outbox
     */
 	@Override

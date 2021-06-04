@@ -33,15 +33,13 @@ public class ServerController {
     */
     @RequestMapping(value = "/{actorname}/inbox", method = RequestMethod.POST)
     public void postInbox(@PathVariable("actorname") String actorname, @RequestBody Activity activity) {
-        //STUB START
-
+        
+        // post activity to the actors inbox
         Activity uuidActivity = storage.createActivity(actorname, activity);
     	storage.addToInbox(actorname, new LinkOrObject(uuidActivity));
         
-        OrderedCollection inbox = storage.getInbox(actorname);
-        System.out.println(inbox.getOrderedItems());
-
-        //STUB END
+        // TODO: notify client
+        // TODO: process side effects
     }
 
     /**

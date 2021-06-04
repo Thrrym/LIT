@@ -97,7 +97,7 @@ public class ClientController {
                     OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
                     inbox.getOrderedItems().add(new LinkOrObject(createdActivity));
                 } else {
-                    activitySender.send(createdActivity, linkOrObject );
+                    activitySender.send(createdActivity, linkOrObject);
                 }
             }
         }
