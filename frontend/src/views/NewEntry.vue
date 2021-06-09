@@ -16,11 +16,11 @@
       v-bind:newEntry="newEntry"
       v-bind:selectedType="selectedType"
     ></NewEntryModal>
-    <NewEntryPrep
+    <!-- <NewEntryPrep
       ref="prep"
       v-bind:newEntry="newEntry"
       v-bind:selectedType="selectedType"
-    ></NewEntryPrep>
+    ></NewEntryPrep> -->
   </div>
 </template>
 
@@ -28,7 +28,9 @@
 import TypeSelector from "@/components/TypeSelector.vue";
 import NewEntryForm from "@/components/NewEntryForm.vue";
 import NewEntryModal from "@/components/NewEntryModal.vue";
-import NewEntryPrep from "@/components/NewEntryPrep.vue";
+// import NewEntryPrep from "@/components/NewEntryPrep.vue";
+
+import {postNewEntry} from "@/js_files/serverCom.js";
 
 import newEntryFormContent from "@/js_files/newEntryFormContent.js"; // Import the form contents from seperate JS file.
 
@@ -39,7 +41,7 @@ export default {
     TypeSelector,
     NewEntryForm,
     NewEntryModal,
-    NewEntryPrep,
+    // NewEntryPrep,
   },
 
   data() {
@@ -80,8 +82,9 @@ export default {
     },
     setEntryToBeCreated: function (newEntry) {
       this.newEntry = newEntry;
-      this.triggerModal();
-      this.triggerPrep();
+      //this.triggerModal();
+      //this.triggerPrep();
+      postNewEntry(this.selectedType, this.newEntry);
     },
     triggerModal: function () {
       // Show the modal.
