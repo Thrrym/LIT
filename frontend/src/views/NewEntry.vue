@@ -30,7 +30,7 @@ import NewEntryForm from "@/components/NewEntryForm.vue";
 import NewEntryModal from "@/components/NewEntryModal.vue";
 // import NewEntryPrep from "@/components/NewEntryPrep.vue";
 
-import {postNewEntry} from "@/js_files/serverCom.js";
+import {postNewEntry, test} from "@/js_files/serverCom.js";
 
 import newEntryFormContent from "@/js_files/newEntryFormContent.js"; // Import the form contents from seperate JS file.
 
@@ -85,6 +85,7 @@ export default {
       //this.triggerModal();
       //this.triggerPrep();
       postNewEntry(this.selectedType, this.newEntry);
+      test();
     },
     triggerModal: function () {
       // Show the modal.

@@ -21,7 +21,7 @@ function postNewEntry(selectedType, uncleanNewEntry) {
     let method = "POST";
     let url = backendUrl + currentUser + "/" + "outbox";
     
-    console.log(url)
+    console.log(json)
 
     httpRequest.open(method, url, true);
     httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
@@ -63,4 +63,8 @@ function prepareNewEntryJson(simplifiedObject, backendUrl, currentUser) {
     return jsonMainObject
 }
 
-export {postNewEntry}
+function test() {
+    console.log("Test" + this.newEntry);
+}
+
+export {postNewEntry, test}
