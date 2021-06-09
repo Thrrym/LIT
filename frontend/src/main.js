@@ -12,6 +12,9 @@ Vue.use(BootstrapVueIcons);
 
 Vue.config.productionTip = false;
 
+Vue.prototype.$backendUrl = "http://localhost:8080/"
+Vue.prototype.$currentUser = 'testuser01';
+
 new Vue({
   router,
   render: (h) => h(App),
