@@ -4,7 +4,7 @@
     <ServerCom
       ref="com"
       v-bind:requestType="setRequestType"
-      v-bind:requestContent="getPreparedNewEntry"
+      v-bind:requestContent="this.preparedNewEntry"
     ></ServerCom>
   </div>
 </template>
@@ -32,17 +32,15 @@ export default {
   },
   methods: {
     preparation: function () {
-      //let type = "bibtex_" + this.selectedType;
-      // this.preparedNewEntry = this.newEntry.map(function (elem) {
-      //   if (elem.required === true) return true;
-      // });
-      //console.log(this.newEntry);
-
-      var newObject = new Object();
-      for (let index = 0; index < this.newEntry.length; index++) {
-        const element = this.newEntry[index];
-        newObject[element.name] = element.content;
+      let newObject = new Object();
+      //for (let index = 0; index < this.newEntry.length; index++) {
+      for (const property in this.newEntry) {
+        //const element = this.newEntry[index];
+        //newObject[element.name] = element.content;
+        newObject[property] = this.newEntry[property];
       };
+
+      newObject["type"] = this.selectedType;
       this.preparedNewEntry = newObject;
 
       this.$refs.com.triggerServerCom();

@@ -47,25 +47,23 @@ export default {
             httpRequest.open(method, url, true);
             httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
-            var json = {
+            var jsonObject = {
+                "id": url + "/article" + "/1",
+                "attributedTo": this.$backendUrl + this.$currentUser,
+            };
+            for (const property in this.requestContent) {
+                jsonObject[property] = this.requestContent[property];
+            };
+
+            var jsonMain = {
                 "@context": "https://www.w3.org/ns/activitystreams",
                 "type": "Create",
                 "id": url + "/1",
                 "actor": this.$backendUrl + this.$currentUser,
-                "object": {
-                    "id": url + "article" + "/1",
-                    "attributedTo": this.$backendUrl + this.$currentUser,
+                "object": jsonObject
+            };
 
-                    "type": "bibtex_article",
-                    "author": "S.K. Bhaumik, R. Rangaraju, M.A. Venkataswamy, T.A. Bhaskaran, M.A. Parameswara",
-                    "title": "Fatigue fracture of crankshaft of an aircraft engine",
-                    "journal": "Engineering Failure Analysis",
-                    "year": "2002",
-                    "volume": "9"
-                },
-            }
-
-            console.log(json)
+            console.log(jsonMain)
 
             //httpRequest.send();
         },
