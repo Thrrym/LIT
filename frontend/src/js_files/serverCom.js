@@ -12,20 +12,24 @@ function postNewEntry(selectedType, uncleanNewEntry) {
 
     // How to handle state changes of the request.
     httpRequest.onreadystatechange = function(){
-        
-        console.log(httpRequest.status);
-        console.log(httpRequest.responseText)
+        if ((this.readyState == 4 && this.status == 201)) {
+            console.log("Hier" + httpRequest);
+            console.log(httpRequest.responseText);
+        }
     };
     
     // Send what where:
     let method = "POST";
-    let url = backendUrl + currentUser + "/" + "outbox";
+    //let url = backendUrl + currentUser + "/" + "outbox";
     
     console.log(json)
 
-    httpRequest.open(method, url, true);
+    var apiUrl = "http://localhost:8081/" + "api/" + currentUser + "/" + "outbox";
+    console.log(apiUrl)
+    httpRequest.open(method, apiUrl, true);
     httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     httpRequest.send(JSON.stringify(json));
+    return httpRequest
 }
 
 function prepareNewEntry(selectedType, uncleanNewEntry) {
@@ -48,8 +52,13 @@ function prepareNewEntryJson(simplifiedObject, backendUrl, currentUser) {
         "id": url + "/article" + "/1",
         "attributedTo": backendUrl + currentUser,
     };
-    for (const property in simplifiedObject) {
-        jsonLitObject[property] = simplifiedObject[property];
+    for (let property in simplifiedObject) {
+        if (property === "type") {
+            jsonLitObject[property] = "bibtex_" + simplifiedObject[property];
+        }
+        else {
+            jsonLitObject[property] = simplifiedObject[property];
+        }
     };
 
     // 2. Construct the containing JSON Object.
@@ -64,7 +73,7 @@ function prepareNewEntryJson(simplifiedObject, backendUrl, currentUser) {
 }
 
 function test() {
-    console.log("Test" + this.newEntry);
+    console.log("Test");
 }
 
 export {postNewEntry, test}
