@@ -35,8 +35,8 @@ public class ServerController {
     public void postInbox(@PathVariable("actorname") String actorname, @RequestBody Activity activity) {
         
         // post activity to the actors inbox
-        Activity uuidActivity = storage.createActivity(actorname, activity);
     	storage.addToInbox(actorname, new LinkOrObject(uuidActivity));
+    	storage.addToInbox(actorname, new LinkOrObject(activity));
         
         // TODO: notify client
         // TODO: process side effects
