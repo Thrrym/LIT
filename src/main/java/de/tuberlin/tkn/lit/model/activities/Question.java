@@ -11,8 +11,8 @@ public class Question extends Activity {
     public Question(Activity activity) { super(activity); }
 
     @Override
-    public Activity handle(String actorName, Activity activity, IStorage storage) {
-        return null;
+    public Activity handle(String actorName, IStorage storage) {
+        return this;
     }
 
     public String getType() { return type; }

@@ -39,7 +39,9 @@ public abstract class Activity extends LitObject {
         this.instrument = activity.instrument;
     }
 
-    public abstract Activity handle(String actorName, Activity activity, IStorage storage);
+    public abstract Activity handle(String actorName, IStorage storage);
+
+
 
     public LinkOrObject getActor() {
         return actor;

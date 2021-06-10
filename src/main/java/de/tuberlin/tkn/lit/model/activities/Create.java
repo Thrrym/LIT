@@ -15,17 +15,17 @@ public class Create extends Activity {
     }
 
     @Override
-    public Activity handle(String actorName,Activity activity, IStorage storage){
+    public Activity handle(String actorName, IStorage storage){
         LitObject createdObject;
-        if (activity.getObject().isObject()) {
-            createdObject = storage.createObject(actorName, activity.getObject().getLitObject().getType(), activity.getObject().getLitObject());
+        if (getObject().isObject()) {
+            createdObject = storage.createObject(actorName, getObject().getLitObject().getType(), getObject().getLitObject());
         } else {
             //TODO: Get object from link and persist it?
-            createdObject = storage.createObject(actorName, activity.getObject().getLitObject().getType(), activity.getObject().getLitObject());
+            createdObject = storage.createObject(actorName, getObject().getLitObject().getType(), getObject().getLitObject());
         }
 
-        activity.setObject(new LinkOrObject(createdObject));
+        setObject(new LinkOrObject(createdObject));
 
-        return activity;
+        return this;
     }
 }

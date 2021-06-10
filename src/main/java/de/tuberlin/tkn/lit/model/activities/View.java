@@ -11,8 +11,8 @@ public class View extends Activity {
     }
 
     @Override
-    public Activity handle(String actorName, Activity activity, IStorage storage) {
-        return null;
+    public Activity handle(String actorName,  IStorage storage) {
+        return this;
     }
 
     public View() {

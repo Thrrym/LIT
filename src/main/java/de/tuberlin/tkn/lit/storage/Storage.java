@@ -19,12 +19,21 @@ public class Storage implements IStorage {
 
     @Override
     public Actor getActor(String actorName) {
-        return actors.get(actorName);
+        Actor actor = actors.get(actorName);
+        if (actor == null) {
+            throw new NullPointerException();
+        }
+
+        return actor;
     }
 
     @Override
     public OrderedCollection getInbox(String actorName) {
-        return inboxes.get(actorName);
+        OrderedCollection orderedCollection = inboxes.get(actorName);
+        if (orderedCollection == null) {
+            throw new NullPointerException();
+        }
+        return orderedCollection;
     }
 
     @Override

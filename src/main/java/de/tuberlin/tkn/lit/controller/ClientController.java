@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @RestController
 public class ClientController {
@@ -21,6 +22,8 @@ public class ClientController {
 
     @Autowired
     IStorage storage;
+
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     @Autowired
     public ClientController(IStorage storage) {
@@ -69,14 +72,18 @@ public class ClientController {
     @RequestMapping(value = "/{actorname}/outbox", method = RequestMethod.POST)
     public ResponseEntity<String> postActivity(@PathVariable("actorname") String actorName, @RequestBody Activity activity) {
 
-        Activity createdActivity = storage.createActivity(actorName, activity.handle(actorName, activity, storage));
+        Activity createdActivity = storage.createActivity(actorName, activity.handle(actorName, storage));
         storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
         if (createdActivity.getTo() != null) {
             for (LinkOrObject linkOrObject : createdActivity.getTo()) {
                 if (UriUtilities.isLocaleServer(linkOrObject.getLink())) {
-                    OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
-                    inbox.getOrderedItems().add(new LinkOrObject(createdActivity));
+                    try {
+                        OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
+                        inbox.getOrderedItems().add(new LinkOrObject(createdActivity));
+                    } catch (NullPointerException ex) {
+                        logger.warning("The inbox for the actor '" + actorName + "' could not be found.");
+                    }
                 } else {
                     activitySender.send(createdActivity);
                 }
