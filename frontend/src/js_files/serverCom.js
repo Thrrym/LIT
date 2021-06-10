@@ -9,7 +9,7 @@ function postNewEntry(selectedType, uncleanNewEntry) {
     // Create the HTTP Request. Uses xmlhttprequest npm package.
     var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
     var httpRequest = new XMLHttpRequest();
-
+    //console.log(json);
     // How to handle state changes of the request.
     httpRequest.onreadystatechange = function(){
         if ((this.readyState == 4 && this.status == 201)) {
@@ -29,7 +29,7 @@ function postNewEntry(selectedType, uncleanNewEntry) {
     httpRequest.open(method, apiUrl, true);
     httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     httpRequest.send(JSON.stringify(json));
-    return httpRequest
+    return httpRequest;
 }
 
 function prepareNewEntry(selectedType, uncleanNewEntry) {
@@ -67,6 +67,8 @@ function prepareNewEntryJson(simplifiedObject, backendUrl, currentUser) {
         "type": "Create",
         "id": url + "/1",
         "actor": backendUrl + currentUser,
+        "published": "2015-02-10T15:04:55Z",
+        "cc": [backendUrl + currentUser + "/follower", backendUrl + "testuser02/"],
         "object": jsonLitObject
     };
     return jsonMainObject
