@@ -3,15 +3,24 @@ package de.tuberlin.tkn.lit.util;
 import de.tuberlin.tkn.lit.constants.UriConstants;
 
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public class UriUtilities {
+    private static final Logger logger = Logger.getLogger(UriUtilities.class.getName());
+
     public static boolean isLocaleServer(String uri) {
         return uri.startsWith(UriConstants.HOST);
     }
 
     public static String getActor(String uri) {
+        String actor = "";
         String[] strings = uri.split("/");
-        return strings[3];
+        try {
+            actor = strings[3];
+        } catch (Exception ex) {
+            logger.warning("Actor URL was in wrong format: " + uri);
+        }
+        return actor;
     }
 
     public static String generateId(String[] idParameter, boolean uuidShouldBeAppended) {
