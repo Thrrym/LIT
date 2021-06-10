@@ -23,8 +23,6 @@ public class ClientController {
     @Autowired
     IStorage storage;
 
-    private final Logger logger = Logger.getLogger(this.getClass().getName());
-
     @Autowired
     public ClientController(IStorage storage) {
 
@@ -75,31 +73,7 @@ public class ClientController {
         Activity createdActivity = storage.createActivity(actorName, activity.handle(actorName, storage));
         storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
-        if (createdActivity.getTo() != null) {
-            for (LinkOrObject linkOrObject : createdActivity.getTo()) {
-                if (UriUtilities.isLocaleServer(linkOrObject.getLink())) {
-                    try {
-                        OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
-                        inbox.getOrderedItems().add(new LinkOrObject(createdActivity));
-                    } catch (NullPointerException ex) {
-                        logger.warning("The inbox for the actor '" + actorName + "' could not be found.");
-                    }
-                } else {
-                    activitySender.send(createdActivity);
-                }
-            }
-        }
-
-        if (createdActivity.getCc() != null) {
-            for (LinkOrObject linkOrObject : createdActivity.getCc()) {
-                if (UriUtilities.isLocaleServer(linkOrObject.getLink())) {
-                    OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
-                    inbox.getOrderedItems().add(new LinkOrObject(createdActivity));
-                } else {
-                    activitySender.send(createdActivity);
-                }
-            }
-        }
+        createdActivity.handleSendings(storage, activitySender);
 
         return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
     }
