@@ -14,9 +14,9 @@ public class UriUtilities {
         return strings[3];
     }
 
-    public static String generateId(String[] idParameter, boolean uuidShouldBaAppended) {
+    public static String generateId(String[] idParameter, boolean uuidShouldBeAppended) {
         String id = UriConstants.HOST + String.join("/", idParameter) + "/";
-        if (uuidShouldBaAppended) {
+        if (uuidShouldBeAppended) {
             id += UUID.randomUUID();
         }
         return id;

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.tuberlin.tkn.lit.deserializer.LinkOrObjectDeserializer;
 import de.tuberlin.tkn.lit.serializer.LinkOrObjectSerializer;
+import de.tuberlin.tkn.lit.storage.IStorage;
 
 public abstract class Activity extends LitObject {
 
@@ -37,6 +38,8 @@ public abstract class Activity extends LitObject {
         this.origin = activity.origin;
         this.instrument = activity.instrument;
     }
+
+    public abstract Activity handle(String actorName, Activity activity, IStorage storage);
 
     public LinkOrObject getActor() {
         return actor;

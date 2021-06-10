@@ -1,6 +1,7 @@
 package de.tuberlin.tkn.lit.controller;
 
 import de.tuberlin.tkn.lit.model.*;
+import de.tuberlin.tkn.lit.model.activities.Create;
 import de.tuberlin.tkn.lit.model.actors.Person;
 import de.tuberlin.tkn.lit.processing.IActivitySender;
 import de.tuberlin.tkn.lit.storage.IStorage;
@@ -68,16 +69,7 @@ public class ClientController {
     @RequestMapping(value = "/{actorname}/outbox", method = RequestMethod.POST)
     public ResponseEntity<String> postActivity(@PathVariable("actorname") String actorName, @RequestBody Activity activity) {
 
-        // TODO: Check if all actors are present
-        LitObject createdObject;
-        if (activity.getObject().isObject()) {
-            createdObject = storage.createObject(actorName, activity.getObject().getLitObject().getType(), activity.getObject().getLitObject());
-        } else {
-            //TODO: Get object from link and persist it?
-            createdObject = storage.createObject(actorName, activity.getObject().getLitObject().getType(), activity.getObject().getLitObject());
-        }
-        activity.setObject(new LinkOrObject(createdObject));
-        Activity createdActivity = storage.createActivity(actorName, activity);
+        Activity createdActivity = storage.createActivity(actorName, activity.handle(actorName, activity, storage));
         storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
         if (createdActivity.getTo() != null) {
