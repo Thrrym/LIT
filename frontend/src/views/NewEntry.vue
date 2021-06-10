@@ -14,6 +14,7 @@
     <NewEntryModal
       ref="modal"
       v-bind:newEntry="newEntry"
+      v-bind:requestResponse="requestResponse"
       v-bind:selectedType="selectedType"
     ></NewEntryModal>
     <!-- <NewEntryPrep
@@ -30,7 +31,7 @@ import NewEntryForm from "@/components/NewEntryForm.vue";
 import NewEntryModal from "@/components/NewEntryModal.vue";
 // import NewEntryPrep from "@/components/NewEntryPrep.vue";
 
-import {postNewEntry, test} from "@/js_files/serverCom.js";
+import { postNewEntry } from "@/js_files/serverCom.js";
 
 import newEntryFormContent from "@/js_files/newEntryFormContent.js"; // Import the form contents from seperate JS file.
 
@@ -50,6 +51,7 @@ export default {
       newEntry: "",
       formContent: newEntryFormContent.allTypes,
       showModal: false,
+      requestResponse: Object(),
     };
   },
 
@@ -73,6 +75,7 @@ export default {
       if (this.selectedType === "") return false;
       else return true;
     },
+    
   },
 
   methods: {
@@ -84,17 +87,27 @@ export default {
       this.newEntry = newEntry;
       //this.triggerModal();
       //this.triggerPrep();
-      postNewEntry(this.selectedType, this.newEntry);
-      test();
+      this.sendEntryToBackend();
+      this.triggerModal();
+      
+      //test();
+    },
+    sendEntryToBackend: function () {
+      var httpRequestResponse = postNewEntry(this.selectedType, this.newEntry);
+      this.requestResponse = httpRequestResponse;
     },
     triggerModal: function () {
       // Show the modal.
       // For user feedback.
+      console.log()
       this.$refs.modal.showNewEntryModal();
     },
     triggerPrep: function () {
       this.$refs.prep.preparation();
     },
+    getRequestResponse: function () {
+      return this.requestResponse;
+    }
   },
 };
 </script>
