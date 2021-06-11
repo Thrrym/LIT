@@ -6,6 +6,7 @@
       GET Inbox
     </b-button>
     <ServerComGetInbox ref="inbox" v-on:requestResponse="setRequestResponse"></ServerComGetInbox>
+    <p v-text="getResponse"></p>
   </div>
 </template>
 
@@ -26,11 +27,23 @@ export default {
 
   methods: {
     getInbox: function () {
+      // Get the inbox by triggering function in ServerComGetInbox components.
       this.$refs.inbox.triggerGetInbox();
     },
     setRequestResponse: function (response) {
+      // Handle the event triggered by the ServerComGetInbox component.
       this.requestResponse = response;
     },
+  },
+
+  computed: {
+    getResponse: function () {
+      // Facilitate print of the Inbox.
+      if (this.requestResponse === "") {
+        return "";
+      };
+      return this.requestResponse.responseText
+    }
   }
 
 
