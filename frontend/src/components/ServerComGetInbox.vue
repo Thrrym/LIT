@@ -15,23 +15,13 @@ export default {
     },
 
     props: {
-        selectedType: {
-            required: true,
-        },
-        newEntry: {
-            required: true,
-        }
     },
 
     methods: {
-        triggerServerCom: function () {
+        triggerGetInbox: function () {
             // Get the current user and URL of backend.
-            const backendUrl = getUserUrl().backendUrl;
+            //const backendUrl = getUserUrl().backendUrl;
             const currentUser = getUserUrl().user;
-
-            // Prepare content of the http request. Removes unused properties.
-            var newEntry = prepareNewEntry(this.selectedType, this.newEntry);
-            var json = prepareNewEntryJson(newEntry, backendUrl, currentUser);
 
             // Maintaine reference to this component with `this` via a new reference.
             // Reason: Within httpRequest.onreadystatechange the reference changes to httpRequest.
@@ -42,11 +32,10 @@ export default {
             var httpRequest = new XMLHttpRequest();
 
             // Set the HTTP Method. HTTP Request send via Proxy to backend server.
-            let method = "POST";
-            var apiUrl = getApiUrl() + currentUser + "outbox";
+            let method = "GET";
+            var apiUrl = getApiUrl() + currentUser + "inbox/";
 
             httpRequest.open(method, apiUrl, true);
-            //httpRequest.timeout = 4000;
             httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
             httpRequest.onreadystatechange = function () {
@@ -64,7 +53,7 @@ export default {
                     }
                 }
             }
-            httpRequest.send(JSON.stringify(json)); // Send the HTTP request with the JSON as payload.
+            httpRequest.send(); // Send the HTTP request with no payload.
         },
     
         callbackResponse: function () {
