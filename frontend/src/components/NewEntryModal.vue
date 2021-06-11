@@ -3,8 +3,8 @@
     ref="modal-1"
     v-bind:title="getModalTitle"
     ok-only
-    @ok="resetRequestState">
-    <div v-if="requestSuccess">
+  >
+    <div v-if="wasRequestSuccess">
       <b-iconstack>
         <b-icon stacked icon="square"></b-icon>
         <b-icon stacked icon="check"></b-icon>
@@ -12,6 +12,12 @@
       <!-- <p v-text="getResponseRequest.responseText"></p> -->
     </div>
     <!-- <div><p v-text="getResponseRequest.responseText"></p></div> -->
+    <div v-else>
+      <b-iconstack>
+        <b-icon stacked icon="exclamation-triangle-fill"></b-icon>
+      </b-iconstack>
+      
+    </div>
     
   </b-modal>
 </template>
@@ -22,16 +28,10 @@ export default {
 
   data() {
     return {
-      requestSuccess: false,
-      requestFailure: false,
     }
   },
 
   props: {
-    showModal: {
-      // required: true,
-      type: Boolean,
-    },
     selectedType: {
       required: true,
     },
@@ -40,54 +40,37 @@ export default {
     },
     requestResponse: {
       required: true,
-      type: Object
     }
   },
 
   methods: {
     showNewEntryModal: function () {
-      if (this.getRequestResponse.status == 201) {
-        this.requestSuccess = true;
-        this.requestFailure = false;
-      } else {
-        this.requestFailure = true;
-        this.requestSuccess = false;
-      }
-      
-      // console.log("Test" + "Test" +"Test");
-      //console.log(this.requestResponse);
-      // Show the modal.
+      // Trigger the modal.
       this.$refs["modal-1"].show();
     },
-    resetRequestState: function () {
-      this.requestSuccess = false;
-      this.requestFailure = false;
-    }
+    wasRequestSuccess: function () {
+      // Was the HTTP request a success? Return boolean.
+      if (this.requestResponse.readyState === this.requestResponse.DONE) {
+        let status = this.requestResponse.status;
+        if ((status === 0 || (status >= 200 && status < 400))) {
+          return true;
+        }
+      }
+      return false;
+    },      
   },
 
   computed: {
-    showSuccessMessage: function() {
-      //console.log(this.requestResponse.readystate);
-      //if (this.requestResponse.readystate === 4 && this.requestResponse.status === 201) {
-      //  return 4;
-      //}
-      //else {
-        return "5";
-      //}
-    },
-    getRequestResponse: function() {
-      return this.requestResponse;
-    },
     getModalTitle: function() {
-      if (this.requestSuccess === true) {
+      // Generate title of the modal.
+      if (this.wasRequestSuccess()) {
         return "Your entry was added";
       }
-      return "We could not add your entry";
-    }
-  }
+      return "Error, we could not add your entry";
+      },
+  },
 }
 </script>
 
 <style>
-
 </style>
