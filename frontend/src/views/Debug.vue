@@ -3,7 +3,7 @@
     <b-button
       @click="getInbox"
     >
-      Button
+      GET Inbox
     </b-button>
     <ServerComGetInbox ref="inbox" v-on:requestResponse="setRequestResponse"></ServerComGetInbox>
   </div>
