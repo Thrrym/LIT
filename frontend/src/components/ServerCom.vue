@@ -3,7 +3,6 @@
 </template>
 
 <script>
-
 import { getUserUrl, getApiUrl, prepareNewEntry, prepareNewEntryJson } from "@/js_files/serverCom.js";
 
 export default {
@@ -34,14 +33,13 @@ export default {
             var newEntry = prepareNewEntry(this.selectedType, this.newEntry);
             var json = prepareNewEntryJson(newEntry, backendUrl, currentUser);
 
-            // Maintaine reference to component with this via a new reference.
+            // Maintaine reference to this component with `this` via a new reference.
+            // Reason: Within httpRequest.onreadystatechange the reference changes to httpRequest.
             var component = this
 
             // Create the HTTP Request. Uses xmlhttprequest npm package.
             var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
             var httpRequest = new XMLHttpRequest();
-
-            console.log(json)
 
             // Set the HTTP Method. HTTP Request send via Proxy to backend server.
             let method = "POST";
@@ -52,27 +50,26 @@ export default {
             httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
             httpRequest.onreadystatechange = function () {
-                console.log("readystatechange" + httpRequest.readyState)
+                // How to react on change of the HTTP request.
                 if (httpRequest.readyState === httpRequest.DONE) {
+                    // HTTP request is finished.
                     let status = httpRequest.status;
                     if ((status === 0 || (status >= 200 && status < 400))) {
-                        // The request has been completed successfully
-                        console.log(httpRequest.responseText);
+                        // The request has been completed successfully.
                         component.requestResponse = httpRequest;
+                        // Trigger event.
                         component.callbackResponse();
-                        
                     } else {
                         console.log("error");
                     }
                 }
             }
-            httpRequest.send(JSON.stringify(json));
+            httpRequest.send(JSON.stringify(json)); // Send the HTTP request with the JSON as payload.
         },
     
-
         callbackResponse: function () {
-            console.log("callbackResponse")
-            console.log(this.requestResponse);
+            // Function triggered by the onreadystatechange from the HTTP request.
+            // Emits event to parent component to pass result of the HTTP request back upstream.
             this.$emit("requestResponse", this.requestResponse);
         },
     },
@@ -80,5 +77,4 @@ export default {
 </script>
 
 <style>
-
 </style>
