@@ -15,23 +15,19 @@ export default {
     },
 
     props: {
-        selectedType: {
-            required: true,
-        },
-        newEntry: {
-            required: true,
-        }
     },
 
     methods: {
-        triggerServerCom: function () {
+        triggerServerCom: function (newEntry, selectedType) {
             // Get the current user and URL of backend.
             const backendUrl = getUserUrl().backendUrl;
             const currentUser = getUserUrl().user;
 
             // Prepare content of the http request. Removes unused properties.
-            var newEntry = prepareNewEntry(this.selectedType, this.newEntry);
-            var json = prepareNewEntryJson(newEntry, backendUrl, currentUser);
+            console.log("ServerCom");
+            console.log(newEntry);
+            var cleanNewEntry = prepareNewEntry(selectedType, newEntry);
+            var json = prepareNewEntryJson(cleanNewEntry, backendUrl, currentUser);
 
             // Maintaine reference to this component with `this` via a new reference.
             // Reason: Within httpRequest.onreadystatechange the reference changes to httpRequest.
@@ -64,6 +60,7 @@ export default {
                     }
                 }
             }
+            console.log(json)
             httpRequest.send(JSON.stringify(json)); // Send the HTTP request with the JSON as payload.
         },
     
