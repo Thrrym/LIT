@@ -14,7 +14,7 @@
     <NewEntryModal
       ref="modal"
       v-bind:newEntry="newEntry"
-      v-bind:requestResponse="requestResponse"
+      v-bind:requestResponse="getRequestResponse"
       v-bind:selectedType="selectedType"
     ></NewEntryModal>
     <!-- <NewEntryPrep
@@ -22,6 +22,12 @@
       v-bind:newEntry="newEntry"
       v-bind:selectedType="selectedType"
     ></NewEntryPrep> -->
+    <ServerCom
+      ref="com"
+      v-bind:selectedType="selectedType"
+      v-bind:newEntry="newEntry"
+      v-on:requestResponse="setRequestResponse"
+    ></ServerCom>
   </div>
 </template>
 
@@ -29,9 +35,9 @@
 import TypeSelector from "@/components/TypeSelector.vue";
 import NewEntryForm from "@/components/NewEntryForm.vue";
 import NewEntryModal from "@/components/NewEntryModal.vue";
-// import NewEntryPrep from "@/components/NewEntryPrep.vue";
+import ServerCom from "@/components/ServerCom.vue";
 
-import { postNewEntry } from "@/js_files/serverCom.js";
+//import { postNewEntry } from "@/js_files/serverCom.js";
 
 import newEntryFormContent from "@/js_files/newEntryFormContent.js"; // Import the form contents from seperate JS file.
 
@@ -42,7 +48,7 @@ export default {
     TypeSelector,
     NewEntryForm,
     NewEntryModal,
-    // NewEntryPrep,
+    ServerCom,
   },
 
   data() {
@@ -52,6 +58,7 @@ export default {
       formContent: newEntryFormContent.allTypes,
       showModal: false,
       requestResponse: Object(),
+      //requestResponseState: "",
     };
   },
 
@@ -75,7 +82,9 @@ export default {
       if (this.selectedType === "") return false;
       else return true;
     },
-    
+    getRequestResponse: function () {
+      return this.requestResponse;
+    },    
   },
 
   methods: {
@@ -85,29 +94,36 @@ export default {
     },
     setEntryToBeCreated: function (newEntry) {
       this.newEntry = newEntry;
-      //this.triggerModal();
-      //this.triggerPrep();
       this.sendEntryToBackend();
       this.triggerModal();
-      
-      //test();
     },
     sendEntryToBackend: function () {
-      var httpRequestResponse = postNewEntry(this.selectedType, this.newEntry);
-      this.requestResponse = httpRequestResponse;
+      //postNewEntry(this.selectedType, this.newEntry);
+      this.$refs.com.triggerServerCom();
+
+      //this.requestResponse = httpRequestResponse;
+      //console.log(httpRequestResponse.responseText);
+      //if (httpRequestResponse.DONE === 4 && httpRequestResponse.responseText != "") {
+      //  this.requestResponseState = "success";
+      //} else {
+      //  this.requestResponseState = "failure";
+      //}
     },
     triggerModal: function () {
-      // Show the modal.
-      // For user feedback.
-      console.log()
+      // Show the modal. For user feedback.
+      console.log("Trigger the modal.")
       this.$refs.modal.showNewEntryModal();
     },
-    triggerPrep: function () {
-      this.$refs.prep.preparation();
+    // triggerPrep: function () {
+    //   this.$refs.prep.preparation();
+    // },
+    // getRequestResponse: function () {
+    //   return this.requestResponse;
+    // },
+    setRequestResponse: function(response) {
+      this.requestResponse = response;
+      this.triggerModal();
     },
-    getRequestResponse: function () {
-      return this.requestResponse;
-    }
   },
 };
 </script>
