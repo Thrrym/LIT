@@ -75,6 +75,7 @@ function prepareNewEntry(selectedType, uncleanNewEntry) {
     // Prepare the JSON Object to POST new entry to backend.
     // 1. Remove unused properties.
     let simplifiedObject = new Object();
+    console.log(uncleanNewEntry)
     for (let index = 0; index < uncleanNewEntry.length; index++) {
         const element = uncleanNewEntry[index];
         simplifiedObject[element.name] = element.content;
@@ -86,6 +87,7 @@ function prepareNewEntry(selectedType, uncleanNewEntry) {
 
 function prepareNewEntryJson(simplifiedObject, backendUrl, currentUser) {
     // 1. Construct JSON object containing the info of the new entry.
+    console.log(simplifiedObject)
     let url = backendUrl + currentUser + "outbox/";
     var jsonLitObject = {
         "id": url + "article/" + "1/",
@@ -99,6 +101,7 @@ function prepareNewEntryJson(simplifiedObject, backendUrl, currentUser) {
             jsonLitObject[property] = simplifiedObject[property];
         }
     };
+    console.log(jsonLitObject)
 
     // 2. Construct the main JSON. Contains as object the new entry to lit.
     var jsonMainObject = {
