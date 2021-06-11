@@ -32,8 +32,6 @@ import NewEntryForm from "@/components/NewEntryForm.vue";
 import NewEntryModal from "@/components/NewEntryModal.vue";
 import ServerCom from "@/components/ServerCom.vue";
 
-//import { postNewEntry } from "@/js_files/serverCom.js";
-
 import newEntryFormContent from "@/js_files/newEntryFormContent.js"; // Import the form contents from seperate JS file.
 
 export default {
@@ -53,7 +51,6 @@ export default {
       formContent: newEntryFormContent.allTypes,
       showModal: false,
       requestResponse: Object(),
-      //requestResponseState: "",
     };
   },
 
@@ -88,20 +85,21 @@ export default {
       this.selectedType = type;
     },
     setEntryToBeCreated: function (newEntry) {
+      // Using the form, the user created a new entry. Send the entry to the backend.
+      // Trigger the Modal to give user feedback.
       this.newEntry = newEntry;
       this.sendEntryToBackend();
-      this.triggerModal();
     },
     sendEntryToBackend: function () {
-      //postNewEntry(this.selectedType, this.newEntry);
+      // Trigger the ServerCom component to send the new entry to the backend.
       this.$refs.com.triggerServerCom();
     },
     triggerModal: function () {
       // Show the modal. For user feedback.
-      console.log("Trigger the modal.")
       this.$refs.modal.showNewEntryModal();
     },
     setRequestResponse: function(response) {
+      // Event of ServerCom component shows HTTP result. Trigger modal for user feedback.
       this.requestResponse = response;
       this.triggerModal();
     },
