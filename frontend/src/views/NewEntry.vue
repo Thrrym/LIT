@@ -17,11 +17,6 @@
       v-bind:requestResponse="getRequestResponse"
       v-bind:selectedType="selectedType"
     ></NewEntryModal>
-    <!-- <NewEntryPrep
-      ref="prep"
-      v-bind:newEntry="newEntry"
-      v-bind:selectedType="selectedType"
-    ></NewEntryPrep> -->
     <ServerCom
       ref="com"
       v-bind:selectedType="selectedType"
@@ -100,26 +95,12 @@ export default {
     sendEntryToBackend: function () {
       //postNewEntry(this.selectedType, this.newEntry);
       this.$refs.com.triggerServerCom();
-
-      //this.requestResponse = httpRequestResponse;
-      //console.log(httpRequestResponse.responseText);
-      //if (httpRequestResponse.DONE === 4 && httpRequestResponse.responseText != "") {
-      //  this.requestResponseState = "success";
-      //} else {
-      //  this.requestResponseState = "failure";
-      //}
     },
     triggerModal: function () {
       // Show the modal. For user feedback.
       console.log("Trigger the modal.")
       this.$refs.modal.showNewEntryModal();
     },
-    // triggerPrep: function () {
-    //   this.$refs.prep.preparation();
-    // },
-    // getRequestResponse: function () {
-    //   return this.requestResponse;
-    // },
     setRequestResponse: function(response) {
       this.requestResponse = response;
       this.triggerModal();
