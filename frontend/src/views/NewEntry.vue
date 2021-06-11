@@ -19,8 +19,6 @@
     ></NewEntryModal>
     <ServerCom
       ref="com"
-      v-bind:selectedType="selectedType"
-      v-bind:newEntry="newEntry"
       v-on:requestResponse="setRequestResponse"
     ></ServerCom>
   </div>
@@ -47,7 +45,7 @@ export default {
   data() {
     return {
       selectedType: "",
-      newEntry: "",
+      newEntry: [],
       formContent: newEntryFormContent.allTypes,
       showModal: false,
       requestResponse: Object(),
@@ -76,7 +74,13 @@ export default {
     },
     getRequestResponse: function () {
       return this.requestResponse;
-    },    
+    },
+    getNewEntry: function () {
+      return this.newEntry;
+    },
+    getSelectedType: function () {
+      return this.selectedType;
+    }    
   },
 
   methods: {
@@ -84,15 +88,15 @@ export default {
       // Type as selected by the selector. To be set as variable in the NewEntry component.
       this.selectedType = type;
     },
-    setEntryToBeCreated: function (newEntry) {
+    setEntryToBeCreated: function (entry) {
       // Using the form, the user created a new entry. Send the entry to the backend.
-      // Trigger the Modal to give user feedback.
-      this.newEntry = newEntry;
+      this.newEntry = entry;
+      console.log(this.newEntry);
       this.sendEntryToBackend();
     },
     sendEntryToBackend: function () {
       // Trigger the ServerCom component to send the new entry to the backend.
-      this.$refs.com.triggerServerCom();
+      this.$refs.com.triggerServerCom(this.newEntry, this.getSelectedType);
     },
     triggerModal: function () {
       // Show the modal. For user feedback.
