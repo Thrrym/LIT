@@ -12,7 +12,8 @@
     "core-js": "^3.6.5",
     "vue": "^2.6.11",
     "vue-loader": "^15.9.7",
-    "vue-router": "^3.2.0"
+    "vue-router": "^3.2.0",
+    "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",
@@ -42,7 +43,9 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "no-console": "off"
+    }
   },
   "browserslist": [
     "> 1%",

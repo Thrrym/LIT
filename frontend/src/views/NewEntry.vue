@@ -14,8 +14,13 @@
     <NewEntryModal
       ref="modal"
       v-bind:newEntry="newEntry"
+      v-bind:requestResponse="getRequestResponse"
       v-bind:selectedType="selectedType"
     ></NewEntryModal>
+    <ServerCom
+      ref="com"
+      v-on:requestResponse="setRequestResponse"
+    ></ServerCom>
   </div>
 </template>
 
@@ -23,6 +28,8 @@
 import TypeSelector from "@/components/TypeSelector.vue";
 import NewEntryForm from "@/components/NewEntryForm.vue";
 import NewEntryModal from "@/components/NewEntryModal.vue";
+import ServerCom from "@/components/ServerCom.vue";
+
 import newEntryFormContent from "@/js_files/newEntryFormContent.js"; // Import the form contents from seperate JS file.
 
 export default {
@@ -32,14 +39,16 @@ export default {
     TypeSelector,
     NewEntryForm,
     NewEntryModal,
+    ServerCom,
   },
 
   data() {
     return {
       selectedType: "",
-      newEntry: "",
+      newEntry: [],
       formContent: newEntryFormContent.allTypes,
       showModal: false,
+      requestResponse: Object(),
     };
   },
 
@@ -63,6 +72,15 @@ export default {
       if (this.selectedType === "") return false;
       else return true;
     },
+    getRequestResponse: function () {
+      return this.requestResponse;
+    },
+    getNewEntry: function () {
+      return this.newEntry;
+    },
+    getSelectedType: function () {
+      return this.selectedType;
+    }    
   },
 
   methods: {
@@ -70,14 +88,24 @@ export default {
       // Type as selected by the selector. To be set as variable in the NewEntry component.
       this.selectedType = type;
     },
-    setEntryToBeCreated: function (newEntry) {
-      this.newEntry = newEntry;
-      this.triggerModal();
+    setEntryToBeCreated: function (entry) {
+      // Using the form, the user created a new entry. Send the entry to the backend.
+      this.newEntry = entry;
+      console.log(this.newEntry);
+      this.sendEntryToBackend();
+    },
+    sendEntryToBackend: function () {
+      // Trigger the ServerCom component to send the new entry to the backend.
+      this.$refs.com.triggerServerCom(this.newEntry, this.getSelectedType);
     },
     triggerModal: function () {
-      // Show the modal.
-      // For user feedback.
+      // Show the modal. For user feedback.
       this.$refs.modal.showNewEntryModal();
+    },
+    setRequestResponse: function(response) {
+      // Event of ServerCom component shows HTTP result. Trigger modal for user feedback.
+      this.requestResponse = response;
+      this.triggerModal();
     },
   },
 };
