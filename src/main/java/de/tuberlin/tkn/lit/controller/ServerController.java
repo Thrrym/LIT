@@ -2,6 +2,9 @@ package de.tuberlin.tkn.lit.controller;
 
 import de.tuberlin.tkn.lit.storage.IStorage;
 import de.tuberlin.tkn.lit.model.*;
+import de.tuberlin.tkn.lit.model.activities.*;
+import de.tuberlin.tkn.lit.model.litobjects.BibTeXArticle;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -37,8 +40,31 @@ public class ServerController {
         // post activity to the actors inbox
     	storage.addToInbox(actorname, new LinkOrObject(activity));
         
+    	if(activity instanceof Create) {
+    		Create createActivity = (Create) activity;
+    		LinkOrObject toSave = createActivity.getObject();
+    		
+    		//TODO: add toSave to user's documents
+    		//storage.addToUserObjects(actorname, toSave);
+    	}
+    	else if(activity instanceof Like) {
+    		LinkOrObject localAbout = null;//storage.getUserObject(actorname, activity.getObject().getId());
+    		if(localAbout.isObject()) {
+    			LitObject localObj = localAbout.getLitObject();
+    			if(localObj instanceof BibTeXArticle)
+    			{
+    				/*
+    				if(!((BibTeXArticle)localObj).likedBy().contains(activity.getActor())
+    				{
+    					((BibTeXArticle)localObj).likedBy().add(activity.getActor());
+    					((BibTeXArticle)localObj).likes++;
+					}
+					*/
+    			}
+    		}
+    	}
+        
         // TODO: notify client
-        // TODO: process side effects
     }
 
     /**

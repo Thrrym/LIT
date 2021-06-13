@@ -36,4 +36,8 @@ public class LinkOrObject {
     public void setLitObject(LitObject litObject) {
         this.litObject = litObject;
     }
+    
+    public String getId() {
+    	return isObject() ? litObject.getId() : link;
+    }
 }
