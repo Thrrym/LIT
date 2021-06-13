@@ -9,12 +9,12 @@ public abstract class Actor extends LitObject {
     private String outbox;
     private String following;
     private String followers;
-    private String liked;
+    private OrderedCollection liked;
 
     public Actor() {
     }
 
-    public Actor(String inbox, String outbox, String following, String followers, String liked) {
+    public Actor(String inbox, String outbox, String following, String followers, OrderedCollection liked) {
         this.inbox = inbox;
         this.outbox = outbox;
         this.following = following;
@@ -37,7 +37,8 @@ public abstract class Actor extends LitObject {
         outbox = UriConstants.HOST + actorName + UriConstants.OUTBOX;
         following = UriConstants.HOST + actorName + UriConstants.FOLLOWING;
         followers = UriConstants.HOST + actorName + UriConstants.FOLLOWERS;
-        liked = UriConstants.HOST + actorName + UriConstants.LIKED;
+        liked = this.getLikes();
+        //liked = UriConstants.HOST + actorName + UriConstants.LIKED;
     }
 
     public String getInbox() {
@@ -72,11 +73,11 @@ public abstract class Actor extends LitObject {
         this.followers = followers;
     }
 
-    public String getLiked() {
+    public OrderedCollection getLiked() {
         return liked;
     }
 
-    public void setLiked(String liked) {
+    public void setLiked(OrderedCollection liked) {
         this.liked = liked;
     }
 }

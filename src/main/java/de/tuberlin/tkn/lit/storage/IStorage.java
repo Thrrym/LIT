@@ -23,6 +23,7 @@ public interface IStorage {
 
     void addToOutbox(String actorName, LinkOrObject toAdd);
 
+
     Activity getActivity(UUID id);
 
     Activity createActivity(String actorName, Activity activity);
@@ -30,4 +31,7 @@ public interface IStorage {
     LitObject getObject(UUID id);
 
     LitObject createObject(String actorName, String objectType, LitObject object);
+
+    LitObject updateObject(String actorName, LitObject object);
+
 }

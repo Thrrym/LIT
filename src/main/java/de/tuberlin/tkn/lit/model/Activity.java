@@ -1,14 +1,24 @@
 package de.tuberlin.tkn.lit.model;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.tuberlin.tkn.lit.deserializer.LinkOrObjectDeserializer;
+import de.tuberlin.tkn.lit.processing.IActivitySender;
 import de.tuberlin.tkn.lit.serializer.LinkOrObjectSerializer;
+import de.tuberlin.tkn.lit.storage.IStorage;
+import de.tuberlin.tkn.lit.util.UriUtilities;
+
+import java.util.List;
+import java.util.logging.Logger;
 
 public abstract class Activity extends LitObject {
+
+    @JsonIgnore
+    private final Logger logger = Logger.getLogger(this.getClass().getName());
 
     private LinkOrObject actor;
     private LinkOrObject object;
@@ -36,6 +46,32 @@ public abstract class Activity extends LitObject {
         this.result = activity.result;
         this.origin = activity.origin;
         this.instrument = activity.instrument;
+    }
+
+    public abstract Activity handle(String actorName, IStorage storage);
+
+    public void handleSendings(IStorage storage, IActivitySender activitySender) {
+        handleSendingsIntern(getTo(), storage, activitySender);
+        handleSendingsIntern(getCc(), storage, activitySender);
+        handleSendingsIntern(getBto(), storage, activitySender);
+        handleSendingsIntern(getBcc(), storage, activitySender);
+    }
+
+    private void handleSendingsIntern(List<LinkOrObject> list, IStorage storage, IActivitySender activitySender) {
+        if (list != null) {
+            for (LinkOrObject linkOrObject : list) {
+                if (UriUtilities.isLocaleServer(linkOrObject.getLink())) {
+                    try {
+                        OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
+                        inbox.getOrderedItems().add(new LinkOrObject(this));
+                    } catch (NullPointerException ex) {
+                        logger.warning("The inbox for the actor '" + linkOrObject.getLink() + "' could not be found.");
+                    }
+                } else {
+                    activitySender.send(this);
+                }
+            }
+        }
     }
 
     public LinkOrObject getActor() {
