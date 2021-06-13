@@ -39,15 +39,18 @@ export default {
       }
     },
     methods: {
+      // Method to manipulate the vuex store.
       setUser1: function () {
         this.$store.commit("setUser01");
       },
       setUser2: function () {
+        // Method to manipulate the vuex store.
         this.$store.commit("setUser02");
       },
     },
     computed: {
       getCurrentUser: function () {
+        // Get user from the vuex store an remove last slash.
         return this.$store.state.currentUser.split("/")[0];
       },
     },
