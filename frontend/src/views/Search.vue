@@ -1,6 +1,8 @@
 <template>
 <div>
-    <input type="text" placeholder="Search...">
+    <form>
+        <input type="text" placeholder="Search...">
+    </form>
     <div id="results">
         <SearchResult></SearchResult>
     </div>
@@ -9,6 +11,13 @@
 
 <script>
 import SearchResult from "@/components/SearchResult.vue";
+
+export default {
+    name: "Search",
+    components: {
+        SearchResult,
+    },
+}
 </script>
 
 <style>

@@ -11,13 +11,14 @@
 
 <script>
 export default {
+  name: "SearchResult",
   data () {
     return {
       title: "Title",
       publisher: "Publisher",
       info: "Info",
     }
-  }
+  },
 }
 </script>
 
