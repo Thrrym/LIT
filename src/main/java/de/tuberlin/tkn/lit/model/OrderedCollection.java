@@ -6,6 +6,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import de.tuberlin.tkn.lit.serializer.ArraySerializer;
 import de.tuberlin.tkn.lit.deserializer.ArrayDeserializer;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import de.tuberlin.tkn.lit.serializer.ArraySerializer;
+
 import java.util.List;
 
 public class OrderedCollection extends LitCollection {
@@ -25,6 +30,12 @@ public class OrderedCollection extends LitCollection {
         super();
         this.orderedItems = orderedItems;
         this.setType("OrderedCollection");
+    }
+
+    @JsonGetter("orderedItems")
+    public List<JsonNode> toJSONOrderedItems() throws JsonProcessingException {
+        if (orderedItems == null) return null;
+        return ArraySerializer.serialize(orderedItems);
     }
 
     public List<LinkOrObject> getOrderedItems() {

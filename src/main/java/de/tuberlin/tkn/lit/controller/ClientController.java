@@ -55,6 +55,16 @@ public class ClientController {
         return storage.getInbox(actorname);
     }
 
+    @RequestMapping(value = "/{actorname}/objects", method = RequestMethod.GET)
+    public OrderedCollection getObjectsCreatedByActor(@PathVariable("actorname") String actorname) {
+        return storage.getObjectsCreatedByActor(actorname);
+    }
+
+    @RequestMapping(value = "/{actorname}/relevantobjects", method = RequestMethod.GET)
+    public OrderedCollection getRelevantObjects(@PathVariable("actorname") String actorname) {
+        return storage.getRelevantObjects(actorname);
+    }
+
     @RequestMapping(value = "/{actorname}/{id}", method = RequestMethod.GET)
     public Activity getActivity(@PathVariable("actorname") String actorname, @PathVariable("id") UUID id) {
         return storage.getActivity(id);
@@ -85,6 +95,8 @@ public class ClientController {
                 if (UriUtilities.isLocaleServer(linkOrObject.getLink())) {
                     OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
                     inbox.getOrderedItems().add(new LinkOrObject(createdActivity));
+                    OrderedCollection relevantObjects = storage.getRelevantObjects(UriUtilities.getActor(linkOrObject.getLink()));
+                    relevantObjects.getOrderedItems().add(createdActivity.getObject());
                 } else {
                     activitySender.send(createdActivity, linkOrObject);
                 }
@@ -96,6 +108,8 @@ public class ClientController {
                 if (UriUtilities.isLocaleServer(linkOrObject.getLink())) {
                     OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
                     inbox.getOrderedItems().add(new LinkOrObject(createdActivity));
+                    OrderedCollection relevantObjects = storage.getRelevantObjects(UriUtilities.getActor(linkOrObject.getLink()));
+                    relevantObjects.getOrderedItems().add(createdActivity.getObject());
                 } else {
                     activitySender.send(createdActivity, linkOrObject);
                 }
