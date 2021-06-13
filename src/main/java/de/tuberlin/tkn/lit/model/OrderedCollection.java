@@ -42,12 +42,6 @@ public class OrderedCollection extends LitCollection {
         return orderedItems;
     }
 
-    //serialize
-    @JsonGetter("orderedItems")
-    public List<String> getJson() throws JsonProcessingException {
-        return ArraySerializer.serialize(this.orderedItems);
-    }
-
     // deserialize
     @JsonSetter("orderedItems")
     public void setJson(JsonNode s) throws JsonProcessingException {

@@ -1,6 +1,9 @@
 package de.tuberlin.tkn.lit.model.litobjects;
 
+import de.tuberlin.tkn.lit.model.LinkOrObject;
 import de.tuberlin.tkn.lit.model.LitObject;
+
+import java.util.List;
 
 public class BibTeXArticle extends LitObject {
 
@@ -9,6 +12,9 @@ public class BibTeXArticle extends LitObject {
     private String journal;
     private String year;
     private String volume;
+
+    public int likes;
+    public List<LinkOrObject> likedBy;
 
     public BibTeXArticle() {
     }

@@ -8,6 +8,8 @@ import de.tuberlin.tkn.lit.model.litobjects.BibTeXArticle;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+
 @RestController
 public class ServerController {
 
@@ -43,23 +45,22 @@ public class ServerController {
     	if(activity instanceof Create) {
     		Create createActivity = (Create) activity;
     		LinkOrObject toSave = createActivity.getObject();
-    		
-    		//TODO: add toSave to user's documents
-    		//storage.addToUserObjects(actorname, toSave);
+
+			List<LinkOrObject> items = storage.getRelevantObjects(actorname).getOrderedItems();
+    		if(items.stream().noneMatch((item) -> item.getId().equals(toSave.getId())))
+    			items.add(toSave);
     	}
     	else if(activity instanceof Like) {
-    		LinkOrObject localAbout = null;//storage.getUserObject(actorname, activity.getObject().getId());
-    		if(localAbout.isObject()) {
+    		LinkOrObject localAbout = storage.getRelevantObjects(actorname).getOrderedItems().stream().filter((item) -> item.getId().equals(activity.getObject().getId())).findFirst().orElse(null);
+			if(localAbout != null && localAbout.isObject()) {
     			LitObject localObj = localAbout.getLitObject();
     			if(localObj instanceof BibTeXArticle)
     			{
-    				/*
-    				if(!((BibTeXArticle)localObj).likedBy().contains(activity.getActor())
+    				if(!((BibTeXArticle)localObj).likedBy.contains(activity.getActor()))
     				{
-    					((BibTeXArticle)localObj).likedBy().add(activity.getActor());
+    					((BibTeXArticle)localObj).likedBy.add(activity.getActor());
     					((BibTeXArticle)localObj).likes++;
 					}
-					*/
     			}
     		}
     	}
