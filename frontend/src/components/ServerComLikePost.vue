@@ -91,7 +91,7 @@ export default {
                 }
             }
             console.log(json)
-            //httpRequest.send(JSON.stringify(json)); // Send the HTTP request with the JSON as payload.
+            httpRequest.send(JSON.stringify(json)); // Send the HTTP request with the JSON as payload.
         },
     
         callbackResponse: function () {
@@ -118,7 +118,7 @@ export default {
                 // "id": objectJson["id"],
                 "actor": backendUrl + currentUser,
                 // "published": getCurrentTime(),
-                "cc": [backendUrl + currentUser + "follower/", backendUrl + "testuser02/"],
+                "cc": [backendUrl + currentUser + "follower/"],
                 "object": objectJson["id"]
             };
             return jsonObject
