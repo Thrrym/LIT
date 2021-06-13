@@ -110,16 +110,15 @@ export default {
             // Prepare the json as http payload.
             // let url = backendUrl + currentUser + "outbox/";
             let objectJson = JSON.parse(this.objectRequestResponse.responseText); // Transform the base object from string to JSON.
-            //console.log(JSON.parse(this.objectRequestResponse.responseText));
-
+            console.log("objectJson");
+            console.log(objectJson.object.attributedTo);
+            
             var jsonObject = {
                 "@context": "https://www.w3.org/ns/activitystreams/",
                 "type": "Like",
-                // "id": objectJson["id"],
                 "actor": backendUrl + currentUser,
-                // "published": getCurrentTime(),
-                "cc": [backendUrl + currentUser + "follower/"],
-                "object": objectJson["id"]
+                "to": objectJson.object.attributedTo,
+                "object": objectJson.id
             };
             return jsonObject
         }
