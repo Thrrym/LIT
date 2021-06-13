@@ -34,7 +34,7 @@ postOutbox() {
 
 getInbox() {
     port_from = $1
-    curl -i -H "Content-Type: application/json" -X GET "http://localhost:$port/testuser01/inbox"
+    curl -i -H "Content-Type: application/json" -X GET "http://localhost:$port_from/testuser01/inbox"
 }
 
 # main
