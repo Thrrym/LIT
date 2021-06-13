@@ -3,7 +3,6 @@
     <section id="Profile">
       <Profile :users="users" />
       <Eintraege
-        :user="user"
         :users="users"
         :posts="posts"
         :jusers="jusers"
