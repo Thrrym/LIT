@@ -49,7 +49,7 @@ export default {
                         // Trigger event.
                         component.callbackResponse();
                     } else {
-                        console.log("error");
+                        component.callbackError();
                     }
                 }
             }
@@ -60,6 +60,12 @@ export default {
             // Function triggered by the onreadystatechange from the HTTP request.
             // Emits event to parent component to pass result of the HTTP request back upstream.
             this.$emit("requestResponse", this.requestResponse);
+        },
+
+        callbackError: function () {
+            // Function triggered by the onreadystatechange from the HTTP request.
+            // Emits error to parent component back upstream.
+            this.$emit("requestResponse", "error");
         },
     },
 }
