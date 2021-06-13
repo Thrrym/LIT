@@ -33,6 +33,8 @@ public class ServerToServerCommunicator implements IActivitySender{
 				return true;
 			}
 
+			// TODO : handle post wasn't successful
+
 			return false;
 		});
 	}
@@ -43,13 +45,14 @@ public class ServerToServerCommunicator implements IActivitySender{
 	* @return the ordered collection that is the outbox
     */
 	@Override
-	public OrderedCollection getOutbox(LinkOrObject getFrom) {
-		String url = getFrom.getLink() + "/outbox";
-		
-		// send get request
-    	RestTemplate restTemplate = new RestTemplate();
-    	ResponseEntity<OrderedCollection> result = restTemplate.getForEntity(url, OrderedCollection.class);
-		
-		return result.getBody();
+	public Future<OrderedCollection> getOutbox(LinkOrObject getFrom) {
+		return executor.submit(() -> {
+			String url = getFrom.getLink() + "/outbox";
+			
+			// send get request
+    		RestTemplate restTemplate = new RestTemplate();
+    		ResponseEntity<OrderedCollection> result = restTemplate.getForEntity(url, OrderedCollection.class);
+			return result.getBody();
+		});
 	}
 }
