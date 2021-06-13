@@ -19,12 +19,8 @@ export default {
 
     methods: {
         triggerGetObject: function (objectUrl) {
-            // const apiObjectUrl = this.getApiObjectUrl(objectUrl);
-
-            // Get the current user and URL of backend.
-            // const backendUrl = getUserUrl().backendUrl;
-            // const currentUser = getUserUrl().user;
-
+            // Get the Object from the backend based on a provided URL.
+        
             // Maintaine reference to this component with `this` via a new reference.
             // Reason: Within httpRequest.onreadystatechange the reference changes to httpRequest.
             var component = this
@@ -35,7 +31,6 @@ export default {
 
             // Set the HTTP Method. HTTP Request send via Proxy to backend server.
             let method = "GET";
-            // var apiUrl = getApiUrl() + currentUser + objectUrl;
             var apiUrl = this.getApiObjectUrl(objectUrl);
 
             httpRequest.open(method, apiUrl, true);
@@ -74,6 +69,7 @@ export default {
 
         getApiObjectUrl: function (objectUrl) {
             // Construct correct API URL based on provided identifing URL of the object.
+            // Slice the provided URL and construct a valid backend URL as used by the proxy. 
             let apiUrl = getApiUrl()            
             return apiUrl + objectUrl.split("/").slice(1).slice(-2).join("/")
         },
