@@ -4,15 +4,14 @@ import de.tuberlin.tkn.lit.model.*;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class Storage implements IStorage {
     private final Map<String, OrderedCollection> outboxes = new HashMap<>();
     private final Map<String, OrderedCollection> inboxes = new HashMap<>();
+    private final Map<String, OrderedCollection> relevantObjects = new HashMap<>();
     private final Map<String, OrderedCollection> likes = new HashMap<>();
     private final Map<String, Actor> actors = new HashMap<>();
     private final Map<UUID, Activity> activities = new HashMap<>();
@@ -44,6 +43,18 @@ public class Storage implements IStorage {
 
 
     @Override
+    public OrderedCollection getObjectsCreatedByActor(String actorName) {
+        String actorId = getActor(actorName).getId();
+        List<LinkOrObject> results = objects.values().stream().filter(value -> value.getGenerator().getLink().equals(actorId)).map(LinkOrObject::new).collect(Collectors.toList());
+        return new OrderedCollection(results);
+    }
+
+    @Override
+    public OrderedCollection getRelevantObjects(String actorName) {
+        return relevantObjects.get(actorName);
+    }
+
+    @Override
     public void addToInbox(String actorName, LinkOrObject toAdd) {
         inboxes.get(actorName).getOrderedItems().add(toAdd);
     }
@@ -62,6 +73,7 @@ public class Storage implements IStorage {
         actors.put(actor.getName(), actor);
         outboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         inboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
+        relevantObjects.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         return actors.get(actor.getName());
     }
 
@@ -100,6 +112,8 @@ public class Storage implements IStorage {
         UUID uuid = UUID.randomUUID();
         String id = UriUtilities.generateId(new String[]{actorName, objectType}, uuid);
         object.setId(id);
+        String actorId = getActor(actorName).getId();
+        object.setGenerator(new LinkOrObject(actorId));
         objects.put(uuid, object);
         return objects.get(uuid);
     }

@@ -9,6 +9,7 @@ import de.tuberlin.tkn.lit.model.actors.*;
 import de.tuberlin.tkn.lit.model.litobjects.BibTeXArticle;
 import de.tuberlin.tkn.lit.model.objects.*;
 import de.tuberlin.tkn.lit.serializer.ArraySerializer;
+import de.tuberlin.tkn.lit.serializer.LinkOrObjectSerializer;
 
 import java.util.List;
 
@@ -73,7 +74,7 @@ public abstract class LitObject {
     private String content;
     private String startTime;
     private String endTime;
-    private List<LinkOrObject> generator;
+    private LinkOrObject generator;
     private List<LinkOrObject> icon;
     private List<LinkOrObject> image;
     private List<LinkOrObject> inReplyTo;
@@ -127,7 +128,7 @@ public abstract class LitObject {
     }
 
     @JsonGetter("attributedTo")
-    public List<String> toJSONAttributedTo() throws JsonProcessingException {
+    public List<JsonNode> toJSONAttributedTo() throws JsonProcessingException {
         if (attributedTo == null) return null;
         return ArraySerializer.serialize(attributedTo);
     }
@@ -197,11 +198,17 @@ public abstract class LitObject {
         this.endTime = endTime;
     }
 
-    public List<LinkOrObject> getGenerator() {
+    @JsonGetter("generator")
+    public JsonNode toJSONGenerator() throws JsonProcessingException {
+        if (generator == null) return null;
+        return LinkOrObjectSerializer.serialize(generator);
+    }
+
+    public LinkOrObject getGenerator() {
         return generator;
     }
 
-    public void setGenerator(List<LinkOrObject> generator) {
+    public void setGenerator(LinkOrObject generator) {
         this.generator = generator;
     }
 
@@ -306,7 +313,7 @@ public abstract class LitObject {
     }
 
     @JsonGetter("to")
-    public List<String> toJSONTo() throws JsonProcessingException {
+    public List<JsonNode> toJSONTo() throws JsonProcessingException {
         if (to == null) return null;
         return ArraySerializer.serialize(to);
     }
@@ -325,7 +332,7 @@ public abstract class LitObject {
     }
 
     @JsonGetter("bto")
-    public List<String> toJSONBto() throws JsonProcessingException {
+    public List<JsonNode> toJSONBto() throws JsonProcessingException {
         if (bto == null) return null;
         return ArraySerializer.serialize(bto);
     }
@@ -348,7 +355,7 @@ public abstract class LitObject {
     }
 
     @JsonGetter("cc")
-    public List<String> toJSONCc() throws JsonProcessingException {
+    public List<JsonNode> toJSONCc() throws JsonProcessingException {
         if (cc == null) return null;
         return ArraySerializer.serialize(cc);
     }
@@ -363,7 +370,7 @@ public abstract class LitObject {
     }
 
     @JsonGetter("bcc")
-    public List<String> toJSONBcc() throws JsonProcessingException {
+    public List<JsonNode> toJSONBcc() throws JsonProcessingException {
         if (bcc == null) return null;
         return ArraySerializer.serialize(bcc);
     }

@@ -15,6 +15,9 @@ public interface IStorage {
 
     OrderedCollection getOutbox(String actorName);
 
+    OrderedCollection getObjectsCreatedByActor(String actorName);
+
+    OrderedCollection getRelevantObjects(String actorName);
 
     void addToInbox(String actorName, LinkOrObject toAdd);
 
