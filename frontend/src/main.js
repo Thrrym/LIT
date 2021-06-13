@@ -22,6 +22,7 @@ const store = new Vuex.Store({
   state: {
     currentUser: "testuser01/",
     backendUrl: "http://localhost:8080/",
+    proxyBackendUrl: "http://localhost:8081/api/",
   },
   mutations: {
     setUser01 (state) {
