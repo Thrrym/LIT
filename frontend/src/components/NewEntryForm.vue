@@ -57,6 +57,37 @@
         </b-form-group>
       </b-card>
 
+      <b-button
+        variant="outline-primary"
+        v-on:click="setShowCcField"
+      >
+        CC
+      </b-button>
+
+      <!-- Optional Fields. -->
+      <b-card bg-varint="light" v-if="showOptionalFields">
+        <b-form-group
+          v-if="showOptionalFields"
+          label="Optional Fields"
+          label-cols-lg="3"
+          label-size="lg"
+          lable-class="font-weight-bold pt-0"
+        >
+          <b-form-group
+            v-for="field in getOptionalFields"
+            v-bind:key="field.id"
+            v-bind:label="field.label"
+            label-cols-sm="3"
+            label-align-sm="right"
+          >
+            <b-form-input
+              v-model="field.content"
+              v-bind:required="field.required"
+            ></b-form-input>
+          </b-form-group>
+        </b-form-group>
+      </b-card>
+
       <!-- Submit Button -->
       <b-button type="submit" variant="primary">Create new entry</b-button>
     </b-form>
@@ -88,6 +119,7 @@ export default {
   data() {
     return {
       showOptionalFields: false,
+      showCcField: false,
     };
   },
 
@@ -127,6 +159,9 @@ export default {
     },
     resetOptionalFieldsButton: function () {
       this.showOptionalFields = false;
+    },
+    setShowCcField: function () {
+
     },
   },
 };
