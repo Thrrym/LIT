@@ -5,15 +5,26 @@
     >
       GET Inbox
     </b-button>
-    <b-form @submit="onSubmit">
+
+    <b-form @submit="onSubmitGetObject">
       <b-form-group label="Object URL" label-for="input-1">
-        <b-form-input id="input-1" v-model="objectUrl" requiered placeholder="Object">
+        <b-form-input id="input-1" v-model="objectUrl" required placeholder="Object">
         </b-form-input>
       <b-button type="submit" variant="primary">GET Object</b-button>
       </b-form-group>
     </b-form>
+
+    <b-form @submit="onSubmitLikeObject">
+      <b-form-group label="Object URL" label-for="input-2">
+        <b-form-input id="input-2" v-model="objectUrl" required placeholder="Object">
+        </b-form-input>
+      <b-button type="submit" variant="primary">Like Object</b-button>
+      </b-form-group>
+    </b-form>
+
     <ServerComGetInbox ref="inbox" v-on:requestResponse="setRequestResponse"></ServerComGetInbox>
     <ServerComGetObject ref="object" v-on:requestResponse="setRequestResponse"></ServerComGetObject>
+    <ServerComLikePost ref="like" v-on:requestResponse="setRequestResponse"></ServerComLikePost>
     <p v-text="getResponse"></p>
   </div>
 </template>
@@ -21,6 +32,7 @@
 <script>
 import ServerComGetInbox from "@/components/ServerComGetInbox.vue";
 import ServerComGetObject from "@/components/ServerComGetObject.vue";
+import ServerComLikePost from "@/components/ServerComLikePost.vue";
 
 export default {
   name: "Debug",
@@ -34,6 +46,7 @@ export default {
   components: {
     ServerComGetInbox,
     ServerComGetObject,
+    ServerComLikePost,
   },
 
   methods: {
@@ -45,12 +58,18 @@ export default {
       // Handle the event triggered by the ServerComGetInbox component.
       this.requestResponse = response;
     },
-    onSubmit: function() {
+    onSubmitGetObject: function() {
       this.getObject();
     },
     getObject: function() {
       this.$refs.object.triggerGetObject(this.objectUrl);
-    }
+    },
+    onSubmitLikeObject: function () {
+      this.likeObject();
+    },
+    likeObject: function() {
+      this.$refs.like.triggerLikePost(this.objectUrl);
+    },
 
   },
 
