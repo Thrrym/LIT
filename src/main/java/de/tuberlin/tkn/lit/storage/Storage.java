@@ -42,10 +42,6 @@ public class Storage implements IStorage {
         return outboxes.get(actorName);
     }
 
-    @Override
-    public OrderedCollection likeCollection(String actorName) {
-        return likes.get(actorName);
-    }
 
     @Override
     public void addToInbox(String actorName, LinkOrObject toAdd) {
@@ -57,10 +53,6 @@ public class Storage implements IStorage {
         outboxes.get(actorName).getOrderedItems().add(toAdd);
     }
 
-    @Override
-    public void addToLikeCollection(String actorName, LinkOrObject toAdd) {
-        likes.get(actorName).getOrderedItems().add(toAdd);
-    }
 
     @Override
     public Actor createActor(Actor actor) {
@@ -119,4 +111,5 @@ public class Storage implements IStorage {
         objects.put(uuid, object);
         return objects.get(uuid);
     }
+
 }

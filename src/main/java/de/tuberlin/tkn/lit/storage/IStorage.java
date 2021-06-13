@@ -15,13 +15,11 @@ public interface IStorage {
 
     OrderedCollection getOutbox(String actorName);
 
-    OrderedCollection likeCollection(String actorName);
 
     void addToInbox(String actorName, LinkOrObject toAdd);
 
     void addToOutbox(String actorName, LinkOrObject toAdd);
 
-    void addToLikeCollection(String actorName, LinkOrObject toAdd);
 
     Activity getActivity(UUID id);
 

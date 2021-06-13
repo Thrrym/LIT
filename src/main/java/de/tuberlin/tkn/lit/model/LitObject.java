@@ -83,6 +83,8 @@ public abstract class LitObject {
     private String published;
     private LitCollection replies;
     private List<LinkOrObject> tag;
+    private OrderedCollection likes;
+    private int like;
     private String summary;
     private String updated;
     private List<LinkOrObject> url;
@@ -137,6 +139,22 @@ public abstract class LitObject {
     @JsonSetter("attributedTo")
     public void attributedTo(JsonNode s) throws JsonProcessingException {
         attributedTo = ArrayDeserializer.deserialize(s);
+    }
+
+    public OrderedCollection getLikes() {
+        return likes;
+    }
+
+    public void setLikes(OrderedCollection likes) {
+        this.likes = likes;
+    }
+
+    public int getLike() {
+        return like;
+    }
+
+    public void setLike(int like) {
+        this.like = like;
     }
 
     public List<LinkOrObject> getAudience() {

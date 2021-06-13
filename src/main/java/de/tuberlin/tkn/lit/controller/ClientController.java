@@ -77,13 +77,13 @@ public class ClientController {
 
         return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
     }
-    
-    @RequestMapping(value = "/{actorname}/liked", method = RequestMethod.GET)
+
+   /* @RequestMapping(value = "/{actorname}/liked", method = RequestMethod.GET)
     public OrderedCollection getLikeCollection(@PathVariable("actorname") String actorname) {
         return storage.likeCollection(actorname);
     }
 
-    /*@RequestMapping(value = "/{actorname}/following", method = RequestMethod.GET)
+    @RequestMapping(value = "/{actorname}/following", method = RequestMethod.GET)
     public OrderedCollection getInbox(@PathVariable("actorname") String actorname) {
 
     }
