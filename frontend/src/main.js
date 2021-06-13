@@ -14,21 +14,21 @@ Vue.use(Vuex);
 
 Vue.config.productionTip = false;
 
-Vue.prototype.$backendUrl = "http://localhost:8080/"
-Vue.prototype.$currentUser = 'testuser01';
-
+// Vue.prototype.$backendUrl = "http://localhost:8080/"
+// Vue.prototype.$currentUser = 'testuser01';
 
 // Using Vuex: Global variables to switch between user.
 const store = new Vuex.Store({
   state: {
-    currentUser: "testuser01",
+    currentUser: "testuser01/",
+    backendUrl: "http://localhost:8080/",
   },
   mutations: {
     setUser01 (state) {
-      state.currentUser = "testuser01";
+      state.currentUser = "testuser01/";
     },
     setUser02 (state) {
-      state.currentUser = "testuser02";
+      state.currentUser = "testuser02/";
     },
   },
   methods: {
