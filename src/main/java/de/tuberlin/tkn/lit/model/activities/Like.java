@@ -1,10 +1,8 @@
 package de.tuberlin.tkn.lit.model.activities;
 
-import de.tuberlin.tkn.lit.model.Activity;
-import de.tuberlin.tkn.lit.model.LinkOrObject;
-import de.tuberlin.tkn.lit.model.LitObject;
-import de.tuberlin.tkn.lit.model.OrderedCollection;
+import de.tuberlin.tkn.lit.model.*;
 import de.tuberlin.tkn.lit.storage.IStorage;
+import de.tuberlin.tkn.lit.util.UriUtilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,19 +29,26 @@ public class Like extends Activity {
             if (col != null) {
                 for (LinkOrObject o : obj.getLikes().getOrderedItems()) {
                     Activity ac = (Activity) o.getLitObject();
-                    if (ac.getActor().getLitObject().getId().equals(storage.getActor(actorName).getId())) {
+                    Actor actor = storage.getActor(UriUtilities.getActor(ac.getActor().getLink()));
+                    if (actor.getId().equals(storage.getActor(actorName).getId())) {
                         return this;
                     }
                 }
 
                 obj.getLikes().getOrderedItems().add(new LinkOrObject(this));
-                storage.getActor(actorName).getLiked().getOrderedItems().add(new LinkOrObject(obj));
             } else {
                 List<LinkOrObject> list = new ArrayList<>();
                 list.add(new LinkOrObject(this));
                 obj.setLikes(new OrderedCollection(list));
             }
             obj.setLike(storage.getObject(uuid).getLike() + 1);
+            if (storage.getActor(actorName).getLiked() != null) {
+                storage.getActor(actorName).getLiked().getOrderedItems().add(new LinkOrObject(obj));
+            } else {
+                List<LinkOrObject> list = new ArrayList<>();
+                list.add(new LinkOrObject(obj));
+                storage.getActor(actorName).setLiked(new OrderedCollection(list));
+            }
         }
         return this;
     }
