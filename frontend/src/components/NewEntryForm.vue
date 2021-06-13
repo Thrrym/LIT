@@ -151,8 +151,8 @@ export default {
         this.getOptionalFields
       );
       // Emit the appropiate event to superior component with the fields as content of event.
+      this.$emit("cc", this.ccContent);
       this.$emit("entryToBeCreated", formResult);
-      this.$emit("cc", this.cc);
     },
     setShowOptionalFields: function () {
       this.showOptionalFields = !this.showOptionalFields;
