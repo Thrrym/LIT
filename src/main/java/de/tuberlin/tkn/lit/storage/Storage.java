@@ -13,6 +13,7 @@ import java.util.UUID;
 public class Storage implements IStorage {
     private final Map<String, OrderedCollection> outboxes = new HashMap<>();
     private final Map<String, OrderedCollection> inboxes = new HashMap<>();
+    private final Map<String, OrderedCollection> likes = new HashMap<>();
     private final Map<String, Actor> actors = new HashMap<>();
     private final Map<UUID, Activity> activities = new HashMap<>();
     private final Map<UUID, LitObject> objects = new HashMap<>();
@@ -42,6 +43,11 @@ public class Storage implements IStorage {
     }
 
     @Override
+    public OrderedCollection likeCollection(String actorName) {
+        return likes.get(actorName);
+    }
+
+    @Override
     public void addToInbox(String actorName, LinkOrObject toAdd) {
         inboxes.get(actorName).getOrderedItems().add(toAdd);
     }
@@ -49,6 +55,11 @@ public class Storage implements IStorage {
     @Override
     public void addToOutbox(String actorName, LinkOrObject toAdd) {
         outboxes.get(actorName).getOrderedItems().add(toAdd);
+    }
+
+    @Override
+    public void addToLikeCollection(String actorName, LinkOrObject toAdd) {
+        likes.get(actorName).getOrderedItems().add(toAdd);
     }
 
     @Override
@@ -97,6 +108,14 @@ public class Storage implements IStorage {
         UUID uuid = UUID.randomUUID();
         String id = UriUtilities.generateId(new String[]{actorName, objectType}, uuid);
         object.setId(id);
+        objects.put(uuid, object);
+        return objects.get(uuid);
+    }
+
+    @Override
+    public LitObject updateObject(String actorName, LitObject object) {
+        String[] id = object.getId().split("/");
+        UUID uuid = java.util.UUID.fromString(id[id.length-1]);
         objects.put(uuid, object);
         return objects.get(uuid);
     }

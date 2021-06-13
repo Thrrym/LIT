@@ -1,6 +1,8 @@
 package de.tuberlin.tkn.lit.model.activities;
 
 import de.tuberlin.tkn.lit.model.Activity;
+import de.tuberlin.tkn.lit.model.LinkOrObject;
+import de.tuberlin.tkn.lit.model.LitObject;
 import de.tuberlin.tkn.lit.storage.IStorage;
 
 public class Update extends Activity {
@@ -15,6 +17,14 @@ public class Update extends Activity {
 
     @Override
     public Activity handle(String actorName, IStorage storage) {
+        LitObject updateObject;
+        if (getObject().isObject()) {
+            updateObject = storage.updateObject(actorName, getObject().getLitObject());
+        } else {
+            //TODO: Get object from link and persist it?
+            updateObject = storage.updateObject(actorName, getObject().getLitObject());
+        }
+        setObject(new LinkOrObject(updateObject));
         return this;
     }
 
