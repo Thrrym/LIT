@@ -18,7 +18,7 @@ export default {
     },
 
     methods: {
-        triggerServerCom: function (newEntry, selectedType) {
+        triggerServerCom: function (newEntry, selectedType, cc) {
             // Get the current user and URL of backend.
             const backendUrl = this.getBackendUrl;
             const currentUser = this.getCurrentUser;
@@ -27,7 +27,7 @@ export default {
             console.log("ServerCom");
             console.log(newEntry);
             var cleanNewEntry = prepareNewEntry(selectedType, newEntry);
-            var json = prepareNewEntryJson(cleanNewEntry, backendUrl, currentUser);
+            var json = prepareNewEntryJson(cleanNewEntry, backendUrl, currentUser, cc);
 
             // Maintaine reference to this component with `this` via a new reference.
             // Reason: Within httpRequest.onreadystatechange the reference changes to httpRequest.
