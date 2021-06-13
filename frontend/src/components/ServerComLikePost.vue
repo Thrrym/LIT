@@ -108,10 +108,7 @@ export default {
 
         prepareLikeJson: function (backendUrl, currentUser) {
             // Prepare the json as http payload.
-            // let url = backendUrl + currentUser + "outbox/";
             let objectJson = JSON.parse(this.objectRequestResponse.responseText); // Transform the base object from string to JSON.
-            console.log("objectJson");
-            console.log(objectJson.object.attributedTo);
             
             var jsonObject = {
                 "@context": "https://www.w3.org/ns/activitystreams/",
