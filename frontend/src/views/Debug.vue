@@ -79,8 +79,8 @@ export default {
       if (this.requestResponse === "") {
         return "";
       };
-      return this.requestResponse.responseText
-    }
+      return this.requestResponse.responseText;
+    },
   }
 
 
