@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { getUserUrl, getApiUrl, prepareNewEntry, prepareNewEntryJson } from "@/js_files/serverCom.js";
+import { getApiUrl, prepareNewEntry, prepareNewEntryJson } from "@/js_files/serverCom.js";
 
 export default {
     name: "ServerCom",
@@ -20,8 +20,8 @@ export default {
     methods: {
         triggerServerCom: function (newEntry, selectedType) {
             // Get the current user and URL of backend.
-            const backendUrl = getUserUrl().backendUrl;
-            const currentUser = getUserUrl().user;
+            const backendUrl = this.getBackendUrl;
+            const currentUser = this.getCurrentUser;
 
             // Prepare content of the http request. Removes unused properties.
             console.log("ServerCom");
@@ -75,6 +75,14 @@ export default {
             // Emits error to parent component back upstream.
             this.$emit("requestResponse", "error");
         },
+    },
+    computed: {
+      getCurrentUser: function () {
+        return this.$store.state.currentUser;
+      },
+      getBackendUrl: function () {
+        return this.$store.state.backendUrl;
+      }
     },
 }
 </script>
