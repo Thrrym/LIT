@@ -5,5 +5,5 @@ import de.tuberlin.tkn.lit.model.*;
 
 public interface IActivitySender{
 	Future<Boolean> send(Activity activity, LinkOrObject sendTo);
-	OrderedCollection getOutbox(LinkOrObject getFrom);
+	Future<OrderedCollection> getOutbox(LinkOrObject getFrom);
 }
