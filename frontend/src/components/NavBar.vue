@@ -48,7 +48,7 @@ export default {
     },
     computed: {
       getCurrentUser: function () {
-        return this.$store.state.currentUser;
+        return this.$store.state.currentUser.split("/")[0];
       },
     },
 }
