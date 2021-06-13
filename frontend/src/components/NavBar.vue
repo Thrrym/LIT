@@ -14,6 +14,7 @@
       <b-nav-item to="/debug">Debug</b-nav-item>
       <b-nav-item to="/new-entry">+</b-nav-item>
       <b-nav-item to="/signin">Login</b-nav-item>
+      <b-nav-item to="/profile">Profile</b-nav-item>
     </b-navbar-nav>
 
   </b-navbar>
