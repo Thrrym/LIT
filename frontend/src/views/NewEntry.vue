@@ -9,6 +9,7 @@
       v-bind:formContent="getForm"
       v-bind:showForm="activateForm"
       v-on:entryToBeCreated="setEntryToBeCreated"
+      v-on:cc="setEntryCc"
     >
     </NewEntryForm>
     <NewEntryModal
@@ -49,6 +50,7 @@ export default {
       formContent: newEntryFormContent.allTypes,
       showModal: false,
       requestResponse: Object(),
+      cc: "",
     };
   },
 
@@ -88,6 +90,9 @@ export default {
       // Type as selected by the selector. To be set as variable in the NewEntry component.
       this.selectedType = type;
     },
+    setEntryCc: function (cc) {
+      this.cc = cc
+    },
     setEntryToBeCreated: function (entry) {
       // Using the form, the user created a new entry. Send the entry to the backend.
       this.newEntry = entry;
@@ -96,7 +101,7 @@ export default {
     },
     sendEntryToBackend: function () {
       // Trigger the ServerCom component to send the new entry to the backend.
-      this.$refs.com.triggerServerCom(this.newEntry, this.getSelectedType);
+      this.$refs.com.triggerServerCom(this.newEntry, this.getSelectedType, this.cc);
     },
     triggerModal: function () {
       // Show the modal. For user feedback.
