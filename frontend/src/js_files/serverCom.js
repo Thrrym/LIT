@@ -85,7 +85,7 @@ function prepareNewEntry(selectedType, uncleanNewEntry) {
 }
     
 
-function prepareNewEntryJson(simplifiedObject, backendUrl, currentUser) {
+function prepareNewEntryJson(simplifiedObject, backendUrl, currentUser, cc) {
     // 1. Construct JSON object containing the info of the new entry.
     console.log(simplifiedObject)
     let url = backendUrl + currentUser + "outbox/";
@@ -110,10 +110,17 @@ function prepareNewEntryJson(simplifiedObject, backendUrl, currentUser) {
         "id": url + "1/",
         "actor": backendUrl + currentUser,
         "published": getCurrentTime(),
-        "cc": [backendUrl + currentUser + "follower/", backendUrl + "testuser02/"],
+        "cc": getCc(backendUrl, currentUser, cc),
         "object": jsonLitObject
     };
     return jsonMainObject
+}
+
+function getCc(backendUrl, currentUser, cc) {
+    if (cc === "") {
+        return [backendUrl + currentUser + "follower/"]
+    }
+    return [backendUrl + currentUser + "follower/", cc]
 }
 
 function getCurrentTime() {
