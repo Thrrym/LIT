@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import { getApiUrl, prepareNewEntry, prepareNewEntryJson } from "@/js_files/serverCom.js";
+import { prepareNewEntry, prepareNewEntryJson } from "@/js_files/serverCom.js";
 
 export default {
     name: "ServerCom",
@@ -39,7 +39,7 @@ export default {
 
             // Set the HTTP Method. HTTP Request send via Proxy to backend server.
             let method = "POST";
-            var apiUrl = getApiUrl() + currentUser + "outbox";
+            var apiUrl = this.$store.state.proxyBackendUrl + currentUser + "outbox";
 
             httpRequest.open(method, apiUrl, true);
             //httpRequest.timeout = 4000;

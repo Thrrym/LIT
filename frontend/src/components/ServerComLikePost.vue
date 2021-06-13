@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import { getUserUrl, getApiUrl } from "@/js_files/serverCom.js";
 import ServerComGetObject from "@/components/ServerComGetObject.vue";
 
 export default {
@@ -55,8 +54,8 @@ export default {
             }
 
             // Get the current user and URL of backend.
-            const backendUrl = getUserUrl().backendUrl;
-            const currentUser = getUserUrl().user;
+            const backendUrl = this.$store.state.backendUrl;
+            const currentUser = this.$store.state.currentUser;
 
             // Prepare content of the http request. Removes unused properties.
             var json = this.prepareLikeJson(backendUrl, currentUser, this.objectRequestResponse);
@@ -71,7 +70,7 @@ export default {
 
             // Set the HTTP Method. HTTP Request send via Proxy to backend server.
             let method = "POST";
-            var apiUrl = getApiUrl() + currentUser + "outbox";
+            var apiUrl = this.$store.state.proxyBackendUrl + currentUser + "outbox";
 
             httpRequest.open(method, apiUrl, true);
             httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");

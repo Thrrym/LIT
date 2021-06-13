@@ -3,8 +3,6 @@
 </template>
 
 <script>
-import { getUserUrl, getApiUrl } from "@/js_files/serverCom.js";
-
 export default {
     name: "ServerComGetInbox",
 
@@ -19,9 +17,8 @@ export default {
 
     methods: {
         triggerGetInbox: function () {
-            // Get the current user and URL of backend.
-            //const backendUrl = getUserUrl().backendUrl;
-            const currentUser = getUserUrl().user;
+            // Get the current user.
+            const currentUser = this.$store.state.currentUser;
 
             // Maintaine reference to this component with `this` via a new reference.
             // Reason: Within httpRequest.onreadystatechange the reference changes to httpRequest.
@@ -33,7 +30,7 @@ export default {
 
             // Set the HTTP Method. HTTP Request send via Proxy to backend server.
             let method = "GET";
-            var apiUrl = getApiUrl() + currentUser + "inbox/";
+            var apiUrl = this.$store.state.proxyBackendUrl + currentUser + "inbox/";
 
             httpRequest.open(method, apiUrl, true);
             httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
