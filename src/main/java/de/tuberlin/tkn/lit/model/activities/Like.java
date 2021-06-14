@@ -23,30 +23,31 @@ public class Like extends Activity {
     }
 
     @Override
-    public Activity handle(String actorName, IStorage storage, int port) {
-        Actor actor = storage.getActor(actorName);
-
-        LitObject obj = storage.getObject(getObject().getLink());
+    public Activity handle(String actorId, IStorage storage, int port) {
+        if(!actorId.startsWith("http"))
+            actorId = storage.getActor(actorId).getId();
+        LitObject obj = storage.getObject(getObject().getId());
 
         if (obj != null) {
             BibTeXArticle bibTeXArticle = (BibTeXArticle) obj;
-            List<LinkOrObject> l = bibTeXArticle.getLikedBy();
+            List<String> l = bibTeXArticle.getLikedBy();
             if (l != null) {
-                for (LinkOrObject o : l) {
-                    if (o.getLitObject().getId().equals(storage.getActor(actorName).getId())) {
+                for (String o : l) {
+                    if (o.equals(actorId)) {
                         return this;
                     }
                 }
 
-                l.add(new LinkOrObject(actor));
+                l.add(actorId);
 
             } else {
-                List<LinkOrObject> list = new ArrayList<>();
-                list.add(new LinkOrObject(actor));
+                List<String> list = new ArrayList<>();
+                list.add(actorId);
                 bibTeXArticle.setLikedBy(list);
             }
 
-            storage.addToLiked(actorName, new LinkOrObject(bibTeXArticle));
+            if(UriUtilities.isLocaleServer(actorId, port))
+                storage.addToLiked(UriUtilities.getActor(actorId), new LinkOrObject(bibTeXArticle));
         }
 
         return this;

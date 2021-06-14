@@ -17,7 +17,7 @@ public class BibTeXArticle extends LitObject {
     private String journal;
     private String year;
     private String volume;
-    private List<LinkOrObject> likedBy;
+    private List<String> likedBy;
 
     public BibTeXArticle() {
     }
@@ -52,23 +52,19 @@ public class BibTeXArticle extends LitObject {
 
     @JsonGetter("likes")
     public int getLikes() {
+        if(likedBy == null)
+            return 0;
         return likedBy.size();
     }
 
     @JsonSetter("likes")
-    public void setLikes(int likes) {}
+    public void setLikes(int value){}
 
-    @JsonGetter("likedBy")
-    public List<JsonNode> toJSONLikedBy() throws JsonProcessingException {
-        if (likedBy == null) return null;
-        return ArraySerializer.serialize(likedBy);
-    }
-
-    public List<LinkOrObject> getLikedBy() {
+    public List<String> getLikedBy() {
         return likedBy;
     }
 
-    public void setLikedBy(List<LinkOrObject> likedBy) {
+    public void setLikedBy(List<String> likedBy) {
         this.likedBy = likedBy;
     }
 }

@@ -14,8 +14,8 @@ public class Storage implements IStorage {
 
     private final Map<String, OrderedCollection> outboxes = new HashMap<>();
     private final Map<String, OrderedCollection> inboxes = new HashMap<>();
-    private final Map<String, List<String>> relevantObjects = new HashMap<>();
-    private final Map<String, List<String>> liked = new HashMap<>();
+    private final Map<String, Set<String>> relevantObjects = new HashMap<>();
+    private final Map<String, Set<String>> liked = new HashMap<>();
     private final Map<String, Actor> actors = new HashMap<>();
     private final Map<UUID, Activity> activities = new HashMap<>();
     private final Map<String, LitObject> objects = new HashMap<>();
@@ -88,8 +88,8 @@ public class Storage implements IStorage {
         actors.put(actor.getName(), actor);
         outboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         inboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
-        relevantObjects.put(actor.getName(), new LinkedList<>());
-        liked.put(actor.getName(), new LinkedList<>());
+        relevantObjects.put(actor.getName(), new HashSet<>());
+        liked.put(actor.getName(), new HashSet<>());
         return actors.get(actor.getName());
     }
 

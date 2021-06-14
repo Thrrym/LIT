@@ -51,9 +51,11 @@ public class ServerController {
     		LinkOrObject toSave = createActivity.getObject();
 
     		storage.createObject(toSave.getId(), toSave.getLitObject());
+    		storage.addToRelevantObjects(actorname, toSave);
     	}
     	else if(activity instanceof Like) {
-			activity.handle(actorname, storage, serverPort);
+			activity.handle(activity.getActor().getId(), storage, serverPort);
+            storage.addToRelevantObjects(actorname, activity.getObject());
     	}
         
         // TODO: notify client
