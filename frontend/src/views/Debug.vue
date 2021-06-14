@@ -22,9 +22,23 @@
       </b-form-group>
     </b-form>
 
+    <b-button
+      @click="getUserObjects"
+    >
+      GET Objects
+    </b-button>
+
+    <b-button
+      @click="getUserRelevantObjects"
+    >
+      GET Relevant Objects
+    </b-button>
+
     <ServerComGetInbox ref="inbox" v-on:requestResponse="setRequestResponse"></ServerComGetInbox>
     <ServerComGetObject ref="object" v-on:requestResponse="setRequestResponse"></ServerComGetObject>
     <ServerComLikePost ref="like" v-on:requestResponse="setRequestResponse"></ServerComLikePost>
+    <ServerComGetUserObjects ref="userObjects" v-on:requestResponse="setRequestResponse"></ServerComGetUserObjects>
+    <ServerComGetUserRelevantObjects ref="userRelevantObjects" v-on:requestResponse="setRequestResponse"></ServerComGetUserRelevantObjects>
     <p v-text="getResponse"></p>
   </div>
 </template>
@@ -33,6 +47,8 @@
 import ServerComGetInbox from "@/components/ServerComGetInbox.vue";
 import ServerComGetObject from "@/components/ServerComGetObject.vue";
 import ServerComLikePost from "@/components/ServerComLikePost.vue";
+import ServerComGetUserObjects from "@/components/ServerComGetUserObjects.vue"
+import ServerComGetUserRelevantObjects from "@/components/ServerComGetUserRelevantObjects.vue"
 
 export default {
   name: "Debug",
@@ -47,6 +63,8 @@ export default {
     ServerComGetInbox,
     ServerComGetObject,
     ServerComLikePost,
+    ServerComGetUserObjects,
+    ServerComGetUserRelevantObjects,
   },
 
   methods: {
@@ -70,6 +88,12 @@ export default {
     likeObject: function() {
       this.$refs.like.triggerLikePost(this.objectUrl);
     },
+    getUserObjects: function () {
+      this.$refs.userObjects.triggerGetObjects();
+    },
+    getUserRelevantObjects: function () {
+      this.$refs.userRelevantObjects.triggerGetRelevantObjects();
+    }
 
   },
 
