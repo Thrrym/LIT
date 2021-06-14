@@ -3,7 +3,7 @@
   <div class="row justify-content-center" id="searchbar">
     <div class="col-8">
       <div class="input-group">
-        <input v-on:keyup.enter="startSearch" type="text" class="form-control" placeholder="Search..." id="searchinput">
+        <input v-on:keyup.enter="startSearch" type="text" class="form-control minifocus" placeholder="Search..." id="searchinput">
         <div class="input-group-append">
           <button v-on:click="toggle_filter" class="btn btn-primary" type="button">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-filter" viewBox="0 0 16 16">
@@ -16,8 +16,19 @@
   </div>
   <div v-if="showFilter" class="row justify-content-center" id="searchbar_filter">
     <div class="col-8">
-      <div span class="border border-primary rounded">
-        YEET
+      <div span class="card text-left border-primary">
+        <div class="card-body">
+          <div class="col-5">
+          <div class="input-group">
+            <span class="input-group-text" id="basic-addon1">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path>
+              </svg>
+            </span>
+            <input type="text" class="form-control minifocus" placeholder="Username">
+          </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -51,6 +62,7 @@ export default {
       startSearch() {
         var search_text = document.getElementById('searchinput').value;
         this.meme_check(search_text);
+        if (search_text === 'r/ich_iel') window.location.href = "https://www.reddit.com/r/ich_iel/";
       },
       meme_check(search_text) {
         var meme_src = '';
@@ -134,7 +146,7 @@ export default {
   100%{box-shadow:none; outline: 0 none;};
 }
 
-#searchinput:focus{
+.minifocus:focus{
   animation-name: minimalfocus;
   animation-duration: 1s;
   animation-delay: 1s;
