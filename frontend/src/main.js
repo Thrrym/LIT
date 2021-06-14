@@ -14,15 +14,12 @@ Vue.use(Vuex);
 
 Vue.config.productionTip = false;
 
-// Vue.prototype.$backendUrl = "http://localhost:8080/"
-// Vue.prototype.$currentUser = 'testuser01';
-
-// Using Vuex: Global variables to switch between user.
+// Using Vuex: Global variables to switch between user and backend.
 const store = new Vuex.Store({
   state: {
-    currentUser: "testuser01/",
-    backendUrl: "http://localhost:8080/",
-    proxyBackendUrl: "http://localhost:8081/api/",
+    currentUser: "testuser01/", // The active "loggend in" user.
+    backendUrl: "http://localhost:8080/", // The backend URL.
+    proxyBackendUrl: location.origin + "/api/", // The URL of the proxy between the frontend and backend.
   },
   mutations: {
     setUser01 (state) {
@@ -31,14 +28,26 @@ const store = new Vuex.Store({
     setUser02 (state) {
       state.currentUser = "testuser02/";
     },
+    setBackend01 (state) {
+      state.backendUrl = "http://localhost:8080/";
+    },
+    setBackend02 (state) {
+      state.backendUrl = "http://localhost:8081/";
+    },
   },
   methods: {
     setUser01() {
-      this.$store.commit('setUser01')
+      this.$store.commit('setUser01');
     },
     setUser02() {
-      this.$store.commit('setUser02')
-    }
+      this.$store.commit('setUser02');
+    },
+    setBackend01() {
+      this.$store.commit('setBackend01');
+    },
+    setBackend02() {
+      this.$store.commit('setBackend02');
+    },
   },
 })
 
