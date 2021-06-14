@@ -18,10 +18,7 @@
       v-bind:requestResponse="getRequestResponse"
       v-bind:selectedType="selectedType"
     ></NewEntryModal>
-    <ServerCom
-      ref="com"
-      v-on:requestResponse="setRequestResponse"
-    ></ServerCom>
+    <ServerCom ref="com" v-on:requestResponse="setRequestResponse"></ServerCom>
   </div>
 </template>
 
@@ -31,7 +28,7 @@ import NewEntryForm from "@/components/NewEntryForm.vue";
 import NewEntryModal from "@/components/NewEntryModal.vue";
 import ServerCom from "@/components/ServerCom.vue";
 
-import newEntryFormContent from "@/js_files/newEntryFormContent.js"; // Import the form contents from seperate JS file.
+import newEntryFormContent from "@/js_files/newEntryFormContent.js"; // Import the form contents from separate JS file.
 
 export default {
   name: "NewEntry",
@@ -70,7 +67,7 @@ export default {
     },
     activateForm: function () {
       // Determine if the form for the selected can be shown.
-      // No type seleceted -> false.
+      // No type selected -> false.
       if (this.selectedType === "") return false;
       else return true;
     },
@@ -82,7 +79,7 @@ export default {
     },
     getSelectedType: function () {
       return this.selectedType;
-    }    
+    },
   },
 
   methods: {
@@ -91,7 +88,7 @@ export default {
       this.selectedType = type;
     },
     setEntryCc: function (cc) {
-      this.cc = cc
+      this.cc = cc;
     },
     setEntryToBeCreated: function (entry) {
       // Using the form, the user created a new entry. Send the entry to the backend.
@@ -101,13 +98,17 @@ export default {
     },
     sendEntryToBackend: function () {
       // Trigger the ServerCom component to send the new entry to the backend.
-      this.$refs.com.triggerServerCom(this.newEntry, this.getSelectedType, this.cc);
+      this.$refs.com.triggerServerCom(
+        this.newEntry,
+        this.getSelectedType,
+        this.cc
+      );
     },
     triggerModal: function () {
       // Show the modal. For user feedback.
       this.$refs.modal.showNewEntryModal();
     },
-    setRequestResponse: function(response) {
+    setRequestResponse: function (response) {
       // Event of ServerCom component shows HTTP result. Trigger modal for user feedback.
       this.requestResponse = response;
       this.triggerModal();
