@@ -1,6 +1,7 @@
 package de.tuberlin.tkn.lit.model.litobjects;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.tuberlin.tkn.lit.model.LinkOrObject;
@@ -16,7 +17,6 @@ public class BibTeXArticle extends LitObject {
     private String journal;
     private String year;
     private String volume;
-    private int likes;
     private List<LinkOrObject> likedBy;
 
     public BibTeXArticle() {
@@ -50,17 +50,13 @@ public class BibTeXArticle extends LitObject {
         return volume;
     }
 
+    @JsonGetter("likes")
     public int getLikes() {
-        return likes;
+        return likedBy.size();
     }
 
-    public void setLikes(int likes) {
-        this.likes = likes;
-    }
-
-    public void incrementLikes() {
-        this.likes++;
-    }
+    @JsonSetter("likes")
+    public void setLikes(int likes) {}
 
     @JsonGetter("likedBy")
     public List<JsonNode> toJSONLikedBy() throws JsonProcessingException {

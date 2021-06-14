@@ -78,7 +78,7 @@ public class ClientController {
 
     @RequestMapping(value = "/{actorname}/{objecttype}/{id}", method = RequestMethod.GET)
     public LitObject getObject(@PathVariable("actorname") String actorname, @PathVariable("objecttype") String objectType, @PathVariable("id") UUID id) {
-        return storage.getObject(id);
+        return storage.getObject(UriUtilities.generateId(new String[]{actorname, objectType}, serverPort, id));
     }
 
     @RequestMapping(value = "/{actorname}/outbox", method = RequestMethod.POST)

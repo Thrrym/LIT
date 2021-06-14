@@ -14,11 +14,11 @@ public class Storage implements IStorage {
 
     private final Map<String, OrderedCollection> outboxes = new HashMap<>();
     private final Map<String, OrderedCollection> inboxes = new HashMap<>();
-    private final Map<String, OrderedCollection> relevantObjects = new HashMap<>();
-    private final Map<String, OrderedCollection> liked = new HashMap<>();
+    private final Map<String, List<String>> relevantObjects = new HashMap<>();
+    private final Map<String, List<String>> liked = new HashMap<>();
     private final Map<String, Actor> actors = new HashMap<>();
     private final Map<UUID, Activity> activities = new HashMap<>();
-    private final Map<UUID, LitObject> objects = new HashMap<>();
+    private final Map<String, LitObject> objects = new HashMap<>();
     @Value("${server.port}")
     private int serverPort;
 
@@ -56,7 +56,11 @@ public class Storage implements IStorage {
 
     @Override
     public OrderedCollection getRelevantObjects(String actorName) {
-        return relevantObjects.get(actorName);
+        return new OrderedCollection(relevantObjects.get(actorName).stream().map((id) -> new LinkOrObject(objects.get(id))).collect(Collectors.toList()));
+    }
+
+    public void addToRelevantObjects(String actorName, LinkOrObject toAdd){
+        relevantObjects.get(actorName).add(toAdd.getId());
     }
 
     @Override
@@ -84,8 +88,8 @@ public class Storage implements IStorage {
         actors.put(actor.getName(), actor);
         outboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         inboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
-        relevantObjects.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
-        liked.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
+        relevantObjects.put(actor.getName(), new LinkedList<>());
+        liked.put(actor.getName(), new LinkedList<>());
         return actors.get(actor.getName());
     }
 
@@ -115,7 +119,7 @@ public class Storage implements IStorage {
     }
 
     @Override
-    public LitObject getObject(UUID id) {
+    public LitObject getObject(String id) {
         return objects.get(id);
     }
 
@@ -126,29 +130,30 @@ public class Storage implements IStorage {
         object.setId(id);
         String actorId = getActor(actorName).getId();
         object.setGenerator(new LinkOrObject(actorId));
-        objects.put(uuid, object);
-        return objects.get(uuid);
+        objects.put(id, object);
+        return objects.get(id);
+    }
+
+    @Override
+    public LitObject createObject(String id, LitObject object) {
+        objects.put(id, object);
+        return objects.get(id);
     }
 
     @Override
     public LitObject updateObject(String actorName, LitObject object) {
-        String[] id = object.getId().split("/");
-        UUID uuid = java.util.UUID.fromString(id[id.length - 1]);
-        objects.put(uuid, object);
-        return objects.get(uuid);
+        String id = object.getId();
+        objects.put(id, object);
+        return objects.get(id);
     }
 
     @Override
     public OrderedCollection getLikedCollection(String actorName) {
-        OrderedCollection orderedCollection = liked.get(actorName);
-        if (orderedCollection == null) {
-            throw new NullPointerException();
-        }
-        return orderedCollection;
+        return new OrderedCollection(liked.get(actorName).stream().map((id) -> new LinkOrObject(objects.get(id))).collect(Collectors.toList()));
     }
 
     @Override
     public void addToLiked(String actorName, LinkOrObject toAdd) {
-        liked.get(actorName).getOrderedItems().add(toAdd);
+        liked.get(actorName).add(toAdd.getId());
     }
 }
