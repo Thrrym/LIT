@@ -1,5 +1,6 @@
 <template>
   <div>
+    <b-container>
     <!-- Create the form the get the information for the selected type. -->
     <b-form v-if="showForm" v-on:submit="emitNewEntry">
       <b-card bg-varint="light">
@@ -30,7 +31,7 @@
         v-if="showOptionalFieldsButton"
         v-on:click="setShowOptionalFields"
       >
-        Advanced
+        <b-icon icon="caret-down-square" aria-hidden="true"></b-icon> Advanced
       </b-button>
 
       <!-- Optional Fields. -->
@@ -61,7 +62,7 @@
         variant="outline-primary"
         v-on:click="setShowCcField"
       >
-        CC
+        <b-icon icon="caret-down-square" aria-hidden="true"></b-icon> CC
       </b-button>
 
       <!-- CC Field. -->
@@ -87,8 +88,12 @@
       </b-card>
 
       <!-- Submit Button -->
-      <b-button type="submit" variant="primary">Create new entry</b-button>
+      <b-button type="submit" variant="primary">
+        <b-icon icon="bookmark-plus" aria-hidden="true"></b-icon>
+        Create new entry
+      </b-button>
     </b-form>
+    </b-container>
   </div>
 </template>
 
