@@ -1,10 +1,8 @@
 <template>
   <div>
-    <b-button
-      @click="getInbox"
-    >
-      GET Inbox
-    </b-button>
+    <b-button @click="getInbox">GET Inbox</b-button>
+    <b-button @click="getUserObjects">GET Objects</b-button>
+    <b-button @click="getUserRelevantObjects">GET Relevant Objects</b-button>
 
     <b-form @submit="onSubmitGetObject">
       <b-form-group label="Object URL" label-for="input-1">
@@ -22,17 +20,7 @@
       </b-form-group>
     </b-form>
 
-    <b-button
-      @click="getUserObjects"
-    >
-      GET Objects
-    </b-button>
-
-    <b-button
-      @click="getUserRelevantObjects"
-    >
-      GET Relevant Objects
-    </b-button>
+    
 
     <ServerComGetInbox ref="inbox" v-on:requestResponse="setRequestResponse"></ServerComGetInbox>
     <ServerComGetObject ref="object" v-on:requestResponse="setRequestResponse"></ServerComGetObject>
@@ -47,8 +35,8 @@
 import ServerComGetInbox from "@/components/ServerComGetInbox.vue";
 import ServerComGetObject from "@/components/ServerComGetObject.vue";
 import ServerComLikePost from "@/components/ServerComLikePost.vue";
-import ServerComGetUserObjects from "@/components/ServerComGetUserObjects.vue"
-import ServerComGetUserRelevantObjects from "@/components/ServerComGetUserRelevantObjects.vue"
+import ServerComGetUserObjects from "@/components/ServerComGetUserObjects.vue";
+import ServerComGetUserRelevantObjects from "@/components/ServerComGetUserRelevantObjects.vue";
 
 export default {
   name: "Debug",
