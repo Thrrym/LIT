@@ -84,8 +84,8 @@ public abstract class LitObject {
     private String published;
     private LitCollection replies;
     private List<LinkOrObject> tag;
-    private OrderedCollection likes;
-    private int like;
+    //private OrderedCollection likes;
+    //private int like;
     private String summary;
     private String updated;
     private List<LinkOrObject> url;
@@ -142,7 +142,7 @@ public abstract class LitObject {
         attributedTo = ArrayDeserializer.deserialize(s);
     }
 
-    public OrderedCollection getLikes() {
+    /*public OrderedCollection getLikes() {
         return likes;
     }
 
@@ -157,7 +157,7 @@ public abstract class LitObject {
     public void setLike(int like) {
         this.like = like;
     }
-
+*/
     public List<LinkOrObject> getAudience() {
         return audience;
     }

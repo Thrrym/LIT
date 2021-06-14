@@ -56,10 +56,10 @@ public class ServerController {
     			LitObject localObj = localAbout.getLitObject();
     			if(localObj instanceof BibTeXArticle)
     			{
-    				if(!((BibTeXArticle)localObj).likedBy.contains(activity.getActor()))
+    				if(!((BibTeXArticle)localObj).getLikedBy().contains(activity.getActor()))
     				{
-    					((BibTeXArticle)localObj).likedBy.add(activity.getActor());
-    					((BibTeXArticle)localObj).likes++;
+    					((BibTeXArticle)localObj).getLikedBy().add(activity.getActor());
+    					((BibTeXArticle)localObj).incrementLikes();
 					}
     			}
     		}

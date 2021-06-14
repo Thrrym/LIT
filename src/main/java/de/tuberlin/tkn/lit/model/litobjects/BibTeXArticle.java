@@ -1,7 +1,11 @@
 package de.tuberlin.tkn.lit.model.litobjects;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import de.tuberlin.tkn.lit.model.LinkOrObject;
 import de.tuberlin.tkn.lit.model.LitObject;
+import de.tuberlin.tkn.lit.serializer.ArraySerializer;
 
 import java.util.List;
 
@@ -12,9 +16,8 @@ public class BibTeXArticle extends LitObject {
     private String journal;
     private String year;
     private String volume;
-
-    public int likes;
-    public List<LinkOrObject> likedBy;
+    private int likes;
+    private List<LinkOrObject> likedBy;
 
     public BibTeXArticle() {
     }
@@ -45,5 +48,31 @@ public class BibTeXArticle extends LitObject {
 
     public String getVolume() {
         return volume;
+    }
+
+    public int getLikes() {
+        return likes;
+    }
+
+    public void setLikes(int likes) {
+        this.likes = likes;
+    }
+
+    public void incrementLikes() {
+        this.likes++;
+    }
+
+    @JsonGetter("likedBy")
+    public List<JsonNode> toJSONLikedBy() throws JsonProcessingException {
+        if (likedBy == null) return null;
+        return ArraySerializer.serialize(likedBy);
+    }
+
+    public List<LinkOrObject> getLikedBy() {
+        return likedBy;
+    }
+
+    public void setLikedBy(List<LinkOrObject> likedBy) {
+        this.likedBy = likedBy;
     }
 }

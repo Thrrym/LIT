@@ -15,7 +15,7 @@ public class Create extends Activity {
     }
 
     @Override
-    public Activity handle(String actorName, IStorage storage){
+    public Activity handle(String actorName, IStorage storage, int port) {
         LitObject createdObject;
         if (getObject().isObject()) {
             createdObject = storage.createObject(actorName, getObject().getLitObject().getType(), getObject().getLitObject());

@@ -16,7 +16,7 @@ public class Update extends Activity {
     }
 
     @Override
-    public Activity handle(String actorName, IStorage storage) {
+    public Activity handle(String actorName, IStorage storage,int port) {
         LitObject updateObject;
         if (getObject().isObject()) {
             updateObject = storage.updateObject(actorName, getObject().getLitObject());

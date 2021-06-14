@@ -34,4 +34,7 @@ public interface IStorage {
 
     LitObject updateObject(String actorName, LitObject object);
 
+    OrderedCollection getLikedCollection(String actorName);
+
+    void addToLiked(String actorName, LinkOrObject toAdd);
 }
