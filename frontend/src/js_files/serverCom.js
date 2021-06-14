@@ -118,9 +118,9 @@ function prepareNewEntryJson(simplifiedObject, backendUrl, currentUser, cc) {
 
 function getCc(backendUrl, currentUser, cc) {
     if (cc === "") {
-        return [backendUrl + currentUser + "follower/"]
+        return ""; // Here you may specify to send Create to follower. But this is not implemented on the backend side.
     }
-    return [backendUrl + currentUser + "follower/", cc]
+    return [cc]
 }
 
 function getCurrentTime() {
