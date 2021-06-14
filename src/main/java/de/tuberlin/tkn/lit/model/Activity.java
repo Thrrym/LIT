@@ -61,10 +61,8 @@ public abstract class Activity extends LitObject {
             for (LinkOrObject linkOrObject : list) {
                 if (UriUtilities.isLocaleServer(linkOrObject.getLink(), port)) {
                     try {
-                        OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
-                        inbox.getOrderedItems().add(new LinkOrObject(this));
-                        OrderedCollection relevantObjects = storage.getRelevantObjects(UriUtilities.getActor(linkOrObject.getLink()));
-                        relevantObjects.getOrderedItems().add(this.getObject());
+                        storage.addToInbox(UriUtilities.getActor(linkOrObject.getLink()), new LinkOrObject(this));
+                        storage.addToRelevantObjects(UriUtilities.getActor(linkOrObject.getLink()), getObject());
                     } catch (NullPointerException ex) {
                         logger.warning("The inbox for the actor '" + linkOrObject.getLink() + "' could not be found.");
                     }

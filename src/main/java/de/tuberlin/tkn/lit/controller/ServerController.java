@@ -5,6 +5,7 @@ import de.tuberlin.tkn.lit.model.*;
 import de.tuberlin.tkn.lit.model.activities.*;
 import de.tuberlin.tkn.lit.model.litobjects.BibTeXArticle;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -17,6 +18,9 @@ public class ServerController {
 	
 	@Autowired
 	IStorage storage;
+
+    @Value("${server.port}")
+    private int serverPort;
 	
 	// Dependency Injection END
 
@@ -46,23 +50,12 @@ public class ServerController {
     		Create createActivity = (Create) activity;
     		LinkOrObject toSave = createActivity.getObject();
 
-			List<LinkOrObject> items = storage.getRelevantObjects(actorname).getOrderedItems();
-    		if(items.stream().noneMatch((item) -> item.getId().equals(toSave.getId())))
-    			items.add(toSave);
+    		storage.createObject(toSave.getId(), toSave.getLitObject());
+    		storage.addToRelevantObjects(actorname, toSave);
     	}
     	else if(activity instanceof Like) {
-    		LinkOrObject localAbout = storage.getRelevantObjects(actorname).getOrderedItems().stream().filter((item) -> item.getId().equals(activity.getObject().getId())).findFirst().orElse(null);
-			if(localAbout != null && localAbout.isObject()) {
-    			LitObject localObj = localAbout.getLitObject();
-    			if(localObj instanceof BibTeXArticle)
-    			{
-    				if(!((BibTeXArticle)localObj).getLikedBy().contains(activity.getActor()))
-    				{
-    					((BibTeXArticle)localObj).getLikedBy().add(activity.getActor());
-    					((BibTeXArticle)localObj).incrementLikes();
-					}
-    			}
-    		}
+			activity.handle(activity.getActor().getId(), storage, serverPort);
+            storage.addToRelevantObjects(actorname, activity.getObject());
     	}
         
         // TODO: notify client

@@ -19,18 +19,21 @@ public interface IStorage {
 
     OrderedCollection getRelevantObjects(String actorName);
 
+    void addToRelevantObjects(String actorName, LinkOrObject toAdd);
+
     void addToInbox(String actorName, LinkOrObject toAdd);
 
     void addToOutbox(String actorName, LinkOrObject toAdd);
-
 
     Activity getActivity(UUID id);
 
     Activity createActivity(String actorName, Activity activity);
 
-    LitObject getObject(UUID id);
+    LitObject getObject(String id);
 
     LitObject createObject(String actorName, String objectType, LitObject object);
+
+    LitObject createObject(String id, LitObject object);
 
     LitObject updateObject(String actorName, LitObject object);
 
