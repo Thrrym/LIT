@@ -84,12 +84,17 @@ public class ClientController {
     @RequestMapping(value = "/{actorname}/outbox", method = RequestMethod.POST)
     public ResponseEntity<String> postActivity(@PathVariable("actorname") String actorName, @RequestBody Activity activity) {
 
-        Activity createdActivity = storage.createActivity(actorName, activity.handle(actorName, storage));
+        Activity createdActivity = storage.createActivity(actorName, activity.handle(actorName, storage,serverPort));
         storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
-        createdActivity.handleSendings(storage, activitySender);
+        createdActivity.handleSendings(storage, activitySender,serverPort);
 
         return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
+    }
+
+    @RequestMapping(value = "/{actorname}/liked", method = RequestMethod.GET)
+    public OrderedCollection getLiked(@PathVariable("actorname") String actorname) {
+        return storage.getLikedCollection(actorname);
     }
 
    /* @RequestMapping(value = "/{actorname}/liked", method = RequestMethod.GET)

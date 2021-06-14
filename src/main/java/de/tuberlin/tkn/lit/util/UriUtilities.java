@@ -8,8 +8,8 @@ import java.util.logging.Logger;
 public class UriUtilities {
     private static final Logger logger = Logger.getLogger(UriUtilities.class.getName());
 
-    public static boolean isLocaleServer(String uri) {
-        return uri.startsWith(UriConstants.HOST);
+    public static boolean isLocaleServer(String uri, int port) {
+        return uri.startsWith(UriConstants.HOST + port);
     }
 
     public static String getActor(String uri) {

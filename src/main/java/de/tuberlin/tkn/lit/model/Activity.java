@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import de.tuberlin.tkn.lit.deserializer.LinkOrObjectDeserializer;
 import de.tuberlin.tkn.lit.processing.IActivitySender;
 import de.tuberlin.tkn.lit.serializer.LinkOrObjectSerializer;
@@ -48,19 +47,19 @@ public abstract class Activity extends LitObject {
         this.instrument = activity.instrument;
     }
 
-    public abstract Activity handle(String actorName, IStorage storage);
+    public abstract Activity handle(String actorName, IStorage storage, int port);
 
-    public void handleSendings(IStorage storage, IActivitySender activitySender) {
-        handleSendingsIntern(getTo(), storage, activitySender);
-        handleSendingsIntern(getCc(), storage, activitySender);
-        handleSendingsIntern(getBto(), storage, activitySender);
-        handleSendingsIntern(getBcc(), storage, activitySender);
+    public void handleSendings(IStorage storage, IActivitySender activitySender, int port) {
+        handleSendingsIntern(getTo(), storage, activitySender, port);
+        handleSendingsIntern(getCc(), storage, activitySender, port);
+        handleSendingsIntern(getBto(), storage, activitySender, port);
+        handleSendingsIntern(getBcc(), storage, activitySender, port);
     }
 
-    private void handleSendingsIntern(List<LinkOrObject> list, IStorage storage, IActivitySender activitySender) {
+    private void handleSendingsIntern(List<LinkOrObject> list, IStorage storage, IActivitySender activitySender, int port) {
         if (list != null) {
             for (LinkOrObject linkOrObject : list) {
-                if (UriUtilities.isLocaleServer(linkOrObject.getLink())) {
+                if (UriUtilities.isLocaleServer(linkOrObject.getLink(), port)) {
                     try {
                         OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
                         inbox.getOrderedItems().add(new LinkOrObject(this));
@@ -80,11 +79,6 @@ public abstract class Activity extends LitObject {
         return actor;
     }
 
-    @JsonGetter("actor")
-    public JsonNode toJSONActor() throws JsonProcessingException {
-        return LinkOrObjectSerializer.serialize(actor);
-    }
-
     public void setActor(LinkOrObject actor) {
         this.actor = actor;
     }
@@ -92,6 +86,11 @@ public abstract class Activity extends LitObject {
     @JsonSetter("actor")
     public void setActor(JsonNode s) throws JsonProcessingException {
         actor = LinkOrObjectDeserializer.deserialize(s);
+    }
+
+    @JsonGetter("actor")
+    public JsonNode toJSONActor() throws JsonProcessingException {
+        return LinkOrObjectSerializer.serialize(actor);
     }
 
     public LinkOrObject getObject() {
@@ -104,11 +103,6 @@ public abstract class Activity extends LitObject {
         return litObject;
     }*/
 
-    @JsonGetter("object")
-    public JsonNode toJSONObject() throws JsonProcessingException {
-        return LinkOrObjectSerializer.serialize(object);
-    }
-
     public void setObject(LinkOrObject object) {
         this.object = object;
     }
@@ -116,6 +110,11 @@ public abstract class Activity extends LitObject {
     @JsonSetter("object")
     public void setObject(JsonNode s) throws JsonProcessingException {
         object = LinkOrObjectDeserializer.deserialize(s);
+    }
+
+    @JsonGetter("object")
+    public JsonNode toJSONObject() throws JsonProcessingException {
+        return LinkOrObjectSerializer.serialize(object);
     }
 
     public LinkOrObject getTarget() {

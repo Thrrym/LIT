@@ -15,7 +15,7 @@ public class Storage implements IStorage {
     private final Map<String, OrderedCollection> outboxes = new HashMap<>();
     private final Map<String, OrderedCollection> inboxes = new HashMap<>();
     private final Map<String, OrderedCollection> relevantObjects = new HashMap<>();
-    private final Map<String, OrderedCollection> likes = new HashMap<>();
+    private final Map<String, OrderedCollection> liked = new HashMap<>();
     private final Map<String, Actor> actors = new HashMap<>();
     private final Map<UUID, Activity> activities = new HashMap<>();
     private final Map<UUID, LitObject> objects = new HashMap<>();
@@ -80,10 +80,12 @@ public class Storage implements IStorage {
         actor.setOutbox(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.OUTBOX}, serverPort, false));
         actor.setFollowers(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.FOLLOWERS}, serverPort, false));
         actor.setFollowing(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.FOLLOWING}, serverPort, false));
+        actor.setLiked(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.LIKED}, serverPort, false));
         actors.put(actor.getName(), actor);
         outboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         inboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         relevantObjects.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
+        liked.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         return actors.get(actor.getName());
     }
 
@@ -136,4 +138,17 @@ public class Storage implements IStorage {
         return objects.get(uuid);
     }
 
+    @Override
+    public OrderedCollection getLikedCollection(String actorName) {
+        OrderedCollection orderedCollection = liked.get(actorName);
+        if (orderedCollection == null) {
+            throw new NullPointerException();
+        }
+        return orderedCollection;
+    }
+
+    @Override
+    public void addToLiked(String actorName, LinkOrObject toAdd) {
+        liked.get(actorName).getOrderedItems().add(toAdd);
+    }
 }

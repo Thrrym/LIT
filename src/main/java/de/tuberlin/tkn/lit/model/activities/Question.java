@@ -11,7 +11,7 @@ public class Question extends Activity {
     public Question(Activity activity) { super(activity); }
 
     @Override
-    public Activity handle(String actorName, IStorage storage) {
+    public Activity handle(String actorName, IStorage storage,int port) {
         return this;
     }
 
