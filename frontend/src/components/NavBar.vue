@@ -8,6 +8,9 @@
       </router-link>
     </b-navbar-brand>
 
+    <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
+    <b-collapse id="nav-collapse" is-nav>
     <b-navbar-nav pills> 
       <!-- <b-nav-item><router-link to="/">Lit</router-link></b-nav-item> | -->
       <b-nav-item to="/about">About</b-nav-item>
@@ -16,7 +19,8 @@
       <b-nav-item to="/signin">Login</b-nav-item>
       <b-nav-item to="/profile">Profile</b-nav-item>
       <b-nav-item to="/search">Search</b-nav-item>
-
+    </b-navbar-nav>
+    <b-navbar-nav class="ml-auto">
       <b-nav-item-dropdown right>
         <!-- Using 'button-content' slot -->
         <template #button-content>
@@ -36,7 +40,7 @@
       </b-nav-item-dropdown>
 
     </b-navbar-nav>
-
+    </b-collapse>
   </b-navbar>
 
 </template>
