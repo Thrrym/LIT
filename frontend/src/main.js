@@ -22,7 +22,7 @@ const store = new Vuex.Store({
   state: {
     currentUser: "testuser01/",
     backendUrl: "http://localhost:8080/",
-    proxyBackendUrl: "http://localhost:8081/api/",
+    proxyBackendUrl: location.origin + "/api/",
   },
   mutations: {
     setUser01 (state) {
@@ -31,14 +31,26 @@ const store = new Vuex.Store({
     setUser02 (state) {
       state.currentUser = "testuser02/";
     },
+    setBackend01 (state) {
+      state.backendUrl = "http://localhost:8080/";
+    },
+    setBackend02 (state) {
+      state.backendUrl = "http://localhost:8081/";
+    },
   },
   methods: {
     setUser01() {
-      this.$store.commit('setUser01')
+      this.$store.commit('setUser01');
     },
     setUser02() {
-      this.$store.commit('setUser02')
-    }
+      this.$store.commit('setUser02');
+    },
+    setBackend01() {
+      this.$store.commit('setBackend01');
+    },
+    setBackend02() {
+      this.$store.commit('setBackend02');
+    },
   },
 })
 
