@@ -16,6 +16,15 @@
       <b-nav-item to="/signin">Login</b-nav-item>
       <b-nav-item to="/profile">Profile</b-nav-item>
       <b-nav-item to="/search">Search</b-nav-item>
+
+      <b-nav-item-dropdown right>
+        <!-- Using 'button-content' slot -->
+        <template #button-content>
+          <em v-text="getCurrentUser"></em>
+        </template>
+        <b-dropdown-item v-on:click="setUser1" href="#">testuser01</b-dropdown-item>
+        <b-dropdown-item v-on:click="setUser2" href="#">testuser02</b-dropdown-item>
+      </b-nav-item-dropdown>
     </b-navbar-nav>
 
   </b-navbar>
@@ -25,6 +34,26 @@
 <script>
 export default {
     name: "NavBar",
+    data() {
+      return {
+      }
+    },
+    methods: {
+      // Method to manipulate the vuex store.
+      setUser1: function () {
+        this.$store.commit("setUser01");
+      },
+      setUser2: function () {
+        // Method to manipulate the vuex store.
+        this.$store.commit("setUser02");
+      },
+    },
+    computed: {
+      getCurrentUser: function () {
+        // Get user from the vuex store an remove last slash.
+        return this.$store.state.currentUser.split("/")[0];
+      },
+    },
 }
 </script>
 

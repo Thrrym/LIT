@@ -3,10 +3,8 @@
 </template>
 
 <script>
-import { prepareNewEntry, prepareNewEntryJson } from "@/js_files/serverCom.js";
-
 export default {
-    name: "ServerCom",
+    name: "ServerComGetObject",
 
     data() {
         return {
@@ -18,17 +16,9 @@ export default {
     },
 
     methods: {
-        triggerServerCom: function (newEntry, selectedType, cc) {
-            // Get the current user and URL of backend.
-            const backendUrl = this.getBackendUrl;
-            const currentUser = this.getCurrentUser;
-
-            // Prepare content of the http request. Removes unused properties.
-            console.log("ServerCom");
-            console.log(newEntry);
-            var cleanNewEntry = prepareNewEntry(selectedType, newEntry);
-            var json = prepareNewEntryJson(cleanNewEntry, backendUrl, currentUser, cc);
-
+        triggerGetObject: function (objectUrl) {
+            // Get the Object from the backend based on a provided URL.
+        
             // Maintaine reference to this component with `this` via a new reference.
             // Reason: Within httpRequest.onreadystatechange the reference changes to httpRequest.
             var component = this
@@ -38,11 +28,10 @@ export default {
             var httpRequest = new XMLHttpRequest();
 
             // Set the HTTP Method. HTTP Request send via Proxy to backend server.
-            let method = "POST";
-            var apiUrl = this.$store.state.proxyBackendUrl + currentUser + "outbox";
+            let method = "GET";
+            var apiUrl = this.getApiObjectUrl(objectUrl);
 
             httpRequest.open(method, apiUrl, true);
-            //httpRequest.timeout = 4000;
             httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
             httpRequest.onreadystatechange = function () {
@@ -56,17 +45,12 @@ export default {
                         // Trigger event.
                         component.callbackResponse();
                     } else {
+                        // Error handling.
                         component.callbackError();
                     }
                 }
-            };
-
-            httpRequest.onerror = function () {
-                console.log("HTTP onerror");
             }
-
-            console.log(json)
-            httpRequest.send(JSON.stringify(json)); // Send the HTTP request with the JSON as payload.
+            httpRequest.send(); // Send the HTTP request with no payload.
         },
     
         callbackResponse: function () {
@@ -80,14 +64,13 @@ export default {
             // Emits error to parent component back upstream.
             this.$emit("requestResponse", "error");
         },
-    },
-    computed: {
-      getCurrentUser: function () {
-        return this.$store.state.currentUser;
-      },
-      getBackendUrl: function () {
-        return this.$store.state.backendUrl;
-      }
+
+        getApiObjectUrl: function (objectUrl) {
+            // Construct correct API URL based on provided identifing URL of the object.
+            // Slice the provided URL and construct a valid backend URL as used by the proxy. 
+            let apiUrl = this.$store.state.proxyBackendUrl;            
+            return apiUrl + objectUrl.split("/").slice(1).slice(2).join("/");
+        },
     },
 }
 </script>

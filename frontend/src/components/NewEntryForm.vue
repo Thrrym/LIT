@@ -57,6 +57,35 @@
         </b-form-group>
       </b-card>
 
+      <b-button
+        variant="outline-primary"
+        v-on:click="setShowCcField"
+      >
+        CC
+      </b-button>
+
+      <!-- CC Field. -->
+      <b-card bg-varint="light" v-if="showCcField">
+        <b-form-group
+          v-if="showCcField"
+          label="Send to"
+          label-cols-lg="3"
+          label-size="lg"
+          lable-class="font-weight-bold pt-0"
+        >
+          <b-form-group
+            label="CC"
+            label-cols-sm="3"
+            label-align-sm="right"
+          >
+            <b-form-input
+              v-model="ccContent"
+              type="url"
+            ></b-form-input>
+          </b-form-group>
+        </b-form-group>
+      </b-card>
+
       <!-- Submit Button -->
       <b-button type="submit" variant="primary">Create new entry</b-button>
     </b-form>
@@ -88,6 +117,8 @@ export default {
   data() {
     return {
       showOptionalFields: false,
+      showCcField: false,
+      ccContent: "",
     };
   },
 
@@ -120,6 +151,7 @@ export default {
         this.getOptionalFields
       );
       // Emit the appropiate event to superior component with the fields as content of event.
+      this.$emit("cc", this.ccContent);
       this.$emit("entryToBeCreated", formResult);
     },
     setShowOptionalFields: function () {
@@ -127,6 +159,9 @@ export default {
     },
     resetOptionalFieldsButton: function () {
       this.showOptionalFields = false;
+    },
+    setShowCcField: function () {
+      this.showCcField = !this.showCcField;
     },
   },
 };

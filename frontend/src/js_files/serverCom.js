@@ -1,70 +1,70 @@
-function getUserUrl() {
-    // Change current and URL of backend here.
-    return {
-        user: "testuser01/",
-        backendUrl: "http://localhost:8080/",
-    };
-}
+// function getUserUrl() {
+//     // Change current and URL of backend here.
+//     return {
+//         user: "testuser01/",
+//         backendUrl: "http://localhost:8080/",
+//     };
+// }
 
-function getApiUrl() {
-    // Return the proxy URL.
-    return "http://localhost:8081/api/";
-}
+// function getApiUrl() {
+//     // Return the proxy URL.
+//     return "http://localhost:8081/api/";
+// }
 
-function postNewEntry(selectedType, uncleanNewEntry) {
-    // Get the current user and URL of backend.
-    const backendUrl = getUserUrl().backendUrl;
-    const currentUser = getUserUrl().user;
+// function postNewEntry(selectedType, uncleanNewEntry) {
+//     // Get the current user and URL of backend.
+//     const backendUrl = getUserUrl().backendUrl;
+//     const currentUser = getUserUrl().user;
 
-    // Prepare content of the http request. Removes unused properties.
-    var newEntry = prepareNewEntry(selectedType, uncleanNewEntry);
-    var json = prepareNewEntryJson(newEntry, backendUrl, currentUser);
+//     // Prepare content of the http request. Removes unused properties.
+//     var newEntry = prepareNewEntry(selectedType, uncleanNewEntry);
+//     var json = prepareNewEntryJson(newEntry, backendUrl, currentUser);
 
-    // Create the HTTP Request. Uses xmlhttprequest npm package.
-    var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-    var httpRequest = new XMLHttpRequest();
+//     // Create the HTTP Request. Uses xmlhttprequest npm package.
+//     var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+//     var httpRequest = new XMLHttpRequest();
 
-    //console.log(json);
-    // How to handle state changes of the request.
-    // httpRequest.onreadystatechange = function(){
-    //     if ((this.readyState == 4 && this.status == 201)) {
-    //         console.log("Hier" + httpRequest);
-    //         console.log(httpRequest.responseText);
-    //     }
-    // };
+//     //console.log(json);
+//     // How to handle state changes of the request.
+//     // httpRequest.onreadystatechange = function(){
+//     //     if ((this.readyState == 4 && this.status == 201)) {
+//     //         console.log("Hier" + httpRequest);
+//     //         console.log(httpRequest.responseText);
+//     //     }
+//     // };
 
-    console.log(json)
+//     console.log(json)
 
-    // Set the HTTP Method. HTTP Request send via Proxy to backend server.
-    let method = "POST";
-    var apiUrl = getApiUrl() + currentUser + "outbox";
+//     // Set the HTTP Method. HTTP Request send via Proxy to backend server.
+//     let method = "POST";
+//     var apiUrl = getApiUrl() + currentUser + "outbox";
 
-    httpRequest.open(method, apiUrl, true);
-    //httpRequest.timeout = 4000;
-    httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+//     httpRequest.open(method, apiUrl, true);
+//     //httpRequest.timeout = 4000;
+//     httpRequest.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
-    httpRequest.onreadystatechange = function () {
-        console.log("readystatechange" + httpRequest.readyState)
-        if (httpRequest.readyState === httpRequest.DONE) {
-            let status = httpRequest.status;
-            if ((status === 0 || (status >= 200 && status < 400))) {
-                // The request has been completed successfully
-                console.log(httpRequest.responseText);
-                // callback(httpRequest);
-            } else {
-                console.log("error");
-            }
-        }
-    }
+//     httpRequest.onreadystatechange = function () {
+//         console.log("readystatechange" + httpRequest.readyState)
+//         if (httpRequest.readyState === httpRequest.DONE) {
+//             let status = httpRequest.status;
+//             if ((status === 0 || (status >= 200 && status < 400))) {
+//                 // The request has been completed successfully
+//                 console.log(httpRequest.responseText);
+//                 // callback(httpRequest);
+//             } else {
+//                 console.log("error");
+//             }
+//         }
+//     }
 
-    httpRequest.send(JSON.stringify(json));
-    //console.log(httpRequest.readyState);
-    // while (httpRequest.readyState !== XMLHttpRequest.DONE) {
-    //     console.log("wait");
-    // }
-    //return httpRequest;
-    //return httpRequest;
-}
+//     httpRequest.send(JSON.stringify(json));
+//     //console.log(httpRequest.readyState);
+//     // while (httpRequest.readyState !== XMLHttpRequest.DONE) {
+//     //     console.log("wait");
+//     // }
+//     //return httpRequest;
+//     //return httpRequest;
+// }
 
 // function callback(httpRequest) {
 //     console.log(httpRequest);
@@ -85,7 +85,7 @@ function prepareNewEntry(selectedType, uncleanNewEntry) {
 }
     
 
-function prepareNewEntryJson(simplifiedObject, backendUrl, currentUser) {
+function prepareNewEntryJson(simplifiedObject, backendUrl, currentUser, cc) {
     // 1. Construct JSON object containing the info of the new entry.
     console.log(simplifiedObject)
     let url = backendUrl + currentUser + "outbox/";
@@ -110,10 +110,17 @@ function prepareNewEntryJson(simplifiedObject, backendUrl, currentUser) {
         "id": url + "1/",
         "actor": backendUrl + currentUser,
         "published": getCurrentTime(),
-        "cc": [backendUrl + currentUser + "follower/", backendUrl + "testuser02/"],
+        "cc": getCc(backendUrl, currentUser, cc),
         "object": jsonLitObject
     };
     return jsonMainObject
+}
+
+function getCc(backendUrl, currentUser, cc) {
+    if (cc === "") {
+        return [backendUrl + currentUser + "follower/"]
+    }
+    return [backendUrl + currentUser + "follower/", cc]
 }
 
 function getCurrentTime() {
@@ -122,4 +129,4 @@ function getCurrentTime() {
     return d.toISOString()
 }
 
-export { getUserUrl, getApiUrl, postNewEntry, prepareNewEntryJson, prepareNewEntry }
+export { prepareNewEntryJson, prepareNewEntry }
