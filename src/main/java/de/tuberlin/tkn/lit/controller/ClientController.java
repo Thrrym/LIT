@@ -1,6 +1,7 @@
 package de.tuberlin.tkn.lit.controller;
 
 import de.tuberlin.tkn.lit.model.*;
+import de.tuberlin.tkn.lit.model.activities.Create;
 import de.tuberlin.tkn.lit.model.actors.Person;
 import de.tuberlin.tkn.lit.processing.IActivitySender;
 import de.tuberlin.tkn.lit.storage.IStorage;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import java.util.logging.Logger;
 
 @RestController
 public class ClientController {
@@ -78,48 +80,20 @@ public class ClientController {
     @RequestMapping(value = "/{actorname}/outbox", method = RequestMethod.POST)
     public ResponseEntity<String> postActivity(@PathVariable("actorname") String actorName, @RequestBody Activity activity) {
 
-        // TODO: Check if all actors are present
-        LitObject createdObject;
-        if (activity.getObject().isObject()) {
-            createdObject = storage.createObject(actorName, activity.getObject().getLitObject().getType(), activity.getObject().getLitObject());
-        } else {
-            //TODO: Get object from link and persist it?
-            createdObject = storage.createObject(actorName, activity.getObject().getLitObject().getType(), activity.getObject().getLitObject());
-        }
-        activity.setObject(new LinkOrObject(createdObject));
-        Activity createdActivity = storage.createActivity(actorName, activity);
+        Activity createdActivity = storage.createActivity(actorName, activity.handle(actorName, storage));
         storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
-        if (createdActivity.getTo() != null) {
-            for (LinkOrObject linkOrObject : createdActivity.getTo()) {
-                if (UriUtilities.isLocaleServer(linkOrObject.getLink())) {
-                    OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
-                    inbox.getOrderedItems().add(new LinkOrObject(createdActivity));
-                    OrderedCollection relevantObjects = storage.getRelevantObjects(UriUtilities.getActor(linkOrObject.getLink()));
-                    relevantObjects.getOrderedItems().add(createdActivity.getObject());
-                } else {
-                    activitySender.send(createdActivity, linkOrObject);
-                }
-            }
-        }
-
-        if (createdActivity.getCc() != null) {
-            for (LinkOrObject linkOrObject : createdActivity.getCc()) {
-                if (UriUtilities.isLocaleServer(linkOrObject.getLink())) {
-                    OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
-                    inbox.getOrderedItems().add(new LinkOrObject(createdActivity));
-                    OrderedCollection relevantObjects = storage.getRelevantObjects(UriUtilities.getActor(linkOrObject.getLink()));
-                    relevantObjects.getOrderedItems().add(createdActivity.getObject());
-                } else {
-                    activitySender.send(createdActivity, linkOrObject);
-                }
-            }
-        }
+        createdActivity.handleSendings(storage, activitySender);
 
         return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
     }
 
-    /*@RequestMapping(value = "/{actorname}/following", method = RequestMethod.GET)
+   /* @RequestMapping(value = "/{actorname}/liked", method = RequestMethod.GET)
+    public OrderedCollection getLikeCollection(@PathVariable("actorname") String actorname) {
+        return storage.likeCollection(actorname);
+    }
+
+    @RequestMapping(value = "/{actorname}/following", method = RequestMethod.GET)
     public OrderedCollection getInbox(@PathVariable("actorname") String actorname) {
 
     }
@@ -127,10 +101,7 @@ public class ClientController {
     @RequestMapping(value = "/{actorname}/followers", method = RequestMethod.GET)
     public OrderedCollection getInbox(@PathVariable("actorname") String actorname) {
 
-    }
-
-    @RequestMapping(value = "/{actorname}/liked", method = RequestMethod.GET)
-    public OrderedCollection getInbox(@PathVariable("actorname") String actorname) {
-
     }*/
+
+
 }

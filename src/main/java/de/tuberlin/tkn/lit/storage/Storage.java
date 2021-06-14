@@ -12,24 +12,35 @@ public class Storage implements IStorage {
     private final Map<String, OrderedCollection> outboxes = new HashMap<>();
     private final Map<String, OrderedCollection> inboxes = new HashMap<>();
     private final Map<String, OrderedCollection> relevantObjects = new HashMap<>();
+    private final Map<String, OrderedCollection> likes = new HashMap<>();
     private final Map<String, Actor> actors = new HashMap<>();
     private final Map<UUID, Activity> activities = new HashMap<>();
     private final Map<UUID, LitObject> objects = new HashMap<>();
 
     @Override
     public Actor getActor(String actorName) {
-        return actors.get(actorName);
+        Actor actor = actors.get(actorName);
+        if (actor == null) {
+            throw new NullPointerException();
+        }
+
+        return actor;
     }
 
     @Override
     public OrderedCollection getInbox(String actorName) {
-        return inboxes.get(actorName);
+        OrderedCollection orderedCollection = inboxes.get(actorName);
+        if (orderedCollection == null) {
+            throw new NullPointerException();
+        }
+        return orderedCollection;
     }
 
     @Override
     public OrderedCollection getOutbox(String actorName) {
         return outboxes.get(actorName);
     }
+
 
     @Override
     public OrderedCollection getObjectsCreatedByActor(String actorName) {
@@ -52,6 +63,7 @@ public class Storage implements IStorage {
     public void addToOutbox(String actorName, LinkOrObject toAdd) {
         outboxes.get(actorName).getOrderedItems().add(toAdd);
     }
+
 
     @Override
     public Actor createActor(Actor actor) {
@@ -105,4 +117,13 @@ public class Storage implements IStorage {
         objects.put(uuid, object);
         return objects.get(uuid);
     }
+
+    @Override
+    public LitObject updateObject(String actorName, LitObject object) {
+        String[] id = object.getId().split("/");
+        UUID uuid = java.util.UUID.fromString(id[id.length-1]);
+        objects.put(uuid, object);
+        return objects.get(uuid);
+    }
+
 }
