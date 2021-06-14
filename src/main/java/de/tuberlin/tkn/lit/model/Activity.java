@@ -64,6 +64,8 @@ public abstract class Activity extends LitObject {
                     try {
                         OrderedCollection inbox = storage.getInbox(UriUtilities.getActor(linkOrObject.getLink()));
                         inbox.getOrderedItems().add(new LinkOrObject(this));
+                        OrderedCollection relevantObjects = storage.getRelevantObjects(UriUtilities.getActor(linkOrObject.getLink()));
+                        relevantObjects.getOrderedItems().add(this.getObject());
                     } catch (NullPointerException ex) {
                         logger.warning("The inbox for the actor '" + linkOrObject.getLink() + "' could not be found.");
                     }
