@@ -70,7 +70,7 @@ public abstract class Activity extends LitObject {
                         logger.warning("The inbox for the actor '" + linkOrObject.getLink() + "' could not be found.");
                     }
                 } else {
-                    activitySender.send(this);
+                    activitySender.send(this, linkOrObject);
                 }
             }
         }

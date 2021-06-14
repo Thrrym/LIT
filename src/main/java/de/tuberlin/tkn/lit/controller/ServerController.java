@@ -2,8 +2,13 @@ package de.tuberlin.tkn.lit.controller;
 
 import de.tuberlin.tkn.lit.storage.IStorage;
 import de.tuberlin.tkn.lit.model.*;
+import de.tuberlin.tkn.lit.model.activities.*;
+import de.tuberlin.tkn.lit.model.litobjects.BibTeXArticle;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 @RestController
 public class ServerController {
@@ -26,21 +31,41 @@ public class ServerController {
     }
 
     /**
-    *  Http route for others servers to use, to post activities to an inbox, belonging to
+    *  Http route for other servers to use, to post activities to an inbox, belonging to
     *  an actor, held by this server. Also all side effects of the activity are processed.
     * @param  actorname name of the actor whose inbox is the target
     * @param  activity  activity to post and process
     */
     @RequestMapping(value = "/{actorname}/inbox", method = RequestMethod.POST)
     public void postInbox(@PathVariable("actorname") String actorname, @RequestBody Activity activity) {
-        //STUB START
-
-    	this.storage.addToInbox(actorname, new LinkOrObject(activity));
         
-        OrderedCollection inbox = this.storage.getInbox(actorname);
-        System.out.println(inbox.getOrderedItems());
+        // post activity to the actors inbox
+    	storage.addToInbox(actorname, new LinkOrObject(activity));
+        
+    	if(activity instanceof Create) {
+    		Create createActivity = (Create) activity;
+    		LinkOrObject toSave = createActivity.getObject();
 
-        //STUB END
+			List<LinkOrObject> items = storage.getRelevantObjects(actorname).getOrderedItems();
+    		if(items.stream().noneMatch((item) -> item.getId().equals(toSave.getId())))
+    			items.add(toSave);
+    	}
+    	else if(activity instanceof Like) {
+    		LinkOrObject localAbout = storage.getRelevantObjects(actorname).getOrderedItems().stream().filter((item) -> item.getId().equals(activity.getObject().getId())).findFirst().orElse(null);
+			if(localAbout != null && localAbout.isObject()) {
+    			LitObject localObj = localAbout.getLitObject();
+    			if(localObj instanceof BibTeXArticle)
+    			{
+    				if(!((BibTeXArticle)localObj).likedBy.contains(activity.getActor()))
+    				{
+    					((BibTeXArticle)localObj).likedBy.add(activity.getActor());
+    					((BibTeXArticle)localObj).likes++;
+					}
+    			}
+    		}
+    	}
+        
+        // TODO: notify client
     }
 
     /**
@@ -51,6 +76,6 @@ public class ServerController {
     */
     @RequestMapping(value = "/{actorname}/outbox", method = RequestMethod.GET)
     public OrderedCollection getOutbox(@PathVariable("actorname") String actorname) {
-        return null;
+        return storage.getOutbox(actorname);
     }
 }
