@@ -59,7 +59,12 @@ export default {
                         component.callbackError();
                     }
                 }
+            };
+
+            httpRequest.onerror = function () {
+                console.log("HTTP onerror");
             }
+
             console.log(json)
             httpRequest.send(JSON.stringify(json)); // Send the HTTP request with the JSON as payload.
         },
