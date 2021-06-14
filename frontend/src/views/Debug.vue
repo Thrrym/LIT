@@ -27,7 +27,7 @@
     <ServerComLikePost ref="like" v-on:requestResponse="setRequestResponse"></ServerComLikePost>
     <ServerComGetUserObjects ref="userObjects" v-on:requestResponse="setRequestResponse"></ServerComGetUserObjects>
     <ServerComGetUserRelevantObjects ref="userRelevantObjects" v-on:requestResponse="setRequestResponse"></ServerComGetUserRelevantObjects>
-    <p v-text="getResponse"></p>
+    <pre v-text="getResponse"></pre>
   </div>
 </template>
 
@@ -37,6 +37,7 @@ import ServerComGetObject from "@/components/ServerComGetObject.vue";
 import ServerComLikePost from "@/components/ServerComLikePost.vue";
 import ServerComGetUserObjects from "@/components/ServerComGetUserObjects.vue";
 import ServerComGetUserRelevantObjects from "@/components/ServerComGetUserRelevantObjects.vue";
+
 
 export default {
   name: "Debug",
@@ -91,7 +92,7 @@ export default {
       if (this.requestResponse === "") {
         return "";
       };
-      return this.requestResponse.responseText;
+      return JSON.parse(this.requestResponse.responseText);
     },
   }
 
