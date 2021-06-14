@@ -108,16 +108,25 @@ export default {
 
         prepareLikeJson: function (backendUrl, currentUser) {
             // Prepare the json as http payload.
-            let objectJson = JSON.parse(this.objectRequestResponse.responseText); // Transform the base object from string to JSON.
+            var objectJson = JSON.parse(this.objectRequestResponse.responseText); // Transform the base object from string to JSON.
             
+            // Verify if the lit object is contained in parent json object. If so, extract object.
+            // Reason Like maybe called on different URL types: http://localhost:8080/testuser01/7046c509-5cf4-4736-83bd-a9c0eaa60b75 or
+            // http://localhost:8080/testuser02/8fc80769-4036-4ad3-b763-25afb1daf612
+            if ( Object.prototype.hasOwnProperty.call(objectJson, "object") ) {
+                objectJson = objectJson.object;
+            }
+
+            // Build the JSON payload for the Like activity.
             var jsonObject = {
                 "@context": "https://www.w3.org/ns/activitystreams/",
                 "type": "Like",
                 "actor": backendUrl + currentUser,
-                "to": objectJson.object.attributedTo,
+                "to": objectJson.attributedTo,
                 "object": objectJson.id
             };
-            return jsonObject
+            
+            return jsonObject;
         }
     },
 }
