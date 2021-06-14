@@ -69,7 +69,7 @@ export default {
             // Construct correct API URL based on provided identifing URL of the object.
             // Slice the provided URL and construct a valid backend URL as used by the proxy. 
             let apiUrl = this.$store.state.proxyBackendUrl;            
-            return apiUrl + objectUrl.split("/").slice(1).slice(-2).join("/")
+            return apiUrl + objectUrl.split("/").slice(1).slice(2).join("/");
         },
     },
 }
