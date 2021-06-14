@@ -1,7 +1,9 @@
 package de.tuberlin.tkn.lit.storage;
 
+import de.tuberlin.tkn.lit.constants.UriConstants;
 import de.tuberlin.tkn.lit.model.*;
 import de.tuberlin.tkn.lit.util.UriUtilities;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -9,6 +11,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class Storage implements IStorage {
+
     private final Map<String, OrderedCollection> outboxes = new HashMap<>();
     private final Map<String, OrderedCollection> inboxes = new HashMap<>();
     private final Map<String, OrderedCollection> relevantObjects = new HashMap<>();
@@ -16,6 +19,8 @@ public class Storage implements IStorage {
     private final Map<String, Actor> actors = new HashMap<>();
     private final Map<UUID, Activity> activities = new HashMap<>();
     private final Map<UUID, LitObject> objects = new HashMap<>();
+    @Value("${server.port}")
+    private int serverPort;
 
     @Override
     public Actor getActor(String actorName) {
@@ -70,6 +75,11 @@ public class Storage implements IStorage {
         if (actors.get(actor.getName()) != null) {
             return null;
         }
+        actor.setId(UriUtilities.generateId(new String[]{actor.getName()}, serverPort, false));
+        actor.setInbox(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.INBOX}, serverPort, false));
+        actor.setOutbox(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.OUTBOX}, serverPort, false));
+        actor.setFollowers(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.FOLLOWERS}, serverPort, false));
+        actor.setFollowing(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.FOLLOWING}, serverPort, false));
         actors.put(actor.getName(), actor);
         outboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         inboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
@@ -96,7 +106,7 @@ public class Storage implements IStorage {
     @Override
     public Activity createActivity(String actorName, Activity activity) {
         UUID uuid = UUID.randomUUID();
-        String id = UriUtilities.generateId(new String[]{actorName}, uuid);
+        String id = UriUtilities.generateId(new String[]{actorName}, serverPort, uuid);
         activity.setId(id);
         activities.put(uuid, activity);
         return activities.get(uuid);
@@ -110,7 +120,7 @@ public class Storage implements IStorage {
     @Override
     public LitObject createObject(String actorName, String objectType, LitObject object) {
         UUID uuid = UUID.randomUUID();
-        String id = UriUtilities.generateId(new String[]{actorName, objectType}, uuid);
+        String id = UriUtilities.generateId(new String[]{actorName, objectType}, serverPort, uuid);
         object.setId(id);
         String actorId = getActor(actorName).getId();
         object.setGenerator(new LinkOrObject(actorId));
@@ -121,7 +131,7 @@ public class Storage implements IStorage {
     @Override
     public LitObject updateObject(String actorName, LitObject object) {
         String[] id = object.getId().split("/");
-        UUID uuid = java.util.UUID.fromString(id[id.length-1]);
+        UUID uuid = java.util.UUID.fromString(id[id.length - 1]);
         objects.put(uuid, object);
         return objects.get(uuid);
     }

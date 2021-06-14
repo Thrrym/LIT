@@ -2,6 +2,7 @@ package de.tuberlin.tkn.lit.model;
 
 import de.tuberlin.tkn.lit.constants.UriConstants;
 import de.tuberlin.tkn.lit.util.UriUtilities;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class Actor extends LitObject {
 
@@ -31,7 +32,6 @@ public abstract class Actor extends LitObject {
     }
 
     public Actor(String actorName) {
-        setId(UriUtilities.generateId(new String[]{actorName}, false));
         setName(actorName);
         inbox = UriConstants.HOST + actorName + UriConstants.INBOX;
         outbox = UriConstants.HOST + actorName + UriConstants.OUTBOX;

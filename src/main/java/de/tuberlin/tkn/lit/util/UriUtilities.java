@@ -23,15 +23,15 @@ public class UriUtilities {
         return actor;
     }
 
-    public static String generateId(String[] idParameter, boolean uuidShouldBeAppended) {
-        String id = UriConstants.HOST + String.join("/", idParameter) + "/";
+    public static String generateId(String[] idParameter, int port, boolean uuidShouldBeAppended) {
+        String id = UriConstants.HOST + port + "/" + String.join("/", idParameter) + "/";
         if (uuidShouldBeAppended) {
             id += UUID.randomUUID();
         }
         return id;
     }
 
-    public static String generateId(String[] idParameter, UUID id) {
-        return UriConstants.HOST + String.join("/", idParameter) + "/" + id;
+    public static String generateId(String[] idParameter, int port, UUID id) {
+        return UriConstants.HOST + port + "/" + String.join("/", idParameter) + "/" + id;
     }
 }
