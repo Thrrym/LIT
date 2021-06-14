@@ -111,8 +111,9 @@ export default {
             var objectJson = JSON.parse(this.objectRequestResponse.responseText); // Transform the base object from string to JSON.
             
             // Verify if the lit object is contained in parent json object. If so, extract object.
-            // Reason Like maybe called on different URL types: http://localhost:8080/testuser01/7046c509-5cf4-4736-83bd-a9c0eaa60b75 or
-            // http://localhost:8080/testuser02/8fc80769-4036-4ad3-b763-25afb1daf612
+            // Reason Like maybe called on different URL types:
+            // http://localhost:8080/testuser01/81b8fbd5-5afd-4468-921e-74718d4d439f or
+            // http://localhost:8080/testuser01/bibtex_article/7640aa8a-96d2-4913-a36b-4c3eaef746f7
             if ( Object.prototype.hasOwnProperty.call(objectJson, "object") ) {
                 objectJson = objectJson.object;
             }
