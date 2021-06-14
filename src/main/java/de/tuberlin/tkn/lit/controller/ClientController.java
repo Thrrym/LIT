@@ -7,6 +7,7 @@ import de.tuberlin.tkn.lit.processing.IActivitySender;
 import de.tuberlin.tkn.lit.storage.IStorage;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,9 @@ import java.util.logging.Logger;
 
 @RestController
 public class ClientController {
+
+    @Value("${server.port}")
+    private int serverPort;
 
     @Autowired
     IActivitySender activitySender;
