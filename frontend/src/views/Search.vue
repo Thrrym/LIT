@@ -49,9 +49,12 @@ export default {
     },
     methods: {
       startSearch() {
+        var search_text = document.getElementById('searchinput').value;
+        this.meme_check(search_text);
+      },
+      meme_check(search_text) {
         var meme_src = '';
         var seeid = this.eeid;
-        var search_text = document.getElementById('searchinput').value;
 
         if (['jojo', 'giornos theme', 'giorno\'s theme'].includes(search_text.toLowerCase()) && this.eeid != 0) {
           this.eeid = 0;
