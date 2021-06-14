@@ -5,18 +5,16 @@
     ok-only
   >
     <div v-if="wasRequestSuccess">
-      <b-iconstack>
-        <b-icon stacked icon="square"></b-icon>
-        <b-icon stacked icon="check"></b-icon>
-      </b-iconstack>
-      <!-- <p v-text="getResponseRequest.responseText"></p> -->
+      <p>
+        <b-icon icon="bookmark-check-fill" font-scale="1"></b-icon>
+        Your entry was added.
+      </p>
     </div>
-    <!-- <div><p v-text="getResponseRequest.responseText"></p></div> -->
     <div v-else>
-      <b-iconstack>
-        <b-icon stacked icon="exclamation-triangle-fill"></b-icon>
-      </b-iconstack>
-      
+      <p>
+        <b-icon icon="exclamation-triangle-fill" font-scale="1"></b-icon>
+        We could not add your entry.
+      </p>
     </div>
     
   </b-modal>
@@ -64,9 +62,9 @@ export default {
     getModalTitle: function() {
       // Generate title of the modal.
       if (this.wasRequestSuccess()) {
-        return "Your entry was added";
+        return "Success";
       }
-      return "Error, we could not add your entry";
+      return "Error";
       },
   },
 }
