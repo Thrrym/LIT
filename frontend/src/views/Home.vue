@@ -14,9 +14,11 @@
         </div>
       </div>
     </section>
-<!--    <b-button @click="refreshObjects"-->
-<!--      ><b-icon icon="arrow-counterclockwise" font-scale="1"></b-icon-->
-<!--    ></b-button>-->
+
+    <b-button @click="refreshObjects">
+      <b-icon icon="arrow-counterclockwise" font-scale="1"></b-icon>
+    </b-button>
+
     <h3>My Entries</h3>
     <b-card-group deck>
       <b-card
@@ -33,22 +35,18 @@
         <template #footer>
           <small class="text-muted">
             <b-button href="#" variant="primary-outline" v-if="showLikes(entry.likes)">
-              <b-icon
-                  icon="bookmark-heart"
-              ></b-icon> {{ entry.likes }}
+              <b-icon icon="bookmark-heart"></b-icon>
+              {{ entry.likes }}
             </b-button>
             <b-button href="#" variant="primary-outline">
-              <b-icon
-                  icon="chevron-double-up"
-                  v-on:click="showModal(entry)"
-              ></b-icon>
+              <b-icon icon="chevron-double-up" v-on:click="showModal(entry)"></b-icon>
             </b-button>
           </small>
         </template>
       </b-card>
     </b-card-group>
 
-    <h3>Activityfeed</h3>
+    <h3 v-if="userHasRelevantObjects">Activityfeed</h3>
     <b-card-group deck>
       <b-card
         v-for="entry in objectsRelevantToUser"
@@ -182,6 +180,15 @@ export default {
       }
       return this.requestResponse.responseText;
     },
+    userHasObjects: function () {
+      if (this.objectsByUser === "") return false
+      return true
+    },
+    userHasRelevantObjects: function () {
+      if (this.objectsRelevantToUser === "") return false;
+      if (this.objectsRelevantToUser.length === 0) return false;
+      return true
+    }
   },
   mounted: function () {
     this.refreshObjects();
