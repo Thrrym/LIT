@@ -14,8 +14,11 @@
         </div>
       </div>
     </section>
-    <b-button @click="refreshObjects"><b-icon icon="arrow-counterclockwise" font-scale="1"></b-icon></b-button>
-    <b-card-group>
+<!--    <b-button @click="refreshObjects"-->
+<!--      ><b-icon icon="arrow-counterclockwise" font-scale="1"></b-icon-->
+<!--    ></b-button>-->
+    <h3>My Entries</h3>
+    <b-card-group deck>
       <b-card
         v-for="entry in objectsByUser"
         v-bind:key="entry.id"
@@ -26,10 +29,27 @@
         <b-card-title v-text="entry.author"></b-card-title>
         <b-card-sub-title v-text="entry.journal"></b-card-sub-title>
         <b-card-text v-text="entry.title"></b-card-text>
+
+        <template #footer>
+          <small class="text-muted">
+            <b-button href="#" variant="primary-outline" v-if="showLikes(entry.likes)">
+              <b-icon
+                  icon="bookmark-heart"
+              ></b-icon> {{ entry.likes }}
+            </b-button>
+            <b-button href="#" variant="primary-outline">
+              <b-icon
+                  icon="chevron-double-up"
+                  v-on:click="showModal(entry)"
+              ></b-icon>
+            </b-button>
+          </small>
+        </template>
       </b-card>
     </b-card-group>
 
-    <b-card-group>
+    <h3>Activityfeed</h3>
+    <b-card-group deck>
       <b-card
         v-for="entry in objectsRelevantToUser"
         v-bind:key="entry.id"
@@ -41,15 +61,29 @@
         <b-card-sub-title v-text="entry.journal"></b-card-sub-title>
         <b-card-text v-text="entry.title"></b-card-text>
 
-        <b-button href="#" variant="primary">
-          <b-icon
-            icon="bookmark-heart"
-            v-on:click="likePost(entry.id)"
-          ></b-icon>
-        </b-button>
+        <template #footer>
+          <small class="text-muted">
+            <b-button href="#" variant="primary" v-if="postCanBeLiked(entry)">
+              <b-icon
+                icon="bookmark-heart"
+                v-on:click="likePost(entry.id)"
+              ></b-icon>
+            </b-button>
+            <b-button href="#" variant="primary-outline" v-else>
+              <b-icon
+                  icon="bookmark-heart"
+              ></b-icon> {{entry.liked}}
+            </b-button>
+            <b-button href="#" variant="primary-outline">
+              <b-icon
+                  icon="chevron-double-up"
+                  v-on:click="showModal(entry)"
+              ></b-icon>
+            </b-button>
+          </small
+        ></template>
       </b-card>
     </b-card-group>
-
 
     <ServerComGetUserObjects
       ref="userObjects"
@@ -59,12 +93,20 @@
       ref="userRelevantObjects"
       v-on:requestResponse="setRequestResponseRelevantUserObjects"
     ></ServerComGetUserRelevantObjects>
+    <ServerComLikePost
+        ref="like"
+        v-on:requestResponse="setRequestResponseLike"
+    ></ServerComLikePost>
+    <HomeModal ref="modal"></HomeModal>
   </div>
 </template>
 <script>
 //import EventsList from '../components/EventsList';
 import ServerComGetUserObjects from "@/components/ServerComGetUserObjects.vue";
 import ServerComGetUserRelevantObjects from "@/components/ServerComGetUserRelevantObjects.vue";
+import ServerComLikePost from "@/components/ServerComLikePost.vue";
+import HomeModal from "@/components/HomeModal";
+
 
 export default {
   name: "home",
@@ -80,12 +122,14 @@ export default {
     // EventsList,
     ServerComGetUserObjects,
     ServerComGetUserRelevantObjects,
+    ServerComLikePost,
+    HomeModal,
   },
   methods: {
     setRequestResponse: function (response) {
       // Handle the event triggered by the ServerComGetInbox component.
       this.requestResponse = response;
-      //alert(this.requestResponse);
+      console.log(this.requestResponse);
     },
     setRequestResponseUserObjects: function (response) {
       this.setRequestResponse(response);
@@ -97,9 +141,37 @@ export default {
       this.objectsRelevantToUser = JSON.parse(this.getResponse).orderedItems;
       console.log("objectsByUser", this.objectsByUser);
     },
+    setRequestResponseLike: function (response) {
+      this.setRequestResponse(response);
+      this.refreshObjects();
+    },
     refreshObjects: function () {
       this.$refs.userObjects.triggerGetObjects();
       this.$refs.userRelevantObjects.triggerGetRelevantObjects();
+    },
+    likePost: function(url) {
+      this.$refs.like.triggerLikePost(url);
+    },
+    showLikes: function (likes) {
+      if (likes !== 0) return true;
+      return false;
+    },
+    postCanBeLiked: function (entry) {
+      if (!Object.prototype.hasOwnProperty.call(entry, "likedBy")) {
+        return true;
+      }
+      console.log("HIER", entry);
+      if (entry.likedBy.includes(this.$store.state.backendUrl + this.$store.state.currentUser)) {
+        console.log("liked", entry.likedBy.includes(this.$store.state.backendUrl + this.$store.state.currentUser))
+        return false;
+      }
+      if (entry.attributedTo.includes(this.$store.state.backendUrl + this.$store.state.currentUser)) {
+        return false;
+      }
+      return true;
+    },
+    showModal: function (entry) {
+      this.$refs.modal.showHomeModal(entry);
     },
   },
   computed: {
@@ -110,6 +182,9 @@ export default {
       }
       return this.requestResponse.responseText;
     },
+  },
+  mounted: function () {
+    this.refreshObjects();
   },
 };
 </script>
