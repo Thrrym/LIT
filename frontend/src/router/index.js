@@ -44,14 +44,6 @@ const routes = [
     name: "Search",
     component: () => import("../views/Search.vue"),
   },
-  {
-    // Needs to be verified: Catch all route.
-    // Suggestion: This fixes problems with ECONNRESET proxy errors.
-    path: "*",
-    name: "Home",
-    component: Home,
-  },
-
 ];
 
 const router = new VueRouter({
