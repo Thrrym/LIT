@@ -20,14 +20,12 @@
       </b-form-group>
     </b-form>
 
-    
-
     <ServerComGetInbox ref="inbox" v-on:requestResponse="setRequestResponse"></ServerComGetInbox>
     <ServerComGetObject ref="object" v-on:requestResponse="setRequestResponse"></ServerComGetObject>
     <ServerComLikePost ref="like" v-on:requestResponse="setRequestResponse"></ServerComLikePost>
     <ServerComGetUserObjects ref="userObjects" v-on:requestResponse="setRequestResponse"></ServerComGetUserObjects>
     <ServerComGetUserRelevantObjects ref="userRelevantObjects" v-on:requestResponse="setRequestResponse"></ServerComGetUserRelevantObjects>
-    <pre v-text="getResponse"></pre>
+    <p v-text="getResponse"></p>
   </div>
 </template>
 
@@ -92,7 +90,7 @@ export default {
       if (this.requestResponse === "") {
         return "";
       };
-      return JSON.parse(this.requestResponse.responseText);
+      return this.requestResponse.responseText;
     },
   }
 
