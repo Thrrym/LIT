@@ -19,7 +19,7 @@ const store = new Vuex.Store({
   state: {
     currentUser: "testuser01/", // The active "loggend in" user.
     backendUrl: "http://localhost:8080/", // The backend URL.
-    proxyBackendUrl: "http://127.0.0.1:" + location.port + "/api8080/", // The URL of the proxy between the frontend and backend.
+    proxyBackendUrl: "http://localhost:" + location.port + "/api/", // The URL of the proxy between the frontend and backend.
   },
   mutations: {
     setUser01 (state) {
@@ -30,11 +30,11 @@ const store = new Vuex.Store({
     },
     setBackend01 (state) {
       state.backendUrl = "http://localhost:8080/";
-      state.proxyBackendUrl = "http://127.0.0.1:" + location.port + "/api8080/";
+      state.proxyBackendUrl = "http://localhost:" + location.port + "/api/";
     },
     setBackend02 (state) {
       state.backendUrl = "http://localhost:8081/";
-      state.proxyBackendUrl = "http://127.0.0.1:" + location.port + "/api8081/";
+      state.proxyBackendUrl = "http://localhost:" + location.port + "/api/";
     },
   },
   methods: {
