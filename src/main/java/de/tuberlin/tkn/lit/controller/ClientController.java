@@ -1,8 +1,11 @@
 package de.tuberlin.tkn.lit.controller;
 
-import de.tuberlin.tkn.lit.model.*;
-import de.tuberlin.tkn.lit.model.activities.Create;
-import de.tuberlin.tkn.lit.model.actors.Person;
+import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
+import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
+import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
+import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
+import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
+import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
 import de.tuberlin.tkn.lit.processing.IActivitySender;
 import de.tuberlin.tkn.lit.storage.IStorage;
 import de.tuberlin.tkn.lit.util.UriUtilities;
@@ -13,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-import java.util.logging.Logger;
 
 @RestController
 public class ClientController {
@@ -77,7 +79,7 @@ public class ClientController {
     }
 
     @RequestMapping(value = "/{actorname}/{objecttype}/{id}", method = RequestMethod.GET)
-    public LitObject getObject(@PathVariable("actorname") String actorname, @PathVariable("objecttype") String objectType, @PathVariable("id") UUID id) {
+    public ActivityPubObject getObject(@PathVariable("actorname") String actorname, @PathVariable("objecttype") String objectType, @PathVariable("id") UUID id) {
         return storage.getObject(UriUtilities.generateId(new String[]{actorname, objectType}, serverPort, id));
     }
 
