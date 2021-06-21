@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
+import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,7 +53,7 @@ class ParseJsonTest {
         ClassLoader classLoader = getClass().getClassLoader();
         ObjectMapper objectMapper = new ObjectMapper();
         File file = new File(classLoader.getResource("example_5_collection.json").getFile());
-        LitCollection collection = objectMapper.readValue(file, LitCollection.class);
+        ActivityPubCollection collection = objectMapper.readValue(file, ActivityPubCollection.class);
 
         System.out.println("Type: "+collection.getType());
         System.out.println("Total items: "+collection.getTotalItems());

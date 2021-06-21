@@ -1,15 +1,13 @@
 package de.tuberlin.tkn.lit.controller;
 
+import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
+import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
 import de.tuberlin.tkn.lit.storage.IStorage;
-import de.tuberlin.tkn.lit.model.*;
-import de.tuberlin.tkn.lit.model.activities.*;
-import de.tuberlin.tkn.lit.model.litobjects.BibTeXArticle;
+import de.tuberlin.tkn.lit.model.activitypub.activities.*;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 @RestController
 public class ServerController {

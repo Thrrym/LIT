@@ -3,7 +3,10 @@ package de.tuberlin.tkn.lit.processing;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import de.tuberlin.tkn.lit.model.*;
+
+import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
+import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
+import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,7 +23,7 @@ public class ServerToServerCommunicator implements IActivitySender{
 	* @return whether the request was successful or not
     */
 	@Override
-	public Future<Boolean> send(Activity activity, LinkOrObject sendTo) {	
+	public Future<Boolean> send(Activity activity, LinkOrObject sendTo) {
 		return executor.submit(() -> {
 			String url = sendTo.getLink() + "/inbox"; // link is guranteed
 

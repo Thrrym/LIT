@@ -1,6 +1,10 @@
 package de.tuberlin.tkn.lit.storage;
 
-import de.tuberlin.tkn.lit.model.*;
+import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
+import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
+import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
+import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
+import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
 
 import java.util.UUID;
 
@@ -29,15 +33,19 @@ public interface IStorage {
 
     Activity createActivity(String actorName, Activity activity);
 
-    LitObject getObject(String id);
+    ActivityPubObject getObject(String id);
 
-    LitObject createObject(String actorName, String objectType, LitObject object);
+    ActivityPubObject createObject(String actorName, String objectType, ActivityPubObject object);
 
-    LitObject createObject(String id, LitObject object);
+    ActivityPubObject createObject(String id, ActivityPubObject object);
 
-    LitObject updateObject(String actorName, LitObject object);
+    ActivityPubObject updateObject(String actorName, ActivityPubObject object);
 
     OrderedCollection getLikedCollection(String actorName);
 
     void addToLiked(String actorName, LinkOrObject toAdd);
+
+    void addToFollowers(String actorName, LinkOrObject toAdd);
+
+    OrderedCollection getFollowersCollection(String actorName);
 }

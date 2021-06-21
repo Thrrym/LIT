@@ -1,7 +1,11 @@
 package de.tuberlin.tkn.lit.storage;
 
 import de.tuberlin.tkn.lit.constants.UriConstants;
-import de.tuberlin.tkn.lit.model.*;
+import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
+import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
+import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
+import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
+import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,11 +18,13 @@ public class Storage implements IStorage {
 
     private final Map<String, OrderedCollection> outboxes = new HashMap<>();
     private final Map<String, OrderedCollection> inboxes = new HashMap<>();
+    private final Map<String, OrderedCollection> followingCollections = new HashMap<>();
+    private final Map<String, OrderedCollection> followersCollections = new HashMap<>();
     private final Map<String, Set<String>> relevantObjects = new HashMap<>();
     private final Map<String, Set<String>> liked = new HashMap<>();
     private final Map<String, Actor> actors = new HashMap<>();
     private final Map<UUID, Activity> activities = new HashMap<>();
-    private final Map<String, LitObject> objects = new HashMap<>();
+    private final Map<String, ActivityPubObject> objects = new HashMap<>();
     @Value("${server.port}")
     private int serverPort;
 
@@ -119,12 +125,12 @@ public class Storage implements IStorage {
     }
 
     @Override
-    public LitObject getObject(String id) {
+    public ActivityPubObject getObject(String id) {
         return objects.get(id);
     }
 
     @Override
-    public LitObject createObject(String actorName, String objectType, LitObject object) {
+    public ActivityPubObject createObject(String actorName, String objectType, ActivityPubObject object) {
         UUID uuid = UUID.randomUUID();
         String id = UriUtilities.generateId(new String[]{actorName, objectType}, serverPort, uuid);
         object.setId(id);
@@ -135,13 +141,13 @@ public class Storage implements IStorage {
     }
 
     @Override
-    public LitObject createObject(String id, LitObject object) {
+    public ActivityPubObject createObject(String id, ActivityPubObject object) {
         objects.put(id, object);
         return objects.get(id);
     }
 
     @Override
-    public LitObject updateObject(String actorName, LitObject object) {
+    public ActivityPubObject updateObject(String actorName, ActivityPubObject object) {
         String id = object.getId();
         objects.put(id, object);
         return objects.get(id);
@@ -155,5 +161,15 @@ public class Storage implements IStorage {
     @Override
     public void addToLiked(String actorName, LinkOrObject toAdd) {
         liked.get(actorName).add(toAdd.getId());
+    }
+
+    @Override
+    public OrderedCollection getFollowersCollection(String actorName) {
+        return followersCollections.get(actorName);
+    }
+
+    @Override
+    public void addToFollowers(String actorName, LinkOrObject toAdd){
+        followersCollections.get(actorName).getOrderedItems().add(toAdd);
     }
 }
