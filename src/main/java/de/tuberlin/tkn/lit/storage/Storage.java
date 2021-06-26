@@ -164,12 +164,14 @@ public class Storage implements IStorage {
     }
 
     @Override
-    public OrderedCollection getFollowersCollection(String actorName) {
-        return followersCollections.get(actorName);
-    }
+    public OrderedCollection getFollowingCollection(String actorName) { return followingCollections.get(actorName); }
 
     @Override
-    public void addToFollowers(String actorName, LinkOrObject toAdd){
-        followersCollections.get(actorName).getOrderedItems().add(toAdd);
-    }
+    public void addToFollowing(String actorName, LinkOrObject toAdd){ followingCollections.get(actorName).getOrderedItems().add(toAdd); }
+
+    @Override
+    public OrderedCollection getFollowersCollection(String actorName) { return followersCollections.get(actorName); }
+
+    @Override
+    public void addToFollowers(String actorName, LinkOrObject toAdd){ followersCollections.get(actorName).getOrderedItems().add(toAdd); }
 }

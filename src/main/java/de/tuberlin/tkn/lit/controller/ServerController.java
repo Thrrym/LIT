@@ -55,6 +55,10 @@ public class ServerController {
 			activity.handle(activity.getActor().getId(), storage, serverPort);
             storage.addToRelevantObjects(actorname, activity.getObject());
     	}
+        else if(activity instanceof Follow) {
+            activity.handle(activity.getActor().getId(), storage, serverPort);
+            storage.addToRelevantObjects(actorname, activity.getObject());
+        }
         
         // TODO: notify client
     }

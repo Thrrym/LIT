@@ -48,4 +48,8 @@ public interface IStorage {
     void addToFollowers(String actorName, LinkOrObject toAdd);
 
     OrderedCollection getFollowersCollection(String actorName);
+
+    void addToFollowing(String actorName, LinkOrObject toAdd);
+
+    OrderedCollection getFollowingCollection(String actorName);
 }
