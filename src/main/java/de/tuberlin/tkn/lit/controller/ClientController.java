@@ -89,7 +89,7 @@ public class ClientController {
         Activity createdActivity = storage.createActivity(actorName, activity.handle(actorName, storage,serverPort));
         storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
-        createdActivity.handleSendings(storage, activitySender,serverPort);
+        createdActivity.handleSendings(storage, activitySender, serverPort);
 
         return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
     }
