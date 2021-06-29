@@ -69,4 +69,14 @@ public class ServerController {
     public OrderedCollection getOutbox(@PathVariable("actorname") String actorname) {
         return storage.getOutbox(actorname);
     }
+
+    /**
+    *  Http route for others servers to use, to enter the federation
+    * @param  newMember url of the new member
+    * @return pending activities
+    */
+    @RequestMapping(value = "/federation", method = RequestMethod.POST)
+    public OrderedCollection enterFederation(@RequestBody String newMember) {
+        return storage.getPendingActivities(newMember);
+    }
 }
