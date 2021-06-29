@@ -25,6 +25,8 @@ public class Storage implements IStorage {
     private final Map<String, Actor> actors = new HashMap<>();
     private final Map<UUID, Activity> activities = new HashMap<>();
     private final Map<String, ActivityPubObject> objects = new HashMap<>();
+    private final Map<String, OrderedCollection> federation = new HashMap<>(); // other server uris as keys to pending send tasks
+
     @Value("${server.port}")
     private int serverPort;
 
@@ -52,6 +54,10 @@ public class Storage implements IStorage {
         return outboxes.get(actorName);
     }
 
+    @Override
+    public OrderedCollection getPendingActivities(String url) {
+        return federation.get(url);
+    }
 
     @Override
     public OrderedCollection getObjectsCreatedByActor(String actorName) {

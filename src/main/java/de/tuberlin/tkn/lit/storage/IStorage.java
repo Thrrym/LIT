@@ -19,6 +19,8 @@ public interface IStorage {
 
     OrderedCollection getOutbox(String actorName);
 
+    OrderedCollection getPendingActivities(String url);
+
     OrderedCollection getObjectsCreatedByActor(String actorName);
 
     OrderedCollection getRelevantObjects(String actorName);
