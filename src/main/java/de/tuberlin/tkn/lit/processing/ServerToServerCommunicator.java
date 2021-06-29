@@ -32,7 +32,7 @@ public class ServerToServerCommunicator implements IActivitySender{
     		ResponseEntity<String> result = restTemplate.postForEntity(url, activity, String.class);
 
 			// check if request was successful
-    		if (200 <= result.getStatusCodeValue() && result.getStatusCodeValue() < 300) {
+    		if (200 >= result.getStatusCodeValue() && result.getStatusCodeValue() < 300) {
 				return true;
 			}
 
