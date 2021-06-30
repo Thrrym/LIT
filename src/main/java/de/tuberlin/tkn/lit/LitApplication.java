@@ -43,7 +43,6 @@ public class LitApplication {
 				
 				// handle successful join
 				if (res) {
-					// TODO : process pending activities
 					break;
 				}
 
@@ -67,12 +66,12 @@ public class LitApplication {
 			String hostUrl = UriConstants.HOST + serverPort_static;
 
 			// send post request
-			System.out.print("Attempt to join : " + url + "\n");
     		RestTemplate restTemplate = new RestTemplate();
     		ResponseEntity<OrderedCollection> result = restTemplate.postForEntity(url, hostUrl, OrderedCollection.class);
-
+			
 			// check if request was successful
     		if (200 >= result.getStatusCodeValue() && result.getStatusCodeValue() < 300) {
+				// TODO : process pending activities in ordered collection
 				return true;
 			}
 
