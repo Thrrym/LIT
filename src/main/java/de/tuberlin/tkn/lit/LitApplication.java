@@ -4,12 +4,13 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
+import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.constants.UriConstants;
-import org.springframework.beans.factory.annotation.Value;
 
 @SpringBootApplication
 public class LitApplication {
@@ -43,6 +44,7 @@ public class LitApplication {
 				
 				// handle successful join
 				if (res) {
+					System.out.print("Connected to " + knownMember + "\n");
 					break;
 				}
 
@@ -71,7 +73,9 @@ public class LitApplication {
 			
 			// check if request was successful
     		if (200 >= result.getStatusCodeValue() && result.getStatusCodeValue() < 300) {
-				// TODO : process pending activities in ordered collection
+				for(LinkOrObject loo : result.getBody().getOrderedItems()) {
+					// TODO : process pending activities (exactly the same as postInbox endpoint)
+				}
 				return true;
 			}
 
