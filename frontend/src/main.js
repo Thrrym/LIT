@@ -18,7 +18,7 @@ Vue.config.productionTip = false;
 const store = new Vuex.Store({
   state: {
     currentUser: "testuser01/", // The active "loggend in" user.
-    backendUrl: "http://localhost:" + String(parseInt(location.port)+1), // The backend URL. Expect backend on
+    backendUrl: "http://localhost:" + String(parseInt(location.port) + 1) + "/", // The backend URL. Expect backend on
     proxyBackendUrl: "http://localhost:" + location.port + "/api8080/", // The URL of the proxy between the frontend and backend.
   },
   mutations: {
