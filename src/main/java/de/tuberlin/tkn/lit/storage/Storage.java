@@ -56,7 +56,15 @@ public class Storage implements IStorage {
 
     @Override
     public OrderedCollection getPendingActivities(String url) {
-        return federation.get(url);
+        if (federation.containsKey(url)) {
+            return federation.get(url);
+        }
+        else {
+            OrderedCollection ordCol = new OrderedCollection(new ArrayList<>());
+            federation.put(url, ordCol);
+            return ordCol;
+        }
+    }
     }
 
     @Override
