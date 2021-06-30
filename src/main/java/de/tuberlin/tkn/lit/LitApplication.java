@@ -8,14 +8,26 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
+import de.tuberlin.tkn.lit.constants.UriConstants;
+import org.springframework.beans.factory.annotation.Value;
 
 @SpringBootApplication
 public class LitApplication {
 
+	@Value("${server.port}")
+    private String serverPort;
+
+    private static String serverPort_static;
+
+    @Value("${server.port}")
+    public void setNameStatic(String serverPort){
+        LitApplication.serverPort_static = serverPort;
+    }
+
 	public static void main(String[] args) {
 		SpringApplication.run(LitApplication.class, args);
 		
-		String knownMember = "http://localhost:8080";
+		String knownMember = "http://localhost:8080"; // TODO : get this from command line args
 
 		// the server wants to join a federation and
 		// supplies the adress of a member
@@ -52,11 +64,12 @@ public class LitApplication {
     */
 	private static Boolean joinFederation(String baseUrl) {
 			String url = baseUrl + "/federation";
+			String hostUrl = UriConstants.HOST + serverPort_static;
 
 			// send post request
 			System.out.print("Attempt to join : " + url + "\n");
     		RestTemplate restTemplate = new RestTemplate();
-    		ResponseEntity<OrderedCollection> result = restTemplate.postForEntity(url, "myUrl", OrderedCollection.class);
+    		ResponseEntity<OrderedCollection> result = restTemplate.postForEntity(url, hostUrl, OrderedCollection.class);
 
 			// check if request was successful
     		if (200 >= result.getStatusCodeValue() && result.getStatusCodeValue() < 300) {
