@@ -1,6 +1,7 @@
 package de.tuberlin.tkn.lit;
 
 import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
+import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
 import de.tuberlin.tkn.lit.constants.UriConstants;
 
 @SpringBootApplication
@@ -69,11 +71,11 @@ public class LitApplication {
 
 			// send post request
     		RestTemplate restTemplate = new RestTemplate();
-    		ResponseEntity<OrderedCollection> result = restTemplate.postForEntity(url, hostUrl, OrderedCollection.class);
+    		ResponseEntity<Activity[]> result = restTemplate.postForEntity(url, hostUrl, Activity[].class);
 			
 			// check if request was successful
     		if (200 >= result.getStatusCodeValue() && result.getStatusCodeValue() < 300) {
-				for(LinkOrObject loo : result.getBody().getOrderedItems()) {
+				for(Activity activity : result.getBody()) {
 					// TODO : process pending activities (exactly the same as postInbox endpoint)
 				}
 				return true;

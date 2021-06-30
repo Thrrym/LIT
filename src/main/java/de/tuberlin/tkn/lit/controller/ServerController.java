@@ -76,7 +76,7 @@ public class ServerController {
     * @return pending activities
     */
     @RequestMapping(value = "/federation", method = RequestMethod.POST)
-    public OrderedCollection enterFederation(@RequestBody String newMember) {
+    public List<Activity> enterFederation(@RequestBody String newMember) {
         return storage.getPendingActivities(newMember);
     }
 }

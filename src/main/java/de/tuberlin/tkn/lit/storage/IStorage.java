@@ -7,6 +7,7 @@ import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
 
 import java.util.UUID;
+import java.util.List;
 
 public interface IStorage {
     Actor getActor(String actorName);
@@ -19,7 +20,7 @@ public interface IStorage {
 
     OrderedCollection getOutbox(String actorName);
 
-    OrderedCollection getPendingActivities(String url);
+    List<Activity> getPendingActivities(String url);
 
     void addPendingActivity(String url, Activity activity);
 

@@ -2,6 +2,7 @@ package de.tuberlin.tkn.lit.storage;
 
 import de.tuberlin.tkn.lit.constants.UriConstants;
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
+import de.tuberlin.tkn.lit.model.activitypub.activities.Like;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
@@ -25,7 +26,7 @@ public class Storage implements IStorage {
     private final Map<String, Actor> actors = new HashMap<>();
     private final Map<UUID, Activity> activities = new HashMap<>();
     private final Map<String, ActivityPubObject> objects = new HashMap<>();
-    private final Map<String, OrderedCollection> federation = new HashMap<>(); // other server uris as keys to pending send tasks
+    private final Map<String, List<Activity>> federation = new HashMap<>(); // other server uris as keys to pending send tasks
 
     @Value("${server.port}")
     private int serverPort;
@@ -55,31 +56,30 @@ public class Storage implements IStorage {
     }
 
     @Override
-    public OrderedCollection getPendingActivities(String url) {
+    public List<Activity> getPendingActivities(String url) {
         if (federation.containsKey(url)) {
-            OrderedCollection toReturn = federation.get(url);
-            federation.replace(url, new OrderedCollection(new ArrayList<>()));
+            List<Activity> toReturn = federation.get(url);
+            federation.replace(url, new ArrayList<Activity>());
             return toReturn;
         }
         else {
-            OrderedCollection ordCol = new OrderedCollection(new ArrayList<>());
-            federation.put(url, ordCol);
-            return ordCol;
+            List<Activity> l = new ArrayList<Activity>();
+            federation.put(url, l);
+            return l;
         }
     }
 
     @Override
     public void addPendingActivity(String url, Activity activity) {
         if (federation.containsKey(url)) {
-            OrderedCollection ordCol = federation.get(url);
-            List<LinkOrObject> items = ordCol.getOrderedItems();
-            items.add(new LinkOrObject(activity));
+            List<Activity> l = federation.get(url);
+            l.add(activity);
+            federation.replace(url, l);
         }
         else {
-            OrderedCollection ordCol = new OrderedCollection(new ArrayList<>());
-            List<LinkOrObject> items = ordCol.getOrderedItems();
-            items.add(new LinkOrObject(activity));
-            federation.put(url, ordCol);
+            List<Activity> l = new ArrayList<Activity>();
+            l.add(activity);
+            federation.put(url, l);
         }
     }
 
