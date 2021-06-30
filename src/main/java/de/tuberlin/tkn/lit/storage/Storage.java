@@ -57,7 +57,9 @@ public class Storage implements IStorage {
     @Override
     public OrderedCollection getPendingActivities(String url) {
         if (federation.containsKey(url)) {
-            return federation.get(url);
+            OrderedCollection toReturn = federation.get(url);
+            federation.replace(url, new OrderedCollection(new ArrayList<>()));
+            return toReturn;
         }
         else {
             OrderedCollection ordCol = new OrderedCollection(new ArrayList<>());
@@ -74,7 +76,7 @@ public class Storage implements IStorage {
             items.add(new LinkOrObject(activity));
         }
         else {
-            OrderedCollection ordCol = new OrderedCollection();
+            OrderedCollection ordCol = new OrderedCollection(new ArrayList<>());
             List<LinkOrObject> items = ordCol.getOrderedItems();
             items.add(new LinkOrObject(activity));
             federation.put(url, ordCol);
