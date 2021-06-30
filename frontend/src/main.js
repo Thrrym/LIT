@@ -1,5 +1,5 @@
 import Vue from "vue";
-import Vuex from 'vuex'
+import Vuex from "vuex";
 import App from "./App.vue";
 
 // Import the router for vue.
@@ -31,10 +31,10 @@ const store = new Vuex.Store({
       "/",
   },
   mutations: {
-    setUser01 (state) {
+    setUser01(state) {
       state.currentUser = "testuser01/";
     },
-    setUser02 (state) {
+    setUser02(state) {
       state.currentUser = "testuser02/";
     },
     //setBackend01 (state) {
@@ -48,10 +48,10 @@ const store = new Vuex.Store({
   },
   methods: {
     setUser01() {
-      this.$store.commit('setUser01');
+      this.$store.commit("setUser01");
     },
     setUser02() {
-      this.$store.commit('setUser02');
+      this.$store.commit("setUser02");
     },
     /*setBackend01() {
       this.$store.commit('setBackend01');
@@ -60,8 +60,7 @@ const store = new Vuex.Store({
       this.$store.commit('setBackend02');
     },*/
   },
-})
-
+});
 
 new Vue({
   router,
