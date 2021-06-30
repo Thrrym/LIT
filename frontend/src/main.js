@@ -17,9 +17,18 @@ Vue.config.productionTip = false;
 // Using Vuex: Global variables to switch between user and backend.
 const store = new Vuex.Store({
   state: {
-    currentUser: "testuser01/", // The active "loggend in" user.
-    backendUrl: "http://localhost:" + String(parseInt(location.port) + 1) + "/", // The backend URL. Expect backend on
-    proxyBackendUrl: "http://localhost:" + location.port + "/api8080/", // The URL of the proxy between the frontend and backend.
+    // The active "loggend in" user.
+    currentUser: "testuser01/",
+    // URL of the backend server the frontend wants to talk to. Expect the backend to run on the next port.
+    backendUrl: "http://localhost:" + String(parseInt(location.port) + 1) + "/",
+    // The URL of the proxy between the frontend and backend. Proxy runs on the frontend server.
+    // Need to set the correct proxy handle: "/apiPORT" with PORT=port of the backend.
+    proxyBackendUrl:
+      "http://localhost:" +
+      location.port +
+      "/api" +
+      String(parseInt(location.port) + 1) +
+      "/",
   },
   mutations: {
     setUser01 (state) {
