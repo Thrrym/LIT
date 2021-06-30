@@ -1,19 +1,23 @@
 // server.js
-// CLI arguments: First argument frontend port, second argument backend port.
+// CLI arguments: First argument frontend port.
 let args = process.argv.slice(2);
-let backendPort = args[1];
+if (args.length === 0) {
+  console.log(
+    "To start frontend server run 'node server.js 8080' Specifying the port of the frontend server.",
+    "Expect the backend server to run on port 8081."
+  );
+  return;
+}
+
+// Where to reach the frontend server.
+const hostname = "localhost";
+const frontendPort = parseInt(args[0]);
 
 // Load and use the same proxy as for the development server.
 const { createProxyMiddleware } = require("http-proxy-middleware");
-
 let express = require("express");
-//let path = require("path");
 let serveStatic = require("serve-static");
 let app = express();
-
-// Where to reach the frontend server.
-let hostname = "localhost";
-let frontendPort = parseInt(args[0]);
 
 // Setup the proxy: Forward backend requests from the frontend to the backend server.
 app.use(
@@ -47,5 +51,5 @@ app.use(
 app.use(serveStatic(__dirname + "/dist"));
 
 app.listen(frontendPort, hostname, () => {
-  console.log(`Server running at http://${hostname}:${frontendPort}/`);
+  console.log("Frontend server running at http://", hostname, ":", frontendPort);
 });
