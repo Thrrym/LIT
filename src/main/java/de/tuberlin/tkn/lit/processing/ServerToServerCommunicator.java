@@ -42,8 +42,7 @@ public class ServerToServerCommunicator implements IActivitySender{
 				return true;
 			}
 
-			// TODO : handle post wasn't successful
-			System.out.print(sendTo.getLink());
+			// handle post wasn't successful
 			storage.addPendingActivity(sendTo.getLink(), activity);
 
 			return false;
