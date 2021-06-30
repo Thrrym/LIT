@@ -9,11 +9,17 @@ import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import de.tuberlin.tkn.lit.storage.IStorage;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
 @Service
 public class ServerToServerCommunicator implements IActivitySender{
+
+	@Autowired
+	IStorage storage;
+
 	private ExecutorService executor = Executors.newSingleThreadExecutor();
 	
 	/**
@@ -37,6 +43,8 @@ public class ServerToServerCommunicator implements IActivitySender{
 			}
 
 			// TODO : handle post wasn't successful
+			System.out.print(sendTo.getLink());
+			storage.addPendingActivity(sendTo.getLink(), activity);
 
 			return false;
 		});

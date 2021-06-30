@@ -21,6 +21,8 @@ public interface IStorage {
 
     OrderedCollection getPendingActivities(String url);
 
+    void addPendingActivity(String url, Activity activity);
+
     OrderedCollection getObjectsCreatedByActor(String actorName);
 
     OrderedCollection getRelevantObjects(String actorName);
