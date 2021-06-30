@@ -29,6 +29,7 @@ export default {
       // Set the HTTP Method. HTTP Request send via Proxy to backend server.
       let method = "GET";
       var apiUrl = this.getApiObjectUrl(objectUrl);
+      console.log("Used Api", apiUrl);
 
       httpRequest.open(method, apiUrl, true);
       httpRequest.setRequestHeader(
@@ -58,6 +59,7 @@ export default {
     callbackResponse: function () {
       // Function triggered by the onreadystatechange from the HTTP request.
       // Emits event to parent component to pass result of the HTTP request back upstream.
+      console.log(this.requestResponse);
       this.$emit("requestResponse", this.requestResponse);
     },
 
@@ -68,9 +70,18 @@ export default {
     },
 
     getApiObjectUrl: function (objectUrl) {
-      // Construct correct API URL based on provided identifing URL of the object.
+      // Construct correct API URL based on provided identifying URL of the object.
       // Slice the provided URL and construct a valid backend URL as used by the proxy.
-      let apiUrl = this.$store.state.proxyBackendUrl;
+      let objectUrlServer = objectUrl.split("/").slice(0, 3).join("/") + "/";
+      console.log("objectUrlServer", objectUrlServer);
+      // let backendPort = this.$store.state.backendUrl.split("/")[2].split(":")[1];
+      if (objectUrlServer === this.$store.state.backendUrl) {
+        let apiUrl = this.$store.state.proxyBackendUrl;
+        console.log("otherProxyBackendUrl", apiUrl);
+        return apiUrl + objectUrl.split("/").slice(1).slice(2).join("/");
+      };
+      let apiUrl = this.$store.state.otherProxyBackendUrl;
+      console.log("otherProxyBackendUrl", apiUrl);
       return apiUrl + objectUrl.split("/").slice(1).slice(2).join("/");
     },
   },
