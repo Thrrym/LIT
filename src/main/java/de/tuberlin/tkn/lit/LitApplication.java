@@ -27,7 +27,7 @@ public class LitApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(LitApplication.class, args);
 		
-		String knownMember = "http://localhost:8080"; // TODO : get this from command line args
+		String knownMember = args[0];
 
 		// the server wants to join a federation and
 		// supplies the adress of a member
