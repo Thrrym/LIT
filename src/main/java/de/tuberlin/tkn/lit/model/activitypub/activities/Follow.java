@@ -21,21 +21,33 @@ public class Follow extends Activity {
 
     @Override
     public Activity handle(String actorId, IStorage storage, int port) {
-        if (!actorId.startsWith("http"))
-            actorId = storage.getActor(actorId).getId();
-        // Get actor to follow
         ActivityPubObject obj = getObject().getLitObject();
-        // TODO: Check if toFollowing actor exists
         Actor actor = (Actor) obj;
+        // Outbox
+        if (!actorId.startsWith("http")) {
+            actorId = storage.getActor(actorId).getId();
+            // Get actor to follow
+           // ActivityPubObject obj = getObject().getLitObject();
+            // TODO: Check if toFollowing actor exists
+           // Actor actor = (Actor) obj;
             if (!storage.getFollowingCollection(actorId).getOrderedItems().contains(actor))
                 storage.addToFollowing(actorId, new LinkOrObject(actor));
+            else {
+                return this;
+            }
 
-        // Add to other actors follower list, if available in storage
-        ActivityPubObject obj_toFollow = storage.getObject(getObject().getId());
-        if (obj_toFollow != null)
-            storage.addToFollowers(actor.getName(), getActor());
-        else {
-            // TODO: Inform server-server
+            // TODO: Inform server-server (inbox of actor to follow)
+            List<LinkOrObject> customTo = new ArrayList<>();
+            // Actor (object) must be a link
+            customTo.add(new LinkOrObject(getObject().getLink()));
+            setTo(customTo);
+
+            // Inbox
+        } else {
+            // Add to other actors follower list, if available in storage
+            ActivityPubObject objToFollow = storage.getObject(getObject().getId());
+            if (objToFollow != null)
+                storage.addToFollowers(actor.getName(), getActor());
         }
         return this;
     }

@@ -4,6 +4,9 @@ import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.storage.IStorage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Create extends Activity {
 
     public Create() {
@@ -24,6 +27,9 @@ public class Create extends Activity {
         }
 
         setObject(new LinkOrObject(createdObject));
+
+        // Inform followers
+        setTo(storage.getFollowersCollection(getActor().getId()).getOrderedItems());
 
         return this;
     }

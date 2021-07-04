@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+
 @RestController
 public class ServerController {
 
@@ -40,6 +42,9 @@ public class ServerController {
     */
     @RequestMapping(value = "/{actorname}/inbox", method = RequestMethod.POST)
     public void postInbox(@PathVariable("actorname") String actorname, @RequestBody Activity activity) {
+
+        // TODO reset to property (check if correct reasoning)
+        activity.setTo(new ArrayList<>());
         
         // post activity to the actors inbox
     	storage.addToInbox(actorname, new LinkOrObject(activity));
