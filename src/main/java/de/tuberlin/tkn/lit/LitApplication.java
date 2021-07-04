@@ -28,9 +28,12 @@ public class LitApplication {
     }
 
 	public static void main(String[] args) {
+
+		// start server
 		SpringApplication.run(LitApplication.class, args);
 		
-		String knownMember = args[0];
+		// get command line arguments
+		String knownMember = args.length == 1 ? args[0] : "";
 
 		// the server wants to join a federation and
 		// supplies the adress of a member
@@ -78,6 +81,7 @@ public class LitApplication {
 				for(Activity activity : result.getBody()) {
 					// TODO : process pending activities (exactly the same as postInbox endpoint)
 				}
+				// TODO : process the other servers also returned by the request
 				return true;
 			}
 

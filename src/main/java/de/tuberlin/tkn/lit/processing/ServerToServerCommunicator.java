@@ -66,6 +66,7 @@ public class ServerToServerCommunicator implements IActivitySender{
 		result = new ResponseEntity("Timeout", HttpStatus.BAD_REQUEST);
 		RestTemplate restTemplate = new RestTemplate();
 
+		// thread for request execution
 		Thread sendThread = new Thread() {
 			public void run() {
 				try {
@@ -76,12 +77,12 @@ public class ServerToServerCommunicator implements IActivitySender{
 			}  
 		};		
 		
+		// send request with timeout
 		sendThread.start();
 		try{
 			Thread.sleep(500);
 		} catch(InterruptedException e) {}
 		sendThread = null;
-		System.out.print("Status : " + result.getStatusCodeValue() + "\n");
 
 		return result.getStatusCodeValue();
 	}
@@ -99,6 +100,7 @@ public class ServerToServerCommunicator implements IActivitySender{
 			
 			// send get request
     		RestTemplate restTemplate = new RestTemplate();
+			// TODO : we need timeout here aswell
     		ResponseEntity<OrderedCollection> result = restTemplate.getForEntity(url, OrderedCollection.class);
 			return result.getBody();
 		});
