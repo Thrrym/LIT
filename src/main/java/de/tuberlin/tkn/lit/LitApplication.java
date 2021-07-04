@@ -1,6 +1,7 @@
 package de.tuberlin.tkn.lit;
 
 import java.util.concurrent.TimeUnit;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.boot.SpringApplication;
@@ -38,38 +39,70 @@ public class LitApplication {
 		// the server wants to join a federation and
 		// supplies the adress of a member
 		if (!knownMember.isEmpty()) {
-			while(true) {
-				Boolean res = false;
-				
-				// try to join he federation
-				try {
-					res = joinFederation(knownMember);
-				}
-				catch(Exception e) {}
-				
-				// handle successful join
-				if (res) {
-					System.out.print("Connected to " + knownMember + "\n");
-					break;
-				}
-
-				System.out.print("Couldn't establish connection with " + knownMember + ", trying again in 2 seconds \n");
-				
-				try {
-					TimeUnit.SECONDS.sleep(2);;
-				}
-				catch(Exception e) {}				
-			}
+			System.out.print("Try joining a federation \n");
+			handleJoinFederation(knownMember);
 		}
 	}
 
 	/**
-    *  Allows requesting to join a federation
-    * @param  baseUrl the base url of a known member
-	* @return whether the join was successful
+    *  Handles the case this server wants to join a federation
+    * @param  knownMember The base url of a known member.
     */
-	private static Boolean joinFederation(String baseUrl) {
-			String url = baseUrl + "/federation";
+	private static void handleJoinFederation(String knownMember) {
+		List<Activity> pendingActivities = null;
+		List<String> federationMembers = null;
+
+		while(true) {
+
+			try {
+				// get pendingActivities
+				// TODO : send pending activities if got any 
+				pendingActivities = joinFederation(knownMember);
+
+				// get other federation members
+				federationMembers = getFederationMembers(knownMember);
+			}
+			catch(Exception e) {}
+
+			// handle successful join
+			if (pendingActivities != null || federationMembers != null) {
+				System.out.print("Connected to " + knownMember + "\n");
+				break;
+			}
+
+			System.out.print("Couldn't establish connection with " + knownMember + ", trying again in 2 seconds \n");
+
+			try {
+				TimeUnit.SECONDS.sleep(2);;
+			}
+			catch(Exception e) {}				
+		}
+
+		// inform the other servers about the new one aswell
+    	for (String host : federationMembers) {
+
+			// get the staging activities, ignore their known servers
+			// TODO : if this server holds pending activities for others, send them 
+    	    String url = "http://" + host;
+ 			System.out.print("Get pending activities from " + url + "\n");
+			List<Activity> morePendingActivities = joinFederation(url); // TODO : timeouts ?!
+			pendingActivities.addAll(morePendingActivities);
+    	}
+
+		// process the pending activities
+		for(Activity activity : pendingActivities) {
+			System.out.print("here " + activity.getActor() + "\n");
+			// TODO : process pending activities (exactly the same as postInbox endpoint)
+		}
+	} 
+
+	/**
+    *  Allows requesting to join a federation.
+    * @param  baseUrl The base url of a known member.
+	* @return List of activities the member had left for the joining one.
+    */
+	private static List<Activity> joinFederation(String baseUrl) {
+			String url = baseUrl + "/join-federation";
 			String hostUrl = UriConstants.HOST + serverPort_static;
 
 			// send post request
@@ -78,14 +111,26 @@ public class LitApplication {
 			
 			// check if request was successful
     		if (200 >= result.getStatusCodeValue() && result.getStatusCodeValue() < 300) {
-				for(Activity activity : result.getBody()) {
-					// TODO : process pending activities (exactly the same as postInbox endpoint)
-				}
-				// TODO : process the other servers also returned by the request
-				return true;
+				return Arrays.asList(result.getBody());
 			}
 
-			return false;
+			return null;
+	}
+
+	/**
+    *  Allows to request which hosts are members of the federation.
+    * @param  baseUrl The base url of a known member.
+	* @return List of members in federation.
+    */
+	private static List<String> getFederationMembers(String url) {
+		
+		url += "/federation-members";
+
+		// send get request
+    	RestTemplate restTemplate = new RestTemplate();
+		
+    	ResponseEntity<String[]> result = restTemplate.getForEntity(url, String[].class);
+		return Arrays.asList(result.getBody());
 	}
 
 }
