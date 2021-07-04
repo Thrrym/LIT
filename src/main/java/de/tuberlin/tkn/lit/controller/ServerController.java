@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.List;
 
 @RestController
@@ -75,12 +76,12 @@ public class ServerController {
     }
 
     /**
-    *  Http route for others servers to use, to enter the federation
+    *  Http route for others servers to use, to enter the federation.
     * @param  newMember url of the new member
     * @return pending activities
     */
-    @RequestMapping(value = "/federation", method = RequestMethod.POST)
-    public List<Activity> enterFederation(@RequestBody String newMember) {
+    @RequestMapping(value = "/join-federation", method = RequestMethod.POST)
+    public List<Activity> joinFederation(@RequestBody String newMember) {
         URL urlObj;
         try {
             urlObj = new URL(newMember);
@@ -88,10 +89,21 @@ public class ServerController {
             return null; // TODO : return 400
         }
 
-        // TODO : return keys of federation map aswell (= other servers)
-        // TODO : inform those other servers about the new one aswell
-        String newHost = urlObj.getHost();
+        String newHost = urlObj.getHost() + ':' + urlObj.getPort();
+
+        // if the newHost is not already known to the storage,
+        // it will be added !
         List<Activity> res = storage.getPendingActivities(newHost);
+        return res;
+    }
+
+    /**
+    *  Http route for others servers to use, to get all members of the federation.
+    * @return List of federation member urls.
+    */
+    @RequestMapping(value = "/federation-members", method = RequestMethod.GET)
+    public List<String> federationMembers() {
+        List<String> res = storage.getFederatedHosts();
         return res;
     }
 }

@@ -47,7 +47,7 @@ public class ServerToServerCommunicator implements IActivitySender{
 			// handle post wasn't successful
 			url = sendTo.getLink();
 			URL urlObj = new URL(url);
-			String host = urlObj.getHost();
+			String host = urlObj.getHost() + ':' + urlObj.getPort();
 			storage.addPendingActivity(host, activity);
 
 			return false;
