@@ -24,8 +24,8 @@ postOutbox() {
                                                         \"id\": \"https://social.example/testuser01/posts/a29a6843-9feb-4c74-a7f7-081b9c9201d3\", \
                                                         \"to\": [ \"http://localhost:$port_to/testuser02\" ], \
                                                         \"actor\": \"http://localhost:$port_from/testuser01/\",  \
-                                                        \"object\": { \"type\": \"Note\", \
-                                                                        \"id\": \"https://social.example/alyssa/posts/49e2d03d-b53a-4c4c-a95c-94a6abf45a19\", \
+                                                        \"object\": { \"type\": \"bibtex_article\", \
+                                                                        \"id\": \"https://social.example/testuser01/posts/49e2d03d-b53a-4c4c-a95c-94a6abf45a19\", \
                                                                         \"attributedTo\": \"http://localhost:$port_from/testuser01/\", \
                                                                         \"to\": [ \"http://localhost:$port_to/testuser02/\" ], \
                                                                         \"content\": \"Say, did you finish reading that book I lent you?\" \
