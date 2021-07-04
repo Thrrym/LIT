@@ -8,11 +8,14 @@ import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
 import de.tuberlin.tkn.lit.processing.IActivitySender;
 import de.tuberlin.tkn.lit.storage.IStorage;
+import de.tuberlin.tkn.lit.storage.Storage;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -27,40 +30,22 @@ public class ClientController {
     IActivitySender activitySender;
 
     @Autowired
-    IStorage storage;
-
-    @Autowired
-    public ClientController(IStorage storage) {
-
-        //STUB START
-
-        this.storage = storage;
-
-        this.storage.createActor(new Person("testuser01"));
-        this.storage.createActor(new Person("testuser02"));
-
-        //STUB END
-    }
+    Storage storage;
 
     @RequestMapping(value = "/{actor}", method = RequestMethod.GET)
     public Actor getActor(@PathVariable("actor") String actorName) {
-
         return storage.getActor(actorName);
     }
 
-    @RequestMapping(value = "/actor", method = RequestMethod.POST)
-    public ResponseEntity<Actor> createActor(@RequestBody Actor actor) {
-        Actor newActor = storage.createActor(actor);
-        if (newActor != null) {
-            return new ResponseEntity<>(newActor, HttpStatus.CONFLICT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-    }
-
     @RequestMapping(value = "/{actorname}/inbox", method = RequestMethod.GET)
-    public OrderedCollection getInbox(@PathVariable("actorname") String actorname) {
-        return storage.getInbox(actorname);
+    public ResponseEntity<OrderedCollection> getInbox(@PathVariable("actorname") String actorname) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        String username = userDetails.getUsername();
+        if (!actorname.equals(username)){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        return new ResponseEntity<>(storage.getInbox(username),HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{actorname}/objects", method = RequestMethod.GET)
@@ -85,7 +70,13 @@ public class ClientController {
 
     @RequestMapping(value = "/{actorname}/outbox", method = RequestMethod.POST)
     public ResponseEntity<String> postActivity(@PathVariable("actorname") String actorName, @RequestBody Activity activity) {
-
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        String username = userDetails.getUsername();
+        if (!actorName.equals(username)){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        
         Activity createdActivity = storage.createActivity(actorName, activity.handle(actorName, storage,serverPort));
         storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 

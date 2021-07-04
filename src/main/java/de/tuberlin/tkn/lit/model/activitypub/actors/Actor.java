@@ -1,5 +1,6 @@
 package de.tuberlin.tkn.lit.model.activitypub.actors;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.tuberlin.tkn.lit.constants.UriConstants;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 
@@ -10,6 +11,7 @@ public abstract class Actor extends ActivityPubObject {
     private String following;
     private String followers;
     private String liked;
+    @JsonIgnore
     private String password;
 
     public Actor() {
