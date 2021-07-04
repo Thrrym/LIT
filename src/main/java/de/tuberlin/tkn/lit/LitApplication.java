@@ -91,8 +91,11 @@ public class LitApplication {
 
 		// process the pending activities
 		for(Activity activity : pendingActivities) {
-			System.out.print("here " + activity.getActor() + "\n");
-			// TODO : process pending activities (exactly the same as postInbox endpoint)
+			String[] urlParts = activity.getActor().getLink().split("/");
+			String actorname = urlParts[urlParts.length-1];
+			
+			// process
+			handleActivity(actorname, activity);
 		}
 	} 
 
@@ -133,4 +136,13 @@ public class LitApplication {
 		return Arrays.asList(result.getBody());
 	}
 
+	/**
+    *  (Helper) Processing an activity for an actors inbox 
+	*  (same as post inbox route)
+    * @param  actorname
+    * @param  activity
+    */
+    private static void handleActivity(String actorname, Activity activity) {
+        // TODO : unite this for server controller and here
+    }
 }
