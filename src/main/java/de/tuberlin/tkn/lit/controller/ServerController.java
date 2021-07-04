@@ -44,23 +44,7 @@ public class ServerController {
     */
     @RequestMapping(value = "/{actorname}/inbox", method = RequestMethod.POST)
     public void postInbox(@PathVariable("actorname") String actorname, @RequestBody Activity activity) {
-        
-        // post activity to the actors inbox
-    	storage.addToInbox(actorname, new LinkOrObject(activity));
-        
-    	if(activity instanceof Create) {
-    		Create createActivity = (Create) activity;
-    		LinkOrObject toSave = createActivity.getObject();
-
-    		storage.createObject(toSave.getId(), toSave.getLitObject());
-    		storage.addToRelevantObjects(actorname, toSave);
-    	}
-    	else if(activity instanceof Like) {
-			activity.handle(activity.getActor().getId(), storage, serverPort);
-            storage.addToRelevantObjects(actorname, activity.getObject());
-    	}
-        
-        // TODO: notify client
+        handleActivity(actorname, activity);
     }
 
     /**
@@ -104,5 +88,31 @@ public class ServerController {
     public List<String> federationMembers() {
         List<String> res = storage.getFederatedHosts();
         return res;
+    }
+
+    /**
+    *  (Helper) Processing an activity for an actors inbox 
+	*  (same as post inbox route)
+    * @param  actorname
+    * @param  activity
+    */
+    public void handleActivity(String actorname, Activity activity) {
+        
+        // post activity to the actors inbox
+    	storage.addToInbox(actorname, new LinkOrObject(activity));
+        
+    	if(activity instanceof Create) {
+    		Create createActivity = (Create) activity;
+    		LinkOrObject toSave = createActivity.getObject();
+
+    		storage.createObject(toSave.getId(), toSave.getLitObject());
+    		storage.addToRelevantObjects(actorname, toSave);
+    	}
+    	else if(activity instanceof Like) {
+			activity.handle(activity.getActor().getId(), storage, serverPort);
+            storage.addToRelevantObjects(actorname, activity.getObject());
+    	}
+        
+        // TODO: notify client
     }
 }
