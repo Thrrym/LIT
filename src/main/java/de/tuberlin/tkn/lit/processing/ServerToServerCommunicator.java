@@ -1,5 +1,6 @@
 package de.tuberlin.tkn.lit.processing;
 
+import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -7,12 +8,13 @@ import java.util.concurrent.Future;
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
+import de.tuberlin.tkn.lit.storage.IStorage;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import de.tuberlin.tkn.lit.storage.IStorage;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
+import org.springframework.http.HttpStatus;
 
 @Service
 public class ServerToServerCommunicator implements IActivitySender{
@@ -21,7 +23,8 @@ public class ServerToServerCommunicator implements IActivitySender{
 	IStorage storage;
 
 	private ExecutorService executor = Executors.newSingleThreadExecutor();
-	
+	volatile ResponseEntity<String> result;
+
 	/**
     *  Allows sending Activities to an actor (their inbox) on another server
     * @param  activity the activity to send
@@ -34,11 +37,10 @@ public class ServerToServerCommunicator implements IActivitySender{
 			String url = sendTo.getLink() + "/inbox"; // link is guranteed
 
 			// send post request
-    		RestTemplate restTemplate = new RestTemplate();
-    		ResponseEntity<String> result = restTemplate.postForEntity(url, activity, String.class);
+			int statusCode = sendWithTimeout(activity, url);
 
 			// check if request was successful
-    		if (200 >= result.getStatusCodeValue() && result.getStatusCodeValue() < 300) {
+    		if (200 >= statusCode && statusCode < 300) {
 				return true;
 			}
 
@@ -51,6 +53,39 @@ public class ServerToServerCommunicator implements IActivitySender{
 			return false;
 		});
 	}
+		
+
+	/**
+    *  (Helper) Send method so we can timeout the request
+    * @param  activity the activity to be send
+	* @param  url the receiver of the activity
+	* @return the status code returned by the request
+    */
+	public int sendWithTimeout(Activity activity, String url) {
+		
+		result = new ResponseEntity("Timeout", HttpStatus.BAD_REQUEST);
+		RestTemplate restTemplate = new RestTemplate();
+
+		Thread sendThread = new Thread() {
+			public void run() {
+				try {
+					result = restTemplate.postForEntity(url, activity, String.class);
+				} catch(Exception e) {
+
+				}
+			}  
+		};		
+		
+		sendThread.start();
+		try{
+			Thread.sleep(500);
+		} catch(InterruptedException e) {}
+		sendThread = null;
+		System.out.print("Status : " + result.getStatusCodeValue() + "\n");
+
+		return result.getStatusCodeValue();
+	}
+
 
 	/**
     *  Allows getting the outbox of an actor on another server
@@ -68,4 +103,5 @@ public class ServerToServerCommunicator implements IActivitySender{
 			return result.getBody();
 		});
 	}
+
 }
