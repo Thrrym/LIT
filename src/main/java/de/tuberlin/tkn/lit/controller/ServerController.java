@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 @RestController
@@ -79,6 +81,17 @@ public class ServerController {
     */
     @RequestMapping(value = "/federation", method = RequestMethod.POST)
     public List<Activity> enterFederation(@RequestBody String newMember) {
-        return storage.getPendingActivities(newMember);
+        URL urlObj;
+        try {
+            urlObj = new URL(newMember);
+        } catch(MalformedURLException e) {
+            return null; // TODO : return 400
+        }
+
+        // TODO : return keys of federation map aswell (= other servers)
+        // TODO : inform those other servers about the new one aswell
+        String newHost = urlObj.getHost();
+        List<Activity> res = storage.getPendingActivities(newHost);
+        return res;
     }
 }

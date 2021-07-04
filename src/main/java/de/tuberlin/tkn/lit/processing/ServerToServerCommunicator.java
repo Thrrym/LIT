@@ -43,7 +43,10 @@ public class ServerToServerCommunicator implements IActivitySender{
 			}
 
 			// handle post wasn't successful
-			storage.addPendingActivity(sendTo.getLink(), activity);
+			url = sendTo.getLink();
+			URL urlObj = new URL(url);
+			String host = urlObj.getHost();
+			storage.addPendingActivity(host, activity);
 
 			return false;
 		});
