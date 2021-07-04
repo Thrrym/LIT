@@ -10,6 +10,7 @@ public abstract class Actor extends ActivityPubObject {
     private String following;
     private String followers;
     private String liked;
+    private String password;
 
     public Actor() {
     }
@@ -37,6 +38,16 @@ public abstract class Actor extends ActivityPubObject {
         following = UriConstants.HOST + actorName + UriConstants.FOLLOWING;
         followers = UriConstants.HOST + actorName + UriConstants.FOLLOWERS;
         liked = UriConstants.HOST + actorName + UriConstants.LIKED;
+    }
+
+    public Actor(String actorName,String password) {
+        setName(actorName);
+        inbox = UriConstants.HOST + actorName + UriConstants.INBOX;
+        outbox = UriConstants.HOST + actorName + UriConstants.OUTBOX;
+        following = UriConstants.HOST + actorName + UriConstants.FOLLOWING;
+        followers = UriConstants.HOST + actorName + UriConstants.FOLLOWERS;
+        liked = UriConstants.HOST + actorName + UriConstants.LIKED;
+        this.password = password;
     }
 
     public String getInbox() {
@@ -77,5 +88,13 @@ public abstract class Actor extends ActivityPubObject {
 
     public void setLiked(String liked) {
         this.liked = liked;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

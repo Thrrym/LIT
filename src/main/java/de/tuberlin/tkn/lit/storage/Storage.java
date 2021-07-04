@@ -39,6 +39,11 @@ public class Storage implements IStorage {
     }
 
     @Override
+    public boolean existsByUsername(String actorName){
+        return actors.get(actorName) != null;
+    }
+
+    @Override
     public OrderedCollection getInbox(String actorName) {
         OrderedCollection orderedCollection = inboxes.get(actorName);
         if (orderedCollection == null) {
