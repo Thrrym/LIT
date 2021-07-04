@@ -76,7 +76,7 @@ public class ClientController {
         if (!actorName.equals(username)){
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        
+
         Activity createdActivity = storage.createActivity(actorName, activity.handle(actorName, storage,serverPort));
         storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 

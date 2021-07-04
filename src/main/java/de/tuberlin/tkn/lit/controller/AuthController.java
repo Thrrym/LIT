@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/api/auth")
 public class AuthController {
     @Autowired
     Storage storage;
