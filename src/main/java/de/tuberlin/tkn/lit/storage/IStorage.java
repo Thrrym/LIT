@@ -24,6 +24,8 @@ public interface IStorage {
 
     void addPendingActivity(String url, Activity activity);
 
+    List<String> getFederatedHosts();
+
     OrderedCollection getObjectsCreatedByActor(String actorName);
 
     OrderedCollection getRelevantObjects(String actorName);

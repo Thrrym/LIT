@@ -81,6 +81,14 @@ public class Storage implements IStorage {
             l.add(activity);
             federation.put(url, l);
         }
+
+        System.out.print("Add activity as pending for " + url);
+    }
+
+    @Override
+    public List<String> getFederatedHosts() {
+        List<String> federatedHosts = new ArrayList<>(federation.keySet());
+        return federatedHosts;
     }
 
     @Override
