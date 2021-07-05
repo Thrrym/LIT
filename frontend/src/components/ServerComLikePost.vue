@@ -42,6 +42,7 @@ export default {
     setObjectRequestResponse: function (object) {
       // Manage the return of the object by ServerComGetObject component.
       this.objectRequestResponse = object;
+      console.log(this.objectRequestResponse)
       // Trigger the actual like.
       this.likePost();
     },

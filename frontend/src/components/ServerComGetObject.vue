@@ -29,6 +29,7 @@ export default {
       // Set the HTTP Method. HTTP Request send via Proxy to backend server.
       let method = "GET";
       var apiUrl = this.getApiObjectUrl(objectUrl);
+      console.log("Used Api", apiUrl);
 
       httpRequest.open(method, apiUrl, true);
       httpRequest.setRequestHeader(
@@ -58,6 +59,7 @@ export default {
     callbackResponse: function () {
       // Function triggered by the onreadystatechange from the HTTP request.
       // Emits event to parent component to pass result of the HTTP request back upstream.
+      console.log(this.requestResponse);
       this.$emit("requestResponse", this.requestResponse);
     },
 
