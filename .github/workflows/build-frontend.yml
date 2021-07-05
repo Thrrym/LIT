@@ -29,7 +29,8 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-        
+
+    # Use npm to setup packages.
     - name: Setup NPM.
       working-directory: ./frontend
       run: npm ci
