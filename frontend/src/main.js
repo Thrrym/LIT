@@ -17,11 +17,17 @@ Vue.config.productionTip = false;
 // Using Vuex: Global variables to switch between user and backend.
 const store = new Vuex.Store({
   state: {
-    currentUser: "testuser01/", // The active "logged in" user.
-    backendUrl: "http://localhost:8080/", // The backend URL.
-    // The URL of the proxy between the frontend and backend.
-    proxyBackendUrl: "http://localhost:" + location.port + "/api8080/",
-    otherProxyBackendUrl: "http://localhost:" + location.port + "/api8081/",
+    // The active "loggend in" user.
+    currentUser: "testuser01/",
+    // URL of the backend server the frontend wants to talk to. Expect the backend to run on the next port.
+    backendUrl: "http://localhost:" + String(parseInt(location.port) + 1) + "/",
+    // The URL of the proxy between the frontend and backend. Proxy runs on the frontend server.
+    // Need to set the correct proxy handle: "/apiPORT" with PORT=port of the backend.
+    proxyBackendUrl: "http://localhost:" + location.port + "/api" + String(parseInt(location.port) + 1) + "/",
+    proxyUrl: "http://localhost:" + location.port,
+      //"/api" //+
+      //String(parseInt(location.port) + 1) +
+      //"/",
   },
   mutations: {
     setUser01(state) {
@@ -30,16 +36,14 @@ const store = new Vuex.Store({
     setUser02(state) {
       state.currentUser = "testuser02/";
     },
-    setBackend01(state) {
-      state.backendUrl = "http://localhost:8080/";
-      state.proxyBackendUrl = "http://localhost:" + location.port + "/api8080/";
-      state.otherProxyBackendUrl = "http://localhost:" + location.port + "/api8081/";
-    },
-    setBackend02(state) {
-      state.backendUrl = "http://localhost:8081/";
-      state.proxyBackendUrl = "http://localhost:" + location.port + "/api8081/";
-      state.otherProxyBackendUrl = "http://localhost:" + location.port + "/api8080/";
-    },
+    //setBackend01 (state) {
+    //  state.backendUrl = "http://localhost:8080/";
+    //  state.proxyBackendUrl = "http://localhost:" + location.port + "/api8080/";
+    //},
+    //setBackend02 (state) {
+    //  state.backendUrl = "http://localhost:8081/";
+    //  state.proxyBackendUrl = "http://localhost:" + location.port + "/api8081/";
+    //},
   },
   methods: {
     setUser01() {
@@ -48,12 +52,12 @@ const store = new Vuex.Store({
     setUser02() {
       this.$store.commit("setUser02");
     },
-    setBackend01() {
-      this.$store.commit("setBackend01");
+    /*setBackend01() {
+      this.$store.commit('setBackend01');
     },
     setBackend02() {
-      this.$store.commit("setBackend02");
-    },
+      this.$store.commit('setBackend02');
+    },*/
   },
 });
 
