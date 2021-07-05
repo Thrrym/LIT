@@ -26,14 +26,14 @@
       <b-nav-item to="/search">Search</b-nav-item>
     </b-navbar-nav>
     <b-navbar-nav class="ml-auto">
-      <b-nav-item-dropdown right>
-        <!-- Using 'button-content' slot -->
+<!--      <b-nav-item-dropdown right>
+        &lt;!&ndash; Using 'button-content' slot &ndash;&gt;
         <template #button-content>
           <em v-text="getCurrentBackend"></em>
         </template>
         <b-dropdown-item v-on:click="setBackend01" href="#">8080</b-dropdown-item>
         <b-dropdown-item v-on:click="setBackend02" href="#">8081</b-dropdown-item>
-      </b-nav-item-dropdown>
+      </b-nav-item-dropdown>-->
 
       <b-nav-item-dropdown right>
         <!-- Using 'button-content' slot -->
