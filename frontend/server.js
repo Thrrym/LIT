@@ -27,8 +27,11 @@ const proxyOptions = {
   router: function (req) {
     // Update the target. Where does the request needs to be sent?
     // Decision based on the proxy handle. Example '/api8080'.
+    console.log("originalUrl", req.originalUrl);
     const apiPort = req.originalUrl.split("/")[1].slice(3); // Get the port from the handle.
+    console.log("apiPort", apiPort);
     const apiHost = req.headers.host.split(":")[0]; // Get the host. Should always be 'localhost'.
+    console.log("apiHost", apiHost);
     const protocol = "http://"; // Set the protocol.
     console.log("router port", apiPort);
     // Construct the new target URL: Protocol, host and port.
