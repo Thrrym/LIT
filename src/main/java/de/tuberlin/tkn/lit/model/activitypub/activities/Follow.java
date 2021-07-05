@@ -5,6 +5,7 @@ import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.lit.BibTeXArticle;
 import de.tuberlin.tkn.lit.storage.IStorage;
+import de.tuberlin.tkn.lit.util.UriUtilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,11 +26,12 @@ public class Follow extends Activity {
         Actor actor = (Actor) obj;
         // Outbox
         if (!actorId.startsWith("http")) {
-            actorId = storage.getActor(actorId).getId();
+            //actorId = storage.getActor(actorId).getId();
             // Get actor to follow
            // ActivityPubObject obj = getObject().getLitObject();
             // TODO: Check if toFollowing actor exists
            // Actor actor = (Actor) obj;
+            // TODO
             if (!storage.getFollowingCollection(actorId).getOrderedItems().contains(actor))
                 storage.addToFollowing(actorId, new LinkOrObject(actor));
             else {
@@ -40,7 +42,12 @@ public class Follow extends Activity {
             List<LinkOrObject> customTo = new ArrayList<>();
             // Actor (object) must be a link
             customTo.add(new LinkOrObject(getObject().getLink()));
-            setTo(customTo);
+            //setTo(customTo);
+
+            if(UriUtilities.isLocaleServer(getTo().get(0).getLink(), port)) {
+               // storage.addToFollowers(UriUtilities.getActor(getTo().get(0).getLink()), getActor());
+                storage.addToFollowers(UriUtilities.getActor(getTo().get(0).getLink()), new LinkOrObject(getActor().getLitObject().getName()));
+            }
 
             // Inbox
         } else {

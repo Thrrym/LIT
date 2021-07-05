@@ -95,6 +95,8 @@ public class Storage implements IStorage {
         outboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         inboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         relevantObjects.put(actor.getName(), new HashSet<>());
+        followingCollections.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
+        followersCollections.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         liked.put(actor.getName(), new HashSet<>());
         return actors.get(actor.getName());
     }

@@ -3,6 +3,7 @@ package de.tuberlin.tkn.lit.model.activitypub.activities;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.storage.IStorage;
+import de.tuberlin.tkn.lit.util.UriUtilities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,8 @@ public class Create extends Activity {
         setObject(new LinkOrObject(createdObject));
 
         // Inform followers
-        setTo(storage.getFollowersCollection(getActor().getId()).getOrderedItems());
+        if (storage.getFollowersCollection(getActor().getLitObject().getName()).getOrderedItems() != null)
+            setTo(storage.getFollowersCollection(getActor().getLitObject().getName()).getOrderedItems());
 
         return this;
     }

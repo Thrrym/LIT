@@ -46,8 +46,10 @@ public class Like extends Activity {
             if(UriUtilities.isLocaleServer(actorId, port))
                 storage.addToLiked(UriUtilities.getActor(actorId), new LinkOrObject(bibTeXArticle));
 
+
             // Inform followers
-            setTo(storage.getFollowersCollection(getActor().getId()).getOrderedItems());
+            if (storage.getFollowersCollection(getActor().getLitObject().getName()).getOrderedItems() != null)
+                setTo(storage.getFollowersCollection(getActor().getLitObject().getName()).getOrderedItems());
         }
 
         return this;
