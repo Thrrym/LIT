@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import axios from "axios";
 import App from "./App.vue";
 
 // Import the router for vue.
@@ -23,11 +24,21 @@ const store = new Vuex.Store({
     backendUrl: "http://localhost:" + String(parseInt(location.port) + 1) + "/",
     // The URL of the proxy between the frontend and backend. Proxy runs on the frontend server.
     // Need to set the correct proxy handle: "/apiPORT" with PORT=port of the backend.
-    proxyBackendUrl: "http://localhost:" + location.port + "/api" + String(parseInt(location.port) + 1) + "/",
+    proxyBackendUrl:
+      "http://localhost:" +
+      location.port +
+      "/api" +
+      String(parseInt(location.port) + 1) +
+      "/",
     proxyUrl: "http://localhost:" + location.port,
-      //"/api" //+
-      //String(parseInt(location.port) + 1) +
-      //"/",
+    //"/api" //+
+    //String(parseInt(location.port) + 1) +
+    //"/",
+
+    // Bearer token storage:
+    loginStatus: "",
+    token: localStorage.getItem("token") || "",
+    user: {},
   },
   mutations: {
     setUser01(state) {
@@ -58,6 +69,31 @@ const store = new Vuex.Store({
     setBackend02() {
       this.$store.commit('setBackend02');
     },*/
+  },
+  actions: {
+    login({ commit }, user) {
+      return new Promise((resolve, reject) => {
+        commit("auth_request");
+        axios({
+          url: "http://localhost:3000/login",
+          data: user,
+          method: "POST",
+        })
+          .then((resp) => {
+            const token = resp.data.token;
+            const user = resp.data.user;
+            localStorage.setItem("token", token);
+            axios.defaults.headers.common["Authorization"] = token;
+            commit("auth_success", token, user);
+            resolve(resp);
+          })
+          .catch((err) => {
+            commit("auth_error");
+            localStorage.removeItem("token");
+            reject(err);
+          });
+      });
+    },
   },
 });
 

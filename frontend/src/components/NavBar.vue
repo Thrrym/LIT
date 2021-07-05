@@ -18,10 +18,10 @@
     <b-collapse id="nav-collapse" is-nav>
     <b-navbar-nav pills> 
       <!-- <b-nav-item><router-link to="/">Lit</router-link></b-nav-item> | -->
-      <b-nav-item to="/about">About</b-nav-item>
+<!--      <b-nav-item to="/about">About</b-nav-item>-->
       <b-nav-item to="/debug">Debug</b-nav-item>
       <b-nav-item to="/new-entry">New Entry</b-nav-item>
-      <b-nav-item to="/signin">Login</b-nav-item>
+<!--      <b-nav-item to="/signin">Login</b-nav-item>-->
       <b-nav-item to="/profile">Profile</b-nav-item>
       <b-nav-item to="/search">Search</b-nav-item>
     </b-navbar-nav>
