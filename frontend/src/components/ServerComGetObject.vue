@@ -68,10 +68,18 @@ export default {
     },
 
     getApiObjectUrl: function (objectUrl) {
-      // Construct correct API URL based on provided identifing URL of the object.
+      // Construct correct API URL based on provided identifying URL of the object.
       // Slice the provided URL and construct a valid backend URL as used by the proxy.
-      let apiUrl = this.$store.state.proxyBackendUrl;
-      return apiUrl + objectUrl.split("/").slice(1).slice(2).join("/");
+      //const url = require('url');
+      //console.log("objectUrl", objectUrl);
+      let apiUrl = this.$store.state.proxyUrl;
+      const objectPort = new URL(objectUrl).port;
+      const objectPathname = new URL(objectUrl).pathname;
+      //console.log("objectPort", objectPort);
+      //let url = apiUrl + objectUrl.split("/").slice(1).slice(2).join("/");
+      const url = apiUrl + "/api" + objectPort + objectPathname;
+      // console.log("getApiObjectUrl", url);
+      return url;
     },
   },
 };
