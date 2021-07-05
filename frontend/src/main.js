@@ -23,12 +23,11 @@ const store = new Vuex.Store({
     backendUrl: "http://localhost:" + String(parseInt(location.port) + 1) + "/",
     // The URL of the proxy between the frontend and backend. Proxy runs on the frontend server.
     // Need to set the correct proxy handle: "/apiPORT" with PORT=port of the backend.
-    proxyBackendUrl:
-      "http://localhost:" +
-      location.port +
-      "/api" +
-      String(parseInt(location.port) + 1) +
-      "/",
+    proxyBackendUrl: "http://localhost:" + location.port + "/api" + String(parseInt(location.port) + 1) + "/",
+    proxyUrl: "http://localhost:" + location.port,
+      //"/api" //+
+      //String(parseInt(location.port) + 1) +
+      //"/",
   },
   mutations: {
     setUser01(state) {
