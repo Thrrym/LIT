@@ -8,6 +8,8 @@ import de.tuberlin.tkn.lit.model.activitypub.activities.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -64,12 +66,12 @@ public class ServerController {
     * @return pending activities
     */
     @RequestMapping(value = "/join-federation", method = RequestMethod.POST)
-    public List<Activity> joinFederation(@RequestBody String newMember) {
+    public ResponseEntity<List<Activity>> joinFederation(@RequestBody String newMember) {
         URL urlObj;
         try {
             urlObj = new URL(newMember);
         } catch(MalformedURLException e) {
-            return null; // TODO : return 400
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // = 400            
         }
 
         String newHost = urlObj.getHost() + ':' + urlObj.getPort();
@@ -77,7 +79,7 @@ public class ServerController {
         // if the newHost is not already known to the storage,
         // it will be added !
         List<Activity> res = storage.getPendingActivities(newHost);
-        return res;
+        return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
     /**
@@ -96,6 +98,7 @@ public class ServerController {
     * @param  actorname
     * @param  activity
     */
+    // TODO : Storage is null when federation calls this
     public void handleActivity(String actorname, Activity activity) {
         
         // post activity to the actors inbox
