@@ -82,7 +82,7 @@ public class Storage implements IStorage {
             federation.put(url, l);
         }
 
-        System.out.print("Add activity as pending for " + url);
+        System.out.print("Add activity as pending for " + url + "\n");
     }
 
     @Override
