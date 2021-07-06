@@ -16,15 +16,12 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav pills>
-          <!-- <b-nav-item><router-link to="/">Lit</router-link></b-nav-item> | -->
-          <!--      <b-nav-item to="/about">About</b-nav-item>-->
           <b-nav-item to="/debug">Debug</b-nav-item>
           <b-nav-item to="/new-entry">New Entry</b-nav-item>
-
-
           <b-nav-item to="/profile">Profile</b-nav-item>
           <b-nav-item to="/search">Search</b-nav-item>
         </b-navbar-nav>
+        <!-- Sign up, sign in and logout buttons. -->
         <b-navbar-nav class="ml-auto">
           <b-nav-item v-if="!isUserLoggedIn" v-on:click="showSignUpModal">Sign up</b-nav-item>
           <b-nav-item v-if="!isUserLoggedIn" v-on:click="showSignInModal('normalSignIn')">Sign in</b-nav-item>
