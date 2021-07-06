@@ -67,7 +67,6 @@ public abstract class Activity extends ActivityPubObject {
                     try {
                         storage.addToInbox(UriUtilities.getActor(linkOrObject.getLink()), new LinkOrObject(this));
                         storage.addToRelevantObjects(UriUtilities.getActor(linkOrObject.getLink()), getObject());
-                       // if (this.getType() == "Follow")
                     } catch (NullPointerException ex) {
                         logger.warning("The inbox for the actor '" + linkOrObject.getLink() + "' could not be found.");
                     }
@@ -99,12 +98,6 @@ public abstract class Activity extends ActivityPubObject {
     public LinkOrObject getObject() {
         return object;
     }
-
-    /*@JsonGetter("object")
-    public ActivityPubObject toJSONObject() throws JsonProcessingException {
-        ActivityPubObject litObject = LinkOrObjectSerializer.serialize(object);
-        return litObject;
-    }*/
 
     public void setObject(LinkOrObject object) {
         this.object = object;
