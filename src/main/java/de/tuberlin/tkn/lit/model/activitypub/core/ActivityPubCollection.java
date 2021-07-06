@@ -1,5 +1,6 @@
 package de.tuberlin.tkn.lit.model.activitypub.core;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -10,7 +11,6 @@ import java.util.List;
 public class ActivityPubCollection extends ActivityPubObject {
 
     private List<LinkOrObject> items;
-    private int totalItems;
     private LinkOrObject first;
     private LinkOrObject last;
     private LinkOrObject current;
@@ -18,15 +18,14 @@ public class ActivityPubCollection extends ActivityPubObject {
     public ActivityPubCollection() {
     }
 
-    public ActivityPubCollection(int totalItems, LinkOrObject first, LinkOrObject last, LinkOrObject current) {
-        this.totalItems = totalItems;
+    public ActivityPubCollection(LinkOrObject first, LinkOrObject last, LinkOrObject current) {
         this.first = first;
         this.last = last;
         this.current = current;
     }
 
     public ActivityPubCollection(List<LinkOrObject> items, int totalItems, LinkOrObject first, LinkOrObject last, LinkOrObject current) {
-        this(totalItems, first, last, current);
+        this(first, last, current);
         this.items = items;
     }
 
@@ -41,14 +40,6 @@ public class ActivityPubCollection extends ActivityPubObject {
     @JsonSetter("items")
     public void setItems(JsonNode s) throws JsonProcessingException {
         items = ArrayDeserializer.deserialize(s);
-    }
-
-    public int getTotalItems() {
-        return totalItems;
-    }
-
-    public void setTotalItems(int totalItems) {
-        this.totalItems = totalItems;
     }
 
     public LinkOrObject getFirst() {
@@ -74,4 +65,14 @@ public class ActivityPubCollection extends ActivityPubObject {
     public void setCurrent(LinkOrObject current) {
         this.current = current;
     }
+
+    @JsonGetter("totalItems")
+    public int getTotalItems() {
+        if(items == null)
+            return 0;
+        return items.size();
+    }
+
+    @JsonSetter("totalItems")
+    public void setTotalItems(int value){}
 }

@@ -52,10 +52,12 @@ public abstract class Activity extends ActivityPubObject {
     public abstract Activity handle(String actorName, IStorage storage, int port);
 
     public void handleSendings(IStorage storage, IActivitySender activitySender, int port) {
+
         handleSendingsIntern(getTo(), storage, activitySender, port);
         handleSendingsIntern(getCc(), storage, activitySender, port);
         handleSendingsIntern(getBto(), storage, activitySender, port);
         handleSendingsIntern(getBcc(), storage, activitySender, port);
+        handleSendingsIntern(storage.getFollowersCollection(UriUtilities.getActor(getActor().getId())).getOrderedItems(), storage, activitySender, port);
     }
 
     private void handleSendingsIntern(List<LinkOrObject> list, IStorage storage, IActivitySender activitySender, int port) {

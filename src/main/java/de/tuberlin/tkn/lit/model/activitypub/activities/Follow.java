@@ -22,6 +22,10 @@ public class Follow extends Activity {
 
     @Override
     public Activity handle(String actorId, IStorage storage, int port) {
+        if (getActor().isObject()){
+            getActor().getLitObject().setId(storage.getActor(getActor().getLitObject().getName()).getId());
+        }
+
         ActivityPubObject obj = getObject().getLitObject();
         Actor actor = (Actor) obj;
         // Outbox
@@ -44,9 +48,13 @@ public class Follow extends Activity {
             customTo.add(new LinkOrObject(getObject().getLink()));
             //setTo(customTo);
 
+// TODO link or object
             if(UriUtilities.isLocaleServer(getTo().get(0).getLink(), port)) {
-               // storage.addToFollowers(UriUtilities.getActor(getTo().get(0).getLink()), getActor());
-                storage.addToFollowers(UriUtilities.getActor(getTo().get(0).getLink()), new LinkOrObject(getActor().getLitObject().getName()));
+                if (getObject().isObject()) {
+                    getObject().getLitObject().setId(storage.getActor(getObject().getLitObject().getName()).getId());
+                }
+                // storage.addToFollowers(UriUtilities.getActor(getTo().get(0).getLink()), getActor());
+                storage.addToFollowers(UriUtilities.getActor(getObject().getId()), new LinkOrObject(storage.getActor(UriUtilities.getActor(getActor().getId())).getId()));
             }
 
             // Inbox

@@ -20,8 +20,9 @@ public class Create extends Activity {
     @Override
     public Activity handle(String actorName, IStorage storage, int port) {
         if (getActor().isObject()){
-            getActor().getLitObject().setId(storage.getActor(actorName).getId());
+            getActor().getLitObject().setId(storage.getActor(getActor().getLitObject().getName()).getId());
         }
+
 
         ActivityPubObject createdObject;
         if (getObject().isObject()) {
@@ -35,8 +36,8 @@ public class Create extends Activity {
 
         // Inform followers
         //            if (storage.getFollowersCollection(getActor().getLitObject().getName()).getOrderedItems() != null)
-        if (storage.getFollowersCollection(UriUtilities.getActor(getActor().getId())).getOrderedItems() != null)
-            setTo(storage.getFollowersCollection(UriUtilities.getActor(getActor().getId())).getOrderedItems());
+        //if (storage.getFollowersCollection(UriUtilities.getActor(getActor().getId())).getOrderedItems() != null)
+          //  setTo(storage.getFollowersCollection(UriUtilities.getActor(getActor().getId())).getOrderedItems());
 
         return this;
     }
