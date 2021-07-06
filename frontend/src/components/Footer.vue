@@ -10,6 +10,7 @@
       </p>
       <p>Frontend server: {{ currentFrontendServer }}</p>
       <p>Backend server: {{ currentBackendServer }}</p>
+      <p>Logged in user: {{ getCurrentUser }}</p>
     </div>
   </footer>
 </template>
@@ -22,6 +23,11 @@ export default {
       currentFrontendServer: this.$store.state.proxyUrl,
       currentBackendServer: this.$store.state.backendUrl,
     };
+  },
+  computed: {
+    getCurrentUser: function () {
+      return this.$store.getters.getUser;
+    },
   },
 };
 </script>
