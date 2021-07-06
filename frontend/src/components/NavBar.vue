@@ -31,16 +31,19 @@
     </b-navbar>
     <SignUpModal ref="SignUpModal" v-on:sign-up-success="showSignInModal('firstSignIn')"></SignUpModal>
     <SignInModal ref="SignInModal"></SignInModal>
+    <LogoutModal ref="LogoutModal"></LogoutModal>
   </div>
 </template>
 
 <script>
 import SignUpModal from "@/components/SignUpModal";
 import SignInModal from "@/components/SignInModal";
+import LogoutModal from "@/components/LogoutModal";
 
 export default {
   name: "NavBar",
   components: {
+    LogoutModal,
     SignUpModal,
     SignInModal,
   },
@@ -78,7 +81,7 @@ export default {
       this.$refs.SignInModal.showSignInModal(message);
     },
     logOut: function () {
-      this.$store.commit("logOut");
+      this.$refs.LogoutModal.showLogoutModal();
     },
   },
   computed: {
