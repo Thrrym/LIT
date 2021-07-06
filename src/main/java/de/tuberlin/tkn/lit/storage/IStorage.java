@@ -2,6 +2,7 @@ package de.tuberlin.tkn.lit.storage;
 
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
+import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
@@ -34,6 +35,8 @@ public interface IStorage {
     Activity createActivity(String actorName, Activity activity);
 
     ActivityPubObject getObject(String id);
+
+    ActivityPubCollection getObjects();
 
     ActivityPubObject createObject(String actorName, String objectType, ActivityPubObject object);
 

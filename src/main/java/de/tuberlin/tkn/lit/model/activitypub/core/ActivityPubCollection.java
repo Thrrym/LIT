@@ -29,6 +29,10 @@ public class ActivityPubCollection extends ActivityPubObject {
         this.items = items;
     }
 
+    public ActivityPubCollection(List<LinkOrObject> items) {
+        this.items = items;
+    }
+
     public List<LinkOrObject> getItems() {
         return items;
     }
