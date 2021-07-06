@@ -12,6 +12,8 @@ import java.util.UUID;
 public interface IStorage {
     Actor getActor(String actorName);
 
+    ActivityPubCollection getActors();
+
     Actor createActor(Actor actor);
 
     boolean removeActor(Actor actor);

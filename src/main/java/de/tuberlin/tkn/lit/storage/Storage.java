@@ -40,6 +40,11 @@ public class Storage implements IStorage {
     }
 
     @Override
+    public ActivityPubCollection getActors(){
+        return new ActivityPubCollection(actors.values().stream().map(LinkOrObject::new).collect(Collectors.toList()));
+    }
+
+    @Override
     public OrderedCollection getInbox(String actorName) {
         OrderedCollection orderedCollection = inboxes.get(actorName);
         if (orderedCollection == null) {
