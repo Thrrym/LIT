@@ -2,6 +2,9 @@ package de.tuberlin.tkn.lit.model.activitypub.actors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import javax.persistence.Entity;
+
+@Entity
 public class Person extends Actor {
 
     @JsonIgnore

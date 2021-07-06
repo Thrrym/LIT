@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 
+import javax.persistence.ElementCollection;
 import java.util.List;
 
 public class BibTeXArticle extends ActivityPubObject {
@@ -13,6 +14,7 @@ public class BibTeXArticle extends ActivityPubObject {
     private String journal;
     private String year;
     private String volume;
+    @ElementCollection
     private List<String> likedBy;
 
     public BibTeXArticle() {

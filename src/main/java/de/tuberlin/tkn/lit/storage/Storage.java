@@ -3,10 +3,13 @@ package de.tuberlin.tkn.lit.storage;
 import de.tuberlin.tkn.lit.constants.UriConstants;
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
+import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
+import de.tuberlin.tkn.lit.service.IPersonService;
 import de.tuberlin.tkn.lit.util.UriUtilities;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class Storage implements IStorage {
+
+    @Autowired
+    private IPersonService personService;
 
     private final Map<String, OrderedCollection> outboxes = new HashMap<>();
     private final Map<String, OrderedCollection> inboxes = new HashMap<>();
@@ -30,12 +36,12 @@ public class Storage implements IStorage {
 
     @Override
     public Actor getActor(String actorName) {
-        Actor actor = actors.get(actorName);
-        if (actor == null) {
-            throw new NullPointerException();
+        PersonRepository personRepo = getPersonService().getRepository();
+        List<Person> persons = (List<Person>) personRepo.findAll();
+        for(Person p : persons) {
+            if(p.getName().equals(actorName)) return p;
         }
-
-        return actor;
+        throw new NullPointerException();
     }
 
     @Override
@@ -96,6 +102,8 @@ public class Storage implements IStorage {
         inboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         relevantObjects.put(actor.getName(), new HashSet<>());
         liked.put(actor.getName(), new HashSet<>());
+        PersonRepository personRepo = getPersonService().getRepository();
+        personRepo.save((Person) actor);
         return actors.get(actor.getName());
     }
 
@@ -107,6 +115,7 @@ public class Storage implements IStorage {
         actors.remove(actor.getName());
         outboxes.remove(actor.getName());
         inboxes.remove(actor.getName());
+
         return true;
     }
 
@@ -172,4 +181,9 @@ public class Storage implements IStorage {
     public void addToFollowers(String actorName, LinkOrObject toAdd){
         followersCollections.get(actorName).getOrderedItems().add(toAdd);
     }
+
+    public IPersonService getPersonService() {
+        return personService;
+    }
+
 }

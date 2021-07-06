@@ -3,6 +3,9 @@ package de.tuberlin.tkn.lit.model.activitypub.actors;
 import de.tuberlin.tkn.lit.constants.UriConstants;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 
+import javax.persistence.MappedSuperclass;
+
+@MappedSuperclass
 public abstract class Actor extends ActivityPubObject {
 
     private String inbox;

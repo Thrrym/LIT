@@ -11,6 +11,7 @@ import de.tuberlin.tkn.lit.model.activitypub.objects.*;
 import de.tuberlin.tkn.lit.jsonutilities.serializer.ArraySerializer;
 import de.tuberlin.tkn.lit.jsonutilities.serializer.LinkOrObjectSerializer;
 
+import javax.persistence.*;
 import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY,
@@ -39,37 +40,57 @@ import java.util.List;
         @JsonSubTypes.Type(value = Undo.class, name = "Undo"),
         @JsonSubTypes.Type(value = Update.class, name = "Update"),
 })
+@MappedSuperclass
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class ActivityPubObject {
 
     @JsonProperty("@context")
     private String context;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long activityPubID;
     private String id;
     private String type;
+    @OneToMany(targetEntity = LinkOrObject.class)
     private List<LinkOrObject> attachment;
+    @OneToMany(targetEntity = LinkOrObject.class)
     private List<LinkOrObject> attributedTo;
+    @OneToMany(targetEntity = LinkOrObject.class)
     private List<LinkOrObject> audience;
     private String content;
     private String startTime;
     private String endTime;
+    @OneToOne(targetEntity = LinkOrObject.class)
     private LinkOrObject generator;
+    @OneToMany(targetEntity = LinkOrObject.class)
     private List<LinkOrObject> icon;
+    @OneToMany(targetEntity = LinkOrObject.class)
     private List<LinkOrObject> image;
+    @OneToMany(targetEntity = LinkOrObject.class)
     private List<LinkOrObject> inReplyTo;
+    @OneToMany(targetEntity = LinkOrObject.class)
     private List<LinkOrObject> location;
     private String name;
+    @OneToOne(targetEntity = LinkOrObject.class)
     private LinkOrObject preview;
     private String published;
+    @OneToOne(targetEntity = ActivityPubCollection.class)
     private ActivityPubCollection replies;
+    @OneToMany(targetEntity = LinkOrObject.class)
     private List<LinkOrObject> tag;
     //private OrderedCollection likes;
     //private int like;
     private String summary;
     private String updated;
+    @OneToMany(targetEntity = LinkOrObject.class)
     private List<LinkOrObject> url;
+    @OneToMany(targetEntity = LinkOrObject.class)
     private List<LinkOrObject> to;
+    @OneToMany(targetEntity = LinkOrObject.class)
     private List<LinkOrObject> bto;
+    @OneToMany(targetEntity = LinkOrObject.class)
     private List<LinkOrObject> cc;
+    @OneToMany(targetEntity = LinkOrObject.class)
     private List<LinkOrObject> bcc;
     private String mediaType;
     private String duration;
@@ -376,5 +397,13 @@ public abstract class ActivityPubObject {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    public long getActivityPubID() {
+        return activityPubID;
+    }
+
+    public void setActivityPubID(long activityPubID) {
+        this.activityPubID = activityPubID;
     }
 }

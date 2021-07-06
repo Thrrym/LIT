@@ -5,14 +5,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.tuberlin.tkn.lit.jsonutilities.deserializer.ArrayDeserializer;
 
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.util.List;
 
+@Entity
 public class ActivityPubCollection extends ActivityPubObject {
 
+    @OneToMany(targetEntity = LinkOrObject.class)
     private List<LinkOrObject> items;
     private int totalItems;
+    @OneToOne(targetEntity = LinkOrObject.class)
     private LinkOrObject first;
+    @OneToOne(targetEntity = LinkOrObject.class)
     private LinkOrObject last;
+    @OneToOne(targetEntity = LinkOrObject.class)
     private LinkOrObject current;
 
     public ActivityPubCollection() {
