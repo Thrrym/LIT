@@ -1,0 +1,13 @@
+<persistence-unit name="LIT_DB">
+    <provider>com.acme.persistence</provider>
+    <transaction-type>RESOURCE_LOCAL</transaction-type>
+    <mapping-file>order1.xml</mapping-file>
+    <jar-file>order.jar</jar-file>
+<!--    <class>com.acme.Order</class> -->
+    <class>de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection</class>
+    <class>de.tuberlin.tkn.lit.model.activitypub.actors.Person</class>
+    <class>de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject</class>
+        <properties>
+            <property name="com.acme.persistence.sql-logging" value="on"/>
+        </properties>
+    </persistence-unit>
