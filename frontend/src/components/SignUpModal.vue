@@ -105,14 +105,6 @@ export default {
       this.error = true;
     },
     directToSignIn: function () {
-
-
-      /*this.$refs.welcomeModal.close();*/
-      //this.$refs.welcomeModal.hide();
-      console.log("Modal ok");
-      this.pushSignInModal();
-    },
-    pushSignInModal: function () {
       this.$emit("sign-up-success");
     },
   },

@@ -80,8 +80,13 @@ export default {
   props: {},
 
   methods: {
-    showSignInModal: function () {
-      // Trigger the modal.
+    showSignInModal: function (type) {
+      // Trigger the modal and modify the title if this is the first login of the user.
+      if (type === "normalSignIn") {
+        this.modalTitle = "Sign in to LIT";
+      } else {
+        this.modalTitle = "Welcome, please sign in for the first time";
+      }
       this.$refs["modal-1"].show();
     },
     sendSignInToServer: function () {

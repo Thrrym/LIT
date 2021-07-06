@@ -20,9 +20,9 @@
           <!--      <b-nav-item to="/about">About</b-nav-item>-->
           <b-nav-item to="/debug">Debug</b-nav-item>
           <b-nav-item to="/new-entry">New Entry</b-nav-item>
-          <b-nav-item v-if="!isUserLoggedIn" v-on:sign-up-success="setTestReturn" v-on:click="showSignUpModal">Sign up</b-nav-item>
+          <b-nav-item v-if="!isUserLoggedIn" v-on:click="showSignUpModal">Sign up</b-nav-item>
 <!--          <b-nav-item v-if="!isUserLoggedIn" v-on="eventHandlerSignUp">Sign up</b-nav-item>-->
-          <b-nav-item v-if="!isUserLoggedIn" v-on:click="showSignInModal">Sign in</b-nav-item>
+          <b-nav-item v-if="!isUserLoggedIn" v-on:click="showSignInModal('normalSignIn')">Sign in</b-nav-item>
           <b-nav-item v-if="isUserLoggedIn" v-on:click="logOut">Log out</b-nav-item>
           <b-nav-item to="/profile">Profile</b-nav-item>
           <b-nav-item to="/search">Search</b-nav-item>
@@ -52,7 +52,7 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <SignUpModal ref="SignUpModal"></SignUpModal>
+    <SignUpModal ref="SignUpModal" v-on:sign-up-success="showSignInModal('firstSignIn')"></SignUpModal>
     <SignInModal ref="SignInModal"></SignInModal>
   </div>
 </template>
@@ -97,22 +97,12 @@ export default {
       this.testReturn = "Sign up modal start.";
       this.$refs.SignUpModal.showSignUpModal();
     },
-    showSignInModal: function () {
-      this.$refs.SignInModal.showSignInModal();
+    showSignInModal: function (message) {
+      this.$refs.SignInModal.showSignInModal(message);
     },
     logOut: function () {
       this.$store.commit("logOut");
     },
-    setTestReturn: function () {
-      console.log("Hmmmmmmmmmmmmm");
-      this.testReturn = "sign-up-success";
-    },
-    /*eventHandlerSignUp: function (event) {
-      event.preventDefault();
-      if (event.type === "click") {
-        console.log("click");
-      }
-    }*/
   },
   computed: {
     getCurrentUser: function () {
