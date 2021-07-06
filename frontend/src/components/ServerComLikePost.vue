@@ -58,7 +58,7 @@ export default {
 
       // Get the current user and URL of backend.
       const backendUrl = this.$store.state.backendUrl;
-      const currentUser = this.$store.state.currentUser;
+      const currentUser = this.$store.getters.getUser;
 
       // Prepare content of the http request. Removes unused properties.
       var json = this.prepareLikeJson(
