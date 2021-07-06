@@ -85,16 +85,16 @@ export default {
     },
   },
   computed: {
-    getCurrentUser: function () {
+    /*getCurrentUser: function () {
       // Get user from the vuex store an remove last slash.
       return this.$store.state.currentUser.split("/")[0];
-    },
-    getCurrentBackend: function () {
+    },*/
+    /*getCurrentBackend: function () {
       // Get the active backend from the vuex store.
       return this.$store.state.backendUrl;
-    },
+    },*/
     isUserLoggedIn: function () {
-      return this.$store.state.loginStatus === "loggedIn";
+      return this.$store.getters.loggedIn;
     },
   },
 };
