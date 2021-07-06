@@ -51,6 +51,7 @@ export default {
         "Content-Type",
         "application/json;charset=UTF-8"
       );
+      httpRequest.setRequestHeader("Authorization", this.$store.getters.getToken);
 
       httpRequest.onreadystatechange = function () {
         // How to react on change of the HTTP request.
@@ -90,7 +91,7 @@ export default {
   },
   computed: {
     getCurrentUser: function () {
-      return this.$store.state.currentUser;
+      return this.$store.getters.getUser;
     },
     getBackendUrl: function () {
       return this.$store.state.backendUrl;
