@@ -89,7 +89,7 @@ public class ClientController {
         Activity createdActivity = storage.createActivity(actorName, activity.handle(actorName, storage,serverPort));
         storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
-        createdActivity.handleSendings(storage, activitySender,serverPort);
+        createdActivity.handleSendings(storage, activitySender, serverPort);
 
         return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
     }
@@ -99,20 +99,13 @@ public class ClientController {
         return storage.getLikedCollection(actorname);
     }
 
-   /* @RequestMapping(value = "/{actorname}/liked", method = RequestMethod.GET)
-    public OrderedCollection getLikeCollection(@PathVariable("actorname") String actorname) {
-        return storage.likeCollection(actorname);
-    }
-
     @RequestMapping(value = "/{actorname}/following", method = RequestMethod.GET)
-    public OrderedCollection getInbox(@PathVariable("actorname") String actorname) {
-
+    public OrderedCollection getFollowing(@PathVariable("actorname") String actorname) {
+        return storage.getFollowingCollection(actorname);
     }
 
     @RequestMapping(value = "/{actorname}/followers", method = RequestMethod.GET)
-    public OrderedCollection getInbox(@PathVariable("actorname") String actorname) {
-
-    }*/
-
-
+    public OrderedCollection getFollowers(@PathVariable("actorname") String actorname) {
+        return storage.getFollowersCollection(actorname);
+    }
 }

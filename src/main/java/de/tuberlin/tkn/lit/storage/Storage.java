@@ -95,6 +95,8 @@ public class Storage implements IStorage {
         outboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         inboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         relevantObjects.put(actor.getName(), new HashSet<>());
+        followingCollections.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
+        followersCollections.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         liked.put(actor.getName(), new HashSet<>());
         return actors.get(actor.getName());
     }
@@ -164,12 +166,14 @@ public class Storage implements IStorage {
     }
 
     @Override
-    public OrderedCollection getFollowersCollection(String actorName) {
-        return followersCollections.get(actorName);
-    }
+    public OrderedCollection getFollowingCollection(String actorName) { return followingCollections.get(actorName); }
 
     @Override
-    public void addToFollowers(String actorName, LinkOrObject toAdd){
-        followersCollections.get(actorName).getOrderedItems().add(toAdd);
-    }
+    public void addToFollowing(String actorName, LinkOrObject toAdd){ followingCollections.get(actorName).getOrderedItems().add(toAdd); }
+
+    @Override
+    public OrderedCollection getFollowersCollection(String actorName) { return followersCollections.get(actorName); }
+
+    @Override
+    public void addToFollowers(String actorName, LinkOrObject toAdd){ followersCollections.get(actorName).getOrderedItems().add(toAdd); }
 }

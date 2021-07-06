@@ -16,8 +16,8 @@ public class OrderedCollection extends ActivityPubCollection {
         super();
     }
     
-    public OrderedCollection(List<LinkOrObject> orderedItems, int totalItems, LinkOrObject first, LinkOrObject last, LinkOrObject current) {
-        super(totalItems, first, last, current);
+    public OrderedCollection(List<LinkOrObject> orderedItems, LinkOrObject first, LinkOrObject last, LinkOrObject current) {
+        super(first, last, current);
         this.orderedItems = orderedItems;
     }
 
@@ -42,4 +42,16 @@ public class OrderedCollection extends ActivityPubCollection {
     public void setJson(JsonNode s) throws JsonProcessingException {
         orderedItems = ArrayDeserializer.deserialize(s);
     }
+
+    @Override
+    @JsonGetter("totalItems")
+    public int getTotalItems() {
+        if(orderedItems == null)
+            return 0;
+        return orderedItems.size();
+    }
+
+    @Override
+    @JsonSetter("totalItems")
+    public void setTotalItems(int value){}
 }

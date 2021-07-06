@@ -52,10 +52,12 @@ public abstract class Activity extends ActivityPubObject {
     public abstract Activity handle(String actorName, IStorage storage, int port);
 
     public void handleSendings(IStorage storage, IActivitySender activitySender, int port) {
+
         handleSendingsIntern(getTo(), storage, activitySender, port);
         handleSendingsIntern(getCc(), storage, activitySender, port);
         handleSendingsIntern(getBto(), storage, activitySender, port);
         handleSendingsIntern(getBcc(), storage, activitySender, port);
+        handleSendingsIntern(storage.getFollowersCollection(UriUtilities.getActor(getActor().getId())).getOrderedItems(), storage, activitySender, port);
     }
 
     private void handleSendingsIntern(List<LinkOrObject> list, IStorage storage, IActivitySender activitySender, int port) {
@@ -65,6 +67,7 @@ public abstract class Activity extends ActivityPubObject {
                     try {
                         storage.addToInbox(UriUtilities.getActor(linkOrObject.getLink()), new LinkOrObject(this));
                         storage.addToRelevantObjects(UriUtilities.getActor(linkOrObject.getLink()), getObject());
+                       // if (this.getType() == "Follow")
                     } catch (NullPointerException ex) {
                         logger.warning("The inbox for the actor '" + linkOrObject.getLink() + "' could not be found.");
                     }
