@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import axios from "axios";
 import App from "./App.vue";
 
 // Import the router for vue.
@@ -36,9 +35,9 @@ const store = new Vuex.Store({
     //"/",
 
     // Bearer token storage:
-    loginStatus: "",
-    token: localStorage.getItem("token") || "",
-    user: {},
+    loginStatus: "loggedOut",
+    token: "",
+    user: "",
   },
   mutations: {
     setUser01(state) {
@@ -55,6 +54,18 @@ const store = new Vuex.Store({
     //  state.backendUrl = "http://localhost:8081/";
     //  state.proxyBackendUrl = "http://localhost:" + location.port + "/api8081/";
     //},
+    authSuccess(state) {
+      state.user = localStorage.getItem("user");
+      state.token = localStorage.getItem("token");
+      state.loginStatus = "loggedIn";
+    },
+    logOut(state) {
+      localStorage.removeItem("user");
+      state.user = "";
+      localStorage.removeItem("token")
+      state.token = "";
+      state.loginStatus = "loggedOut";
+    }
   },
   methods: {
     setUser01() {
@@ -63,37 +74,18 @@ const store = new Vuex.Store({
     setUser02() {
       this.$store.commit("setUser02");
     },
+    authSuccess() {
+      this.$store.commit("authSuccess");
+    },
+    logOut() {
+      this.$store.commit("logout");
+    }
     /*setBackend01() {
       this.$store.commit('setBackend01');
     },
     setBackend02() {
       this.$store.commit('setBackend02');
     },*/
-  },
-  actions: {
-    login({ commit }, user) {
-      return new Promise((resolve, reject) => {
-        commit("auth_request");
-        axios({
-          url: "http://localhost:3000/login",
-          data: user,
-          method: "POST",
-        })
-          .then((resp) => {
-            const token = resp.data.token;
-            const user = resp.data.user;
-            localStorage.setItem("token", token);
-            axios.defaults.headers.common["Authorization"] = token;
-            commit("auth_success", token, user);
-            resolve(resp);
-          })
-          .catch((err) => {
-            commit("auth_error");
-            localStorage.removeItem("token");
-            reject(err);
-          });
-      });
-    },
   },
 });
 
