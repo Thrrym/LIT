@@ -21,6 +21,10 @@ public class Like extends Activity {
 
     @Override
     public Activity handle(String actorId, IStorage storage, int port) {
+        if (getActor().isObject()){
+            getActor().getLitObject().setId(storage.getActor(actorId).getId());
+        }
+
         if(!actorId.startsWith("http"))
             actorId = storage.getActor(actorId).getId();
         ActivityPubObject obj = storage.getObject(getObject().getId());
@@ -48,8 +52,10 @@ public class Like extends Activity {
 
 
             // Inform followers
-            if (storage.getFollowersCollection(getActor().getLitObject().getName()).getOrderedItems() != null)
-                setTo(storage.getFollowersCollection(getActor().getLitObject().getName()).getOrderedItems());
+           // if (storage.getFollowersCollection(getActor().getLitObject().getName()).getOrderedItems() != null)
+             //   setTo(storage.getFollowersCollection(getActor().getLitObject().getName()).getOrderedItems());
+            if (storage.getFollowersCollection(UriUtilities.getActor(getActor().getId())).getOrderedItems() != null)
+                setTo(storage.getFollowersCollection(UriUtilities.getActor(getActor().getId())).getOrderedItems());
         }
 
         return this;

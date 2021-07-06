@@ -19,6 +19,10 @@ public class Create extends Activity {
 
     @Override
     public Activity handle(String actorName, IStorage storage, int port) {
+        if (getActor().isObject()){
+            getActor().getLitObject().setId(storage.getActor(actorName).getId());
+        }
+
         ActivityPubObject createdObject;
         if (getObject().isObject()) {
             createdObject = storage.createObject(actorName, getObject().getLitObject().getType(), getObject().getLitObject());
@@ -30,8 +34,9 @@ public class Create extends Activity {
         setObject(new LinkOrObject(createdObject));
 
         // Inform followers
-        if (storage.getFollowersCollection(getActor().getLitObject().getName()).getOrderedItems() != null)
-            setTo(storage.getFollowersCollection(getActor().getLitObject().getName()).getOrderedItems());
+        //            if (storage.getFollowersCollection(getActor().getLitObject().getName()).getOrderedItems() != null)
+        if (storage.getFollowersCollection(UriUtilities.getActor(getActor().getId())).getOrderedItems() != null)
+            setTo(storage.getFollowersCollection(UriUtilities.getActor(getActor().getId())).getOrderedItems());
 
         return this;
     }
