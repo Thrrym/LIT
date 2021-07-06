@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.tuberlin.tkn.lit.jsonutilities.deserializer.ArrayDeserializer;
+import de.tuberlin.tkn.lit.jsonutilities.serializer.ArraySerializer;
 
 import java.util.List;
 
@@ -31,6 +32,12 @@ public class ActivityPubCollection extends ActivityPubObject {
 
     public ActivityPubCollection(List<LinkOrObject> items) {
         this.items = items;
+    }
+
+    @JsonGetter("items")
+    public List<JsonNode> toJSONItems() throws JsonProcessingException {
+        if (items == null) return null;
+        return ArraySerializer.serialize(items);
     }
 
     public List<LinkOrObject> getItems() {

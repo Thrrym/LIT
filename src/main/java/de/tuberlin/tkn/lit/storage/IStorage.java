@@ -6,11 +6,14 @@ import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
+import org.springframework.core.annotation.Order;
 
 import java.util.UUID;
 
 public interface IStorage {
     Actor getActor(String actorName);
+
+    ActivityPubCollection getActors();
 
     Actor createActor(Actor actor);
 
