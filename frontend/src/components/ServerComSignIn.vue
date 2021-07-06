@@ -18,32 +18,20 @@ export default {
     },
 
     sendSignIn: function (form) {
-      /*console.log(this.objectRequestResponse);
-      if (this.objectRequestResponse === "error") {
-        // Manage error if not possible to retrieve the object.
-        // Propagate the error to parent component.
-        this.callbackError();
-        return;
-      }
-*/
-      // Get the current user and URL of backend.
-      //const backendUrl = this.$store.state.backendUrl;
-      //const currentUser = this.$store.state.currentUser;
-
       // Prepare content of the http request. Removes unused properties.
-      var json = this.prepareSignInJson(form);
+      const json = this.prepareSignInJson(form);
 
       // Maintain reference to this component with `this` via a new reference.
       // Reason: Within httpRequest.onreadystatechange the reference changes to httpRequest.
-      var component = this;
+      const component = this;
 
       // Create the HTTP Request. Uses xmlhttprequest npm package.
-      var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-      var httpRequest = new XMLHttpRequest();
+      const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+      let httpRequest = new XMLHttpRequest();
 
       // Set the HTTP Method. HTTP Request send via Proxy to backend server.
       let method = "POST";
-      var apiUrl = this.$store.state.proxyBackendUrl + "signin";
+      const apiUrl = this.$store.state.proxyBackendUrl + "signin";
 
       httpRequest.open(method, apiUrl, true);
       httpRequest.setRequestHeader(
@@ -63,7 +51,7 @@ export default {
             //console.log(httpRequest.responseText)
             component.callbackResponse(httpRequest);
           } else {
-            component.callbackError();
+            component.callbackError(httpRequest);
           }
         }
       };
@@ -76,20 +64,19 @@ export default {
       // Emits event to parent component to pass result of the HTTP request back upstream.
       //this.$emit("requestResponse", this.requestResponse);
       const message = JSON.parse(httpRequest.responseText);
-      console.log(message);
-      if (Object.prototype.hasOwnProperty.call(message, "error")) {
-        this.$emit("signInFailure");
-      } else if (Object.prototype.hasOwnProperty.call(message, "accessToken")) {
-        this.$emit("signInSuccess", message);
+      if (Object.prototype.hasOwnProperty.call(message, "accessToken")) {
+        this.$emit("sign-in-success", message);
       } else {
-        this.$emit("signInSuccess", message);
+        this.$emit("sign-in-success", message);
       }
     },
-
-    callbackError: function () {
+    callbackError: function (httpRequest) {
       // Function triggered by the onreadystatechange from the HTTP request.
       // Emits error to parent component back upstream.
-      this.$emit("requestResponse", "error");
+      const message = JSON.parse(httpRequest.responseText);
+      if (Object.prototype.hasOwnProperty.call(message, "error")) {
+        this.$emit("sign-in-failure");
+      }
     },
 
     prepareSignInJson: function (form) {

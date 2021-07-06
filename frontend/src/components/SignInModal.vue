@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal ref="modal-1" v-bind:title="modalTitle" @ok="sendSignInToServer">
+    <b-modal ref="modal-1" v-bind:title="modalTitle" ok-only @ok="sendSignInToServer">
       <b-card
         style="max-width: 20rem"
         class="mb-2"
@@ -42,6 +42,7 @@
                 required
               ></b-form-input>
             </b-form-group>
+            <b-form-text v-if="gotError" v-text="errorMessage" text-variant="primary"></b-form-text>
 
             <!-- Login Button. -->
             <!--          <b-button type="submit" variant="primary">Login</b-button>-->
@@ -52,7 +53,8 @@
 
     <ServerComSignIn
       ref="ServerComSignIn"
-      v-on:signInSuccess="signInSuccess"
+      v-on:sign-in-success="signInSuccess"
+      v-on:sign-in-failure="signInFailure"
     ></ServerComSignIn>
 
     <b-modal ref="welcomeModal" title="Welcome to Lit" ok-only>
@@ -74,6 +76,8 @@ export default {
         username: "",
         password: "",
       },
+      error: false,
+      errorMessage: "",
     };
   },
 
@@ -89,7 +93,8 @@ export default {
       }
       this.$refs["modal-1"].show();
     },
-    sendSignInToServer: function () {
+    sendSignInToServer: function (okEvent) {
+      okEvent.preventDefault();
       this.$refs.ServerComSignIn.triggerSignIn(this.form);
     },
 /*    signUpSuccess: function () {
@@ -104,14 +109,18 @@ export default {
       this.$store.commit("authSuccess");
 
       // Show the welcome message.
+      this.$refs["modal-1"].hide();
       this.$refs.welcomeModal.show();
-      },
+    },
+    signInFailure: function () {
+      this.errorMessage = "Sign in error, check your username and password.";
+      this.error = true;
+    },
   },
 
   computed: {
-    getModalTitle: function () {
-      // Generate title of the modal.
-      return this.author;
+    gotError: function () {
+      return this.error;
     },
   },
 };
