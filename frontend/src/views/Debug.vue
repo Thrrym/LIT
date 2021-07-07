@@ -63,6 +63,10 @@
         <b-card-sub-title v-text="entry.journal"></b-card-sub-title>
         <b-card-text v-text="entry.title"></b-card-text>
 
+        <b-button @click="editObject(entry.id)">
+          <b-icon icon="tools" font-scale="1"></b-icon>
+        </b-button>
+
       </b-card>
     </div>
 
@@ -83,7 +87,7 @@
 
       </b-card>
     </div>
-
+    <UpdateModal ref="updateModal"></UpdateModal>
 
   </div>
 </template>
@@ -94,6 +98,7 @@ import ServerComGetObject from "@/components/ServerComGetObject.vue";
 import ServerComLikePost from "@/components/ServerComLikePost.vue";
 import ServerComGetUserObjects from "@/components/ServerComGetUserObjects.vue";
 import ServerComGetUserRelevantObjects from "@/components/ServerComGetUserRelevantObjects.vue";
+import UpdateModal from "@/components/UpdateModal";
 
 export default {
   name: "Debug",
@@ -107,6 +112,7 @@ export default {
   },
 
   components: {
+    UpdateModal,
     ServerComGetInbox,
     ServerComGetObject,
     ServerComLikePost,
@@ -153,6 +159,9 @@ export default {
     },
     likePost: function (id) {
       this.$refs.like.triggerLikePost(id);
+    },
+    editObject: function (objectId) {
+      this.$refs.updateModal.showUpdateModal(objectId);
     },
   },
 

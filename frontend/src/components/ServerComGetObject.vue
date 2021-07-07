@@ -67,7 +67,7 @@ export default {
     callbackError: function () {
       // Function triggered by the onreadystatechange from the HTTP request.
       // Emits error to parent component back upstream.
-      this.$emit("requestResponse", "error");
+      this.$emit("requestError");
     },
 
     getApiObjectUrl: function (objectUrl) {
