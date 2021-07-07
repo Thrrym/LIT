@@ -62,9 +62,10 @@ public class ServerController {
     	}
         else if(activity instanceof Follow) {
             activity.handle(activity.getActor().getId(), storage, serverPort);
-            storage.addToRelevantObjects(actorname, activity.getObject());
         }
-        
+        else if(activity instanceof Update) {
+            activity.handle(activity.getActor().getId(), storage, serverPort);
+        }
         // TODO: notify client
     }
 
