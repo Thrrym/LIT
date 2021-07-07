@@ -70,6 +70,7 @@ public class ServerToServerCommunicator implements IActivitySender{
 		Thread sendThread = new Thread() {
 			public void run() {
 				try {
+					// TODO : does the default have a timeout of it's own (60)
 					result = restTemplate.postForEntity(url, activity, String.class);
 				} catch(Exception e) {
 
