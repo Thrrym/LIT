@@ -18,9 +18,9 @@ const store = new Vuex.Store({
       "/",
     proxyUrl: "http://localhost:" + location.port,
     // Bearer token storage:
-    loginStatus: "loggedOut",
-    token: "",
-    user: "",
+    loginStatus: (localStorage.getItem("token")) ? "loggedIn" : "",
+    token: localStorage.getItem("token") || "",
+    user: localStorage.getItem("user") || "",
   },
   mutations: {
     authSuccess(state) {
