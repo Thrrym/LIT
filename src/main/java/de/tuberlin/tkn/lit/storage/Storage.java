@@ -23,7 +23,7 @@ public class Storage implements IStorage {
     @Autowired
     private IPersonService personService;
     @Autowired
-    private AuthorService authorService;
+    private IAuthorService authorService;
 
     private final Map<String, OrderedCollection> outboxes = new HashMap<>();
     private final Map<String, OrderedCollection> inboxes = new HashMap<>();
