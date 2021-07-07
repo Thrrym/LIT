@@ -1,7 +1,7 @@
 package de.tuberlin.tkn.lit.service;
 
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
-import de.tuberlin.tkn.lit.storage.ActivityPubCollectionRepository;
+import de.tuberlin.tkn.lit.storage.IActivityPubCollectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,12 +11,12 @@ import java.util.List;
 public class XActivityPubCollectionService implements IActivityPubCollectionService {
 
     @Override
-    public ActivityPubCollectionRepository getRepository() {
+    public IActivityPubCollectionRepository getRepository() {
         return repository;
     }
 
     @Autowired
-    private ActivityPubCollectionRepository repository;
+    private IActivityPubCollectionRepository repository;
 
     @Override
     public List<ActivityPubCollection> findAll() {

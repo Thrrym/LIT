@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 
 import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
 import java.util.List;
 
+@Entity
 public class BibTeXArticle extends ActivityPubObject {
 
     private String author;

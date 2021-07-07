@@ -7,7 +7,8 @@ import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
-import de.tuberlin.tkn.lit.service.IPersonService;
+import de.tuberlin.tkn.lit.model.lit.Author;
+import de.tuberlin.tkn.lit.service.*;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,8 @@ public class Storage implements IStorage {
 
     @Autowired
     private IPersonService personService;
+    @Autowired
+    private AuthorService authorService;
 
     private final Map<String, OrderedCollection> outboxes = new HashMap<>();
     private final Map<String, OrderedCollection> inboxes = new HashMap<>();
@@ -36,13 +39,55 @@ public class Storage implements IStorage {
 
     @Override
     public Actor getActor(String actorName) {
-        PersonRepository personRepo = getPersonService().getRepository();
+
+        IAuthorRepository authorRepo = authorService.getRepository();
+        List<Author> authors = (List<Author>) authorRepo.findAll();
+        System.out.print("HELLO");
+
+        IPersonRepository personRepo = getPersonService().getRepository();
         List<Person> persons = (List<Person>) personRepo.findAll();
         for(Person p : persons) {
             if(p.getName().equals(actorName)) return p;
         }
+
         throw new NullPointerException();
     }
+
+
+
+    @Override
+    public Actor createActor(Actor actor) {
+        if (actors.get(actor.getName()) != null) {
+            return null;
+        }
+        actor.setId(UriUtilities.generateId(new String[]{actor.getName()}, serverPort, false));
+        actor.setInbox(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.INBOX}, serverPort, false));
+        actor.setOutbox(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.OUTBOX}, serverPort, false));
+        actor.setFollowers(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.FOLLOWERS}, serverPort, false));
+        actor.setFollowing(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.FOLLOWING}, serverPort, false));
+        actor.setLiked(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.LIKED}, serverPort, false));
+        actors.put(actor.getName(), actor);
+        outboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
+        inboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
+        relevantObjects.put(actor.getName(), new HashSet<>());
+        liked.put(actor.getName(), new HashSet<>());
+        IPersonRepository personRepo = getPersonService().getRepository();
+        personRepo.save((Person) actor);
+        return actors.get(actor.getName());
+    }
+
+    @Override
+    public boolean removeActor(Actor actor) {
+        if (actors.get(actor.getName()) == null) {
+            return false;
+        }
+        actors.remove(actor.getName());
+        outboxes.remove(actor.getName());
+        inboxes.remove(actor.getName());
+
+        return true;
+    }
+
 
     @Override
     public OrderedCollection getInbox(String actorName) {
@@ -86,38 +131,6 @@ public class Storage implements IStorage {
     }
 
 
-    @Override
-    public Actor createActor(Actor actor) {
-        if (actors.get(actor.getName()) != null) {
-            return null;
-        }
-        actor.setId(UriUtilities.generateId(new String[]{actor.getName()}, serverPort, false));
-        actor.setInbox(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.INBOX}, serverPort, false));
-        actor.setOutbox(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.OUTBOX}, serverPort, false));
-        actor.setFollowers(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.FOLLOWERS}, serverPort, false));
-        actor.setFollowing(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.FOLLOWING}, serverPort, false));
-        actor.setLiked(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.LIKED}, serverPort, false));
-        actors.put(actor.getName(), actor);
-        outboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
-        inboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
-        relevantObjects.put(actor.getName(), new HashSet<>());
-        liked.put(actor.getName(), new HashSet<>());
-        PersonRepository personRepo = getPersonService().getRepository();
-        personRepo.save((Person) actor);
-        return actors.get(actor.getName());
-    }
-
-    @Override
-    public boolean removeActor(Actor actor) {
-        if (actors.get(actor.getName()) == null) {
-            return false;
-        }
-        actors.remove(actor.getName());
-        outboxes.remove(actor.getName());
-        inboxes.remove(actor.getName());
-
-        return true;
-    }
 
     @Override
     public Activity getActivity(UUID id) {
@@ -185,5 +198,4 @@ public class Storage implements IStorage {
     public IPersonService getPersonService() {
         return personService;
     }
-
 }

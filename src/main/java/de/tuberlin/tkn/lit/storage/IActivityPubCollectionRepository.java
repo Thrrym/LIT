@@ -5,6 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ActivityPubCollectionRepository extends CrudRepository<ActivityPubCollection, Long> {
+public interface IActivityPubCollectionRepository extends CrudRepository<ActivityPubCollection, Long> {
 
 }
