@@ -17,8 +17,10 @@ const store = new Vuex.Store({
       String(parseInt(location.port) + 1) +
       "/",
     proxyUrl: "http://localhost:" + location.port,
+
     // Bearer token storage:
-    loginStatus: (localStorage.getItem("token")) ? "loggedIn" : "",
+    // Check if a user was previously logged in and load from localStorage if this is the case.
+    loginStatus: localStorage.getItem("token") ? "loggedIn" : "",
     token: localStorage.getItem("token") || "",
     user: localStorage.getItem("user") || "",
   },
