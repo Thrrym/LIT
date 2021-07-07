@@ -17,7 +17,7 @@ export default {
   methods: {
     triggerGetObjects: function () {
       // Get the current user.
-      const currentUser = this.$store.state.currentUser;
+      const currentUser = this.$store.getters.getUser;
 
       // Maintaine reference to this component with `this` via a new reference.
       // Reason: Within httpRequest.onreadystatechange the reference changes to httpRequest.
@@ -36,6 +36,7 @@ export default {
         "Content-Type",
         "application/json;charset=UTF-8"
       );
+      httpRequest.setRequestHeader("Authorization", this.$store.getters.getToken);
 
       httpRequest.onreadystatechange = function () {
         // How to react on change of the HTTP request.

@@ -36,6 +36,7 @@ export default {
         "Content-Type",
         "application/json;charset=UTF-8"
       );
+      httpRequest.setRequestHeader("Authorization", this.$store.getters.getToken);
 
       httpRequest.onreadystatechange = function () {
         // How to react on change of the HTTP request.
