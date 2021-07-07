@@ -10,7 +10,7 @@
       </p>
       <p>Frontend server: {{ currentFrontendServer }}</p>
       <p>Backend server: {{ currentBackendServer }}</p>
-      <p>Logged in user: {{ getCurrentUser }}</p>
+      <p>Logged in user: {{ getCurrentUser }}, Login status: {{ getLoginStatus }}</p>
     </div>
   </footer>
 </template>
@@ -27,6 +27,9 @@ export default {
   computed: {
     getCurrentUser: function () {
       return this.$store.getters.getUser;
+    },
+    getLoginStatus: function () {
+      return this.$store.getters.loggedIn;
     },
   },
 };
