@@ -87,10 +87,15 @@
         </b-form-group>
       </b-card>
 
-      <!-- Submit Button -->
+      <!-- Submit Buttons -->
       <b-button type="submit" variant="primary" v-if="isNotUpdate">
         <b-icon icon="bookmark-plus" aria-hidden="true"></b-icon>
         Create new entry
+      </b-button>
+      <!-- Submit Buttons -->
+      <b-button type="submit" variant="primary" v-else>
+        <b-icon icon="bookmark-plus" aria-hidden="true"></b-icon>
+        Update entry
       </b-button>
     </b-form>
     </b-container>
