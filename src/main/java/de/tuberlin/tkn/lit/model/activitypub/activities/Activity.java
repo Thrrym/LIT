@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import de.tuberlin.tkn.lit.jsonutilities.deserializer.LinkOrObjectDeserializer;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
-import de.tuberlin.tkn.lit.processing.IActivitySender;
+import de.tuberlin.tkn.lit.processing.IFederationClient;
 import de.tuberlin.tkn.lit.jsonutilities.serializer.LinkOrObjectSerializer;
 import de.tuberlin.tkn.lit.storage.IStorage;
 import de.tuberlin.tkn.lit.util.UriUtilities;
@@ -51,14 +51,14 @@ public abstract class Activity extends ActivityPubObject {
 
     public abstract Activity handle(String actorName, IStorage storage, int port);
 
-    public void handleSendings(IStorage storage, IActivitySender activitySender, int port) {
-        handleSendingsIntern(getTo(), storage, activitySender, port);
-        handleSendingsIntern(getCc(), storage, activitySender, port);
-        handleSendingsIntern(getBto(), storage, activitySender, port);
-        handleSendingsIntern(getBcc(), storage, activitySender, port);
+    public void handleSendings(IStorage storage, IFederationClient federationClient, int port) {
+        handleSendingsIntern(getTo(), storage, federationClient, port);
+        handleSendingsIntern(getCc(), storage, federationClient, port);
+        handleSendingsIntern(getBto(), storage, federationClient, port);
+        handleSendingsIntern(getBcc(), storage, federationClient, port);
     }
 
-    private void handleSendingsIntern(List<LinkOrObject> list, IStorage storage, IActivitySender activitySender, int port) {
+    private void handleSendingsIntern(List<LinkOrObject> list, IStorage storage, IFederationClient federationClient, int port) {
         if (list != null) {
             for (LinkOrObject linkOrObject : list) {
                 if (UriUtilities.isLocaleServer(linkOrObject.getLink(), port)) {
@@ -69,7 +69,7 @@ public abstract class Activity extends ActivityPubObject {
                         logger.warning("The inbox for the actor '" + linkOrObject.getLink() + "' could not be found.");
                     }
                 } else {
-                    activitySender.send(this, linkOrObject);
+                    federationClient.send(this, linkOrObject);
                 }
             }
         }

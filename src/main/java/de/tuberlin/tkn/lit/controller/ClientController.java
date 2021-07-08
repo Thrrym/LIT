@@ -6,7 +6,7 @@ import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
-import de.tuberlin.tkn.lit.processing.IActivitySender;
+import de.tuberlin.tkn.lit.processing.IFederationClient;
 import de.tuberlin.tkn.lit.storage.IStorage;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class ClientController {
     private int serverPort;
 
     @Autowired
-    IActivitySender activitySender;
+    IFederationClient federationClient;
 
     @Autowired
     IStorage storage;
@@ -89,7 +89,7 @@ public class ClientController {
         Activity createdActivity = storage.createActivity(actorName, activity.handle(actorName, storage,serverPort));
         storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
-        createdActivity.handleSendings(storage, activitySender,serverPort);
+        createdActivity.handleSendings(storage, federationClient, serverPort);
 
         return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
     }
