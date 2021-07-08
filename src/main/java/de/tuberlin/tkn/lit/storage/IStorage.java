@@ -19,6 +19,8 @@ public interface IStorage {
 
     boolean removeActor(Actor actor);
 
+    boolean existsByUsername(String actorName);
+
     OrderedCollection getInbox(String actorName);
 
     OrderedCollection getOutbox(String actorName);

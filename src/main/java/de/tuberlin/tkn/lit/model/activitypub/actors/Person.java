@@ -14,6 +14,10 @@ public class Person extends Actor {
         super(name);
     }
 
+    public Person(String name,String password) {
+        super(name,password);
+    }
+
     public Person(Actor actor) {
         super(actor);
     }
