@@ -14,17 +14,19 @@ public class LitApplication {
 	@Autowired
 	IFederationClient federationClient;
 
+	private static String[] argsStore = {};
+
 	public static void main(String[] args) {
+		argsStore = args;
 		SpringApplication.run(LitApplication.class, args);
 	}
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void joinFederation() {
 		
-		String[] args = { "http://localhost:8080" }; // TODO : this should be from the actual arguments
-
 		// get command line arguments
-		String knownMember = args.length == 1 ? args[0] : "";
+		// expecting port to be first and known federation member second
+		String knownMember = argsStore.length == 2 ? argsStore[1] : "";
 
 		// the server wants to join a federation and
 		// supplies the adress of a member
