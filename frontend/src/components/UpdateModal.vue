@@ -1,37 +1,48 @@
 <template>
   <div>
     <b-modal
+      scrollable
+      busy
       ref="updateModal"
       v-bind:title="modalTitle"
       @ok="sendUpdateToServer"
     >
-      <NewEntryForm
+      <UpdateForm
         v-bind:formContent="getNeededForm"
         v-bind:showForm="true"
-        v-bind:update="true"
-        v-on:entryToBeCreated="setEntryToUpdate"
-      ></NewEntryForm>
+        v-on:entryToBeUpdated="setEntryToUpdate"
+        v-on:cc="setEntryCc"
+      ></UpdateForm>
+      <template #modal-footer="{ ok }">
+        <!-- Emulate built in modal footer ok and cancel button actions -->
+        <b-button variant="primary" @click="ok()"> Update entry </b-button>
+      </template>
     </b-modal>
 
+    <!-- Server communication components: Get an object and update an object. -->
     <ServerComGetObject
       ref="ServerComGetObject"
       v-on:requestResponse="setRequestResponse"
       v-on:requestError="setRequestError"
     ></ServerComGetObject>
+    <ServerComUpdatePost ref="ServerComUpdatePost"></ServerComUpdatePost>
   </div>
 </template>
 
 <script>
-import ServerComGetObject from "@/components/ServerComGetObject";
 import newEntryFormContent from "@/js_files/newEntryFormContent.js";
-import NewEntryForm from "@/components/NewEntryForm";
+import UpdateForm from "@/components/UpdateForm";
+
+import ServerComGetObject from "@/components/ServerComGetObject";
+import ServerComUpdatePost from "@/components/ServerComUpdatePost";
 
 export default {
   name: "UpdateModal",
 
   components: {
+    ServerComUpdatePost,
     ServerComGetObject,
-    NewEntryForm,
+    UpdateForm,
   },
 
   data() {
@@ -45,6 +56,7 @@ export default {
       allFormContents: newEntryFormContent.allTypes,
       neededForm: "",
       entryToUpdate: "",
+      cc: "",
     };
   },
 
@@ -66,7 +78,10 @@ export default {
       // Trigger the modal.
       this.$refs.updateModal.show();
     },
-    sendUpdateToServer: function () {},
+    sendUpdateToServer: function () {
+      // Send the updated entry to the backend.
+      this.$refs.ServerComUpdatePost.triggerUpdatePost(this.objectUrl, this.entryToUpdate, this.cc);
+    },
     setNeededForm: function () {
       const currentType = this.objectOriginal.type.split("_").slice(1);
       this.neededForm = this.allFormContents[currentType];
@@ -77,6 +92,9 @@ export default {
     },
     setEntryToUpdate: function (entry) {
       this.entryToUpdate = entry;
+    },
+    setEntryCc: function (cc) {
+      this.cc = cc;
     },
   },
 
