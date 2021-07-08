@@ -37,8 +37,6 @@ public class FederationClient implements IFederationClient{
 	@Autowired
 	ServerController serverController;
 
-	private String hostUrl = UriConstants.HOST + serverPort;
-
 	private ExecutorService executor = Executors.newSingleThreadExecutor();
 	volatile ResponseEntity<String> result;
 
@@ -155,11 +153,13 @@ public class FederationClient implements IFederationClient{
 			catch(Exception e) {}				
 		}
 
+		System.out.print("Get activities from other hosts in federation : " + federationMembers + "\n");
 		// inform the other servers about the new one aswell
     	for (String host : federationMembers) {
-            
+            String thisHost = UriConstants.HOST + serverPort;
+
             // server shouldn't request activities from itself
-            if (this.hostUrl.equals("http://" + host)) {
+            if (thisHost.equals("http://" + host)) {
                 continue;
             }
 
@@ -197,7 +197,7 @@ public class FederationClient implements IFederationClient{
             ResponseEntity<Activity[]> result;
             try {
                 RestTemplate restTemplate = new RestTemplate();
-    		    result = restTemplate.postForEntity(url, this.hostUrl, Activity[].class);
+    		    result = restTemplate.postForEntity(url, UriConstants.HOST + serverPort, Activity[].class);
             }
             catch(HttpClientErrorException e) {
                 return new ArrayList<Activity>();
