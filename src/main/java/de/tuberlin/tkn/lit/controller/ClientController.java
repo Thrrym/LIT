@@ -45,13 +45,14 @@ public class ClientController {
 
     @RequestMapping(value = "/{actorname}/inbox", method = RequestMethod.GET)
     public ResponseEntity<OrderedCollection> getInbox(@PathVariable("actorname") String actorname) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = userDetails.getUsername();
-        if (!actorname.equals(username)){
+
+        if (!actorname.equals(username)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
-        return new ResponseEntity<>(storage.getInbox(username),HttpStatus.OK);
+
+        return new ResponseEntity<>(storage.getInbox(username), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{actorname}/objects", method = RequestMethod.GET)
@@ -81,14 +82,15 @@ public class ClientController {
 
     @RequestMapping(value = "/{actorname}/outbox", method = RequestMethod.POST)
     public ResponseEntity<String> postActivity(@PathVariable("actorname") String actorName, @RequestBody Activity activity) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = userDetails.getUsername();
-        if (!actorName.equals(username)){
+
+        if (!actorName.equals(username)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+
         Activity tempActivity = activity.handle(actorName, storage, serverPort);
-        if(tempActivity != null) {
+        if (tempActivity != null) {
             Activity createdActivity = storage.createActivity(actorName, tempActivity);
             storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
@@ -96,8 +98,8 @@ public class ClientController {
 
             return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping(value = "/{actorname}/liked", method = RequestMethod.GET)
