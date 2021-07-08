@@ -1,6 +1,8 @@
 package de.tuberlin.tkn.lit.service;
 
+import de.tuberlin.tkn.lit.model.lit.Journal;
 import de.tuberlin.tkn.lit.model.lit.Paper;
+import de.tuberlin.tkn.lit.storage.IJournalRepository;
 import de.tuberlin.tkn.lit.storage.IPaperRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,19 +10,19 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class XPaperService implements IPaperService{
+public class XJournalService implements IJournalService {
 
     @Override
-    public IPaperRepository getRepository() {
+    public IJournalRepository getRepository() {
         return repository;
     }
 
     @Autowired
-    private IPaperRepository repository;
+    private IJournalRepository repository;
 
     @Override
-    public List<Paper> findAll() {
+    public List<Journal> findAll() {
 
-        return (List<Paper>) repository.findAll();
+        return (List<Journal>) repository.findAll();
     }
 }

@@ -13,19 +13,28 @@ import de.tuberlin.tkn.lit.jsonutilities.serializer.LinkOrObjectSerializer;
 import de.tuberlin.tkn.lit.storage.IStorage;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 
+import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import java.util.List;
 import java.util.logging.Logger;
 
+@MappedSuperclass
 public abstract class Activity extends ActivityPubObject {
-
+    @Transient
     @JsonIgnore
     private final Logger logger = Logger.getLogger(this.getClass().getName());
-
+    @OneToOne(targetEntity = LinkOrObject.class)
     private LinkOrObject actor;
+    @OneToOne(targetEntity = LinkOrObject.class)
     private LinkOrObject object;
+    @OneToOne(targetEntity = LinkOrObject.class)
     private LinkOrObject target;
+    @OneToOne(targetEntity = LinkOrObject.class)
     private LinkOrObject result;
+    @OneToOne(targetEntity = LinkOrObject.class)
     private LinkOrObject origin;
+    @OneToOne(targetEntity = LinkOrObject.class)
     private LinkOrObject instrument;
 
     public Activity() {

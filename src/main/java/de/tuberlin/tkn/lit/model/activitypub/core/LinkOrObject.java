@@ -15,6 +15,9 @@ public class LinkOrObject {
     @OneToOne(targetEntity = ActivityPubCollection.class)
     private ActivityPubObject activityPubObject;
 
+    public LinkOrObject() {
+    }
+
     public LinkOrObject(String link) {
         this.link = link;
         activityPubObject = null;

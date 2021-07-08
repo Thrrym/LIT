@@ -84,7 +84,8 @@ public class Storage implements IStorage {
         actors.remove(actor.getName());
         outboxes.remove(actor.getName());
         inboxes.remove(actor.getName());
-
+        IPersonRepository personRepo = getPersonService().getRepository();
+        personRepo.delete((Person) actor);
         return true;
     }
 

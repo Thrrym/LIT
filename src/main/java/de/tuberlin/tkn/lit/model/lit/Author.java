@@ -26,7 +26,6 @@ public class Author extends ActivityPubObject {
         this.orcid = orcid;
     }
 
-
     public int getPublicationCount() {
         return publicationCount;
     }
