@@ -131,12 +131,11 @@ public class FederationClient implements IFederationClient{
 	public void handleJoinFederation(String knownMember) {
 		List<Activity> pendingActivities = null;
 		List<String> federationMembers = null;
-
 		while(true) {
             try {
-                // get pendingActivities
+				// get pendingActivities
                 pendingActivities = joinFederation(knownMember);
-
+				
 				// get other federation members
                 federationMembers = getFederationMembers(knownMember);
 			}
@@ -156,13 +155,11 @@ public class FederationClient implements IFederationClient{
 			catch(Exception e) {}				
 		}
 
-        System.out.print("others \n");
 		// inform the other servers about the new one aswell
     	for (String host : federationMembers) {
             
             // server shouldn't request activities from itself
-            System.out.print("host " + host + " this.hostUrl " + this.hostUrl);
-            if (host == this.hostUrl) {
+            if (this.hostUrl.equals("http://" + host)) {
                 continue;
             }
 
@@ -176,7 +173,6 @@ public class FederationClient implements IFederationClient{
     	}
 
 		// process the pending activities
-        System.out.print("process \n");
 		for(Activity activity : pendingActivities) {
 			String[] urlParts = activity.getActor().getLink().split("/");
 			String actorname = urlParts[urlParts.length-1];
@@ -198,7 +194,6 @@ public class FederationClient implements IFederationClient{
 			// List<Activity> pending = storage.getPendingActivities(baseUrl);
 
 			// send post request
-            System.out.print("Send \n");
             ResponseEntity<Activity[]> result;
             try {
                 RestTemplate restTemplate = new RestTemplate();
