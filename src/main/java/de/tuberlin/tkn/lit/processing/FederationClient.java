@@ -174,7 +174,7 @@ public class FederationClient implements IFederationClient{
 
 		// process the pending activities
 		for(Activity activity : pendingActivities) {
-			String[] urlParts = activity.getActor().getLink().split("/");
+			String[] urlParts = activity.getActor().getLink().split("/"); // TODO : this is wrong, we need the actor from the url
 			String actorname = urlParts[urlParts.length-1];
 			
 			// process
