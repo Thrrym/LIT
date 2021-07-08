@@ -3,6 +3,7 @@ package de.tuberlin.tkn.lit.storage;
 import de.tuberlin.tkn.lit.constants.UriConstants;
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
+import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
@@ -40,6 +41,11 @@ public class Storage implements IStorage {
     }
 
     @Override
+    public ActivityPubCollection getActors(){
+        return new ActivityPubCollection(actors.values().stream().map(LinkOrObject::new).collect(Collectors.toList()));
+    }
+
+    @Override
     public boolean existsByUsername(String actorName){
         return actors.get(actorName) != null;
     }
@@ -71,7 +77,7 @@ public class Storage implements IStorage {
         return new OrderedCollection(relevantObjects.get(actorName).stream().map((id) -> new LinkOrObject(objects.get(id))).collect(Collectors.toList()));
     }
 
-    public void addToRelevantObjects(String actorName, LinkOrObject toAdd){
+    public void addToRelevantObjects(String actorName, LinkOrObject toAdd) {
         relevantObjects.get(actorName).add(toAdd.getId());
     }
 
@@ -101,6 +107,8 @@ public class Storage implements IStorage {
         outboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         inboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         relevantObjects.put(actor.getName(), new HashSet<>());
+        followingCollections.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
+        followersCollections.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         liked.put(actor.getName(), new HashSet<>());
         return actors.get(actor.getName());
     }
@@ -133,6 +141,11 @@ public class Storage implements IStorage {
     @Override
     public ActivityPubObject getObject(String id) {
         return objects.get(id);
+    }
+
+    @Override
+    public ActivityPubCollection getObjects() {
+        return new ActivityPubCollection(objects.values().stream().map(LinkOrObject::new).collect(Collectors.toList()));
     }
 
     @Override
@@ -170,12 +183,22 @@ public class Storage implements IStorage {
     }
 
     @Override
+    public OrderedCollection getFollowingCollection(String actorName) {
+        return followingCollections.get(actorName);
+    }
+
+    @Override
+    public void addToFollowing(String actorName, LinkOrObject toAdd) {
+        followingCollections.get(actorName).getOrderedItems().add(toAdd);
+    }
+
+    @Override
     public OrderedCollection getFollowersCollection(String actorName) {
         return followersCollections.get(actorName);
     }
 
     @Override
-    public void addToFollowers(String actorName, LinkOrObject toAdd){
+    public void addToFollowers(String actorName, LinkOrObject toAdd) {
         followersCollections.get(actorName).getOrderedItems().add(toAdd);
     }
 }

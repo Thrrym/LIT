@@ -3,6 +3,7 @@ package de.tuberlin.tkn.lit.controller;
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
+import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
@@ -37,6 +38,11 @@ public class ClientController {
         return storage.getActor(actorName);
     }
 
+    @RequestMapping(value = "/actors", method = RequestMethod.GET)
+    public ActivityPubCollection getActors() {
+        return storage.getActors();
+    }
+
     @RequestMapping(value = "/{actorname}/inbox", method = RequestMethod.GET)
     public ResponseEntity<OrderedCollection> getInbox(@PathVariable("actorname") String actorname) {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication()
@@ -51,6 +57,11 @@ public class ClientController {
     @RequestMapping(value = "/{actorname}/objects", method = RequestMethod.GET)
     public OrderedCollection getObjectsCreatedByActor(@PathVariable("actorname") String actorname) {
         return storage.getObjectsCreatedByActor(actorname);
+    }
+
+    @RequestMapping(value = "/objects", method = RequestMethod.GET)
+    public ActivityPubCollection getObjects() {
+        return storage.getObjects();
     }
 
     @RequestMapping(value = "/{actorname}/relevantobjects", method = RequestMethod.GET)
@@ -76,13 +87,17 @@ public class ClientController {
         if (!actorName.equals(username)){
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+        Activity tempActivity = activity.handle(actorName, storage, serverPort);
+        if(tempActivity != null) {
+            Activity createdActivity = storage.createActivity(actorName, tempActivity);
+            storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
-        Activity createdActivity = storage.createActivity(actorName, activity.handle(actorName, storage,serverPort));
-        storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
+            createdActivity.handleSendings(storage, activitySender, serverPort);
 
-        createdActivity.handleSendings(storage, activitySender,serverPort);
+            return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{actorname}/liked", method = RequestMethod.GET)
@@ -90,20 +105,13 @@ public class ClientController {
         return storage.getLikedCollection(actorname);
     }
 
-   /* @RequestMapping(value = "/{actorname}/liked", method = RequestMethod.GET)
-    public OrderedCollection getLikeCollection(@PathVariable("actorname") String actorname) {
-        return storage.likeCollection(actorname);
-    }
-
     @RequestMapping(value = "/{actorname}/following", method = RequestMethod.GET)
-    public OrderedCollection getInbox(@PathVariable("actorname") String actorname) {
-
+    public OrderedCollection getFollowing(@PathVariable("actorname") String actorname) {
+        return storage.getFollowingCollection(actorname);
     }
 
     @RequestMapping(value = "/{actorname}/followers", method = RequestMethod.GET)
-    public OrderedCollection getInbox(@PathVariable("actorname") String actorname) {
-
-    }*/
-
-
+    public OrderedCollection getFollowers(@PathVariable("actorname") String actorname) {
+        return storage.getFollowersCollection(actorname);
+    }
 }
