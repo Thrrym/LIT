@@ -5,8 +5,10 @@ import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.storage.IStorage;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "CreateActivity")
 public class Create extends Activity {
 
     public Create() {

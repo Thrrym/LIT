@@ -6,10 +6,16 @@ import de.tuberlin.tkn.lit.model.lit.BibTeXArticle;
 import de.tuberlin.tkn.lit.storage.IStorage;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "LikeActivity")
 public class Like extends Activity {
+    @Transient
     private static final String type = "Like";
 
     public Like() {
