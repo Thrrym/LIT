@@ -11,6 +11,8 @@ import javax.persistence.Table;
 @Table(name = "CreateActivity")
 public class Create extends Activity {
 
+    private static final String type = "Create";
+
     public Create() {
     }
 
@@ -32,4 +34,7 @@ public class Create extends Activity {
 
         return this;
     }
+
+    @Override
+    public String getType() { return type; }
 }

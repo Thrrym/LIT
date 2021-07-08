@@ -1,5 +1,7 @@
 package de.tuberlin.tkn.lit.storage;
 
+import de.tuberlin.tkn.lit.constants.IActivityConstants;
+import de.tuberlin.tkn.lit.constants.ILitObjectConstants;
 import de.tuberlin.tkn.lit.constants.UriConstants;
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
@@ -24,6 +26,10 @@ public class Storage implements IStorage {
     private IPersonService personService;
     @Autowired
     private IAuthorService authorService;
+    @Autowired
+    private IActivityPubCollectionService activityPubCollectionService;
+    @Autowired
+    private IBibTeXArticleService bibTeXArticleService;
 
     private final Map<String, OrderedCollection> outboxes = new HashMap<>();
     private final Map<String, OrderedCollection> inboxes = new HashMap<>();
@@ -131,8 +137,6 @@ public class Storage implements IStorage {
         outboxes.get(actorName).getOrderedItems().add(toAdd);
     }
 
-
-
     @Override
     public Activity getActivity(UUID id) {
         return activities.get(id);
@@ -140,6 +144,41 @@ public class Storage implements IStorage {
 
     @Override
     public Activity createActivity(String actorName, Activity activity) {
+        String type = activity.getType();
+        //# TODO Fallunterscheidung Activities
+        if(type.equals(IActivityConstants.ACCEPT)) {
+
+        }
+        if(type.equals(IActivityConstants.BLOCK)) {
+
+        }
+        if(type.equals(IActivityConstants.CREATE)) {
+
+        }
+        if(type.equals(IActivityConstants.DELETE)) {
+
+        }
+        if(type.equals(IActivityConstants.DISLIKE)) {
+
+        }
+        if(type.equals(IActivityConstants.FOLLOW)) {
+
+        }
+        if(type.equals(IActivityConstants.IGNORE)) {
+
+        }
+        if(type.equals(IActivityConstants.LIKE)) {
+
+        }
+        if(type.equals(IActivityConstants.REJECT)) {
+
+        }
+        if(type.equals(IActivityConstants.UNDO)) {
+
+        }
+        if(type.equals(IActivityConstants.UPDATE)) {
+
+        }
         UUID uuid = UUID.randomUUID();
         String id = UriUtilities.generateId(new String[]{actorName}, serverPort, uuid);
         activity.setId(id);
@@ -154,6 +193,28 @@ public class Storage implements IStorage {
 
     @Override
     public ActivityPubObject createObject(String actorName, String objectType, ActivityPubObject object) {
+
+        //# TODO Fallunterscheidung Activities
+        if(objectType.equals(ILitObjectConstants.AUTHOR)) {
+
+        }
+        if(objectType.equals(ILitObjectConstants.PAPER)) {
+
+        }
+        if(objectType.equals(ILitObjectConstants.BIBTEXARTICLE)) {
+
+        }
+        if(objectType.equals(ILitObjectConstants.BOOK)) {
+
+        }
+        if(objectType.equals(ILitObjectConstants.JOURNAL)) {
+
+        }
+        if(objectType.equals(ILitObjectConstants.ACTIVITYPUBCOLLECTION)) {
+
+        }
+
+
         UUID uuid = UUID.randomUUID();
         String id = UriUtilities.generateId(new String[]{actorName, objectType}, serverPort, uuid);
         object.setId(id);
