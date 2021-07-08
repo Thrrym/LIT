@@ -3,6 +3,7 @@
     <ServerComGetObject
       ref="object"
       v-on:requestResponse="setObjectRequestResponse"
+      v-on:requestError="setError"
     ></ServerComGetObject>
   </div>
 </template>
@@ -17,6 +18,8 @@ export default {
     return {
       requestResponse: "",
       objectRequestResponse: "",
+      updatedEntry: "",
+      cc: "",
     };
   },
 
@@ -25,9 +28,11 @@ export default {
   },
 
   methods: {
-    triggerUpdatePost: function (objectToPostUrl) {
+    triggerUpdatePost: function (objectToPostUrl, updatedEntry, cc) {
       // Very first step: Get the original Post / object that needs to be liked.
       // This needs to be a separate function to ensure correct execution order. Reason AJAX stuff.
+      this.cc = cc;
+      this.updatedEntry = updatedEntry;
       this.getObject(objectToPostUrl);
     },
 
@@ -40,30 +45,28 @@ export default {
     setObjectRequestResponse: function (object) {
       // Manage the return of the object by ServerComGetObject component.
       this.objectRequestResponse = object;
-      console.log(this.objectRequestResponse)
+      console.log(this.objectRequestResponse);
       // Trigger the actual like.
-      this.likePost();
+      this.selectedType = JSON.parse(this.objectRequestResponse.responseText).type
+      this.updatePost();
     },
 
-    likePost: function () {
-      console.log(this.objectRequestResponse);
-      if (this.objectRequestResponse === "error") {
-        // Manage error if not possible to retrieve the object.
-        // Propagate the error to parent component.
-        this.callbackError();
-        return;
-      }
+    setError: function () {
+      // Manage error if not possible to retrieve the object.
+      // Propagate the error to parent component.
+      this.callbackError();
+    },
 
-      // Get the current user and URL of backend.
-      const backendUrl = this.$store.state.backendUrl;
-      const currentUser = this.$store.getters.getUser;
+    updatePost: function () {
+      console.log(this.objectRequestResponse);
 
       // Prepare content of the http request. Removes unused properties.
-      var json = this.prepareLikeJson(
+      /*var json = this.prepareUpdateJson(
         backendUrl,
         currentUser,
         this.objectRequestResponse
-      );
+      );*/
+      let json = this.prepareUpdateJson();
 
       // Maintain reference to this component with `this` via a new reference.
       // Reason: Within httpRequest.onreadystatechange the reference changes to httpRequest.
@@ -75,14 +78,17 @@ export default {
 
       // Set the HTTP Method. HTTP Request send via Proxy to backend server.
       let method = "POST";
-      var apiUrl = this.$store.state.proxyBackendUrl + currentUser + "outbox";
+      var apiUrl = this.$store.state.proxyBackendUrl + this.getCurrentUser + "outbox";
 
       httpRequest.open(method, apiUrl, true);
       httpRequest.setRequestHeader(
         "Content-Type",
         "application/json;charset=UTF-8"
       );
-      httpRequest.setRequestHeader("Authorization", this.$store.getters.getToken);
+      httpRequest.setRequestHeader(
+        "Authorization",
+        this.$store.getters.getToken
+      );
 
       httpRequest.onreadystatechange = function () {
         // How to react on change of the HTTP request.
@@ -115,9 +121,13 @@ export default {
       this.$emit("requestResponse", "error");
     },
 
-    prepareLikeJson: function (backendUrl, currentUser) {
+/*    prepareJson: function () {
+      // Get the current user and URL of backend.
+      const backendUrl = this.getBackendUrl;
+      const currentUser = this.getCurrentUser;
+
       // Prepare the json as http payload.
-      var objectJson = JSON.parse(this.objectRequestResponse.responseText); // Transform the base object from string to JSON.
+      let objectJson = JSON.parse(this.objectRequestResponse.responseText); // Transform the base object from string to JSON.
 
       // Verify if the lit object is contained in parent json object. If so, extract object.
       // Reason Like maybe called on different URL types:
@@ -137,6 +147,74 @@ export default {
       };
 
       return jsonObject;
+    },*/
+
+    prepareUpdateJson: function () {
+      // Get the current user and URL of backend.
+      const backendUrl = this.getBackendUrl;
+      const currentUser = this.getCurrentUser;
+
+      let simplifiedObject = this.prepareNewEntry(this.selectedType, this.updatedEntry);
+      // 1. Construct JSON object containing the info of the new entry.
+      console.log(simplifiedObject);
+      let url = backendUrl + currentUser + "outbox/";
+      let jsonLitObject = {
+        id: JSON.parse(this.objectRequestResponse.responseText).id,
+        attributedTo: backendUrl + currentUser,
+      };
+      for (let property in simplifiedObject) {
+        if (property === "type") {
+          jsonLitObject[property] = simplifiedObject[property];
+        } else {
+          jsonLitObject[property] = simplifiedObject[property];
+        }
+      }
+      console.log(jsonLitObject);
+
+      // 2. Construct the main JSON. Contains as object the new entry to lit.
+      let jsonMainObject = {
+        "@context": "https://www.w3.org/ns/activitystreams/",
+        type: "Update",
+        id: url + "1/",
+        actor: backendUrl + currentUser,
+        published: this.getCurrentTime(),
+        cc: this.getCc(backendUrl, currentUser, this.cc),
+        object: jsonLitObject,
+      };
+      return jsonMainObject;
+    },
+
+    getCurrentTime: function () {
+      // Return current time in standard ISO format.
+      let d = new Date();
+      return d.toISOString();
+    },
+
+    getCc: function (backendUrl, currentUser, cc) {
+      if (cc === "") {
+        return ""; // Here you may specify to send Create to follower. But this is not implemented on the backend side.
+      }
+      return [cc];
+    },
+    prepareNewEntry: function (selectedType, uncleanNewEntry) {
+      // Prepare the JSON Object to POST new entry to backend.
+      // 1. Remove unused properties.
+      let simplifiedObject = new Object();
+      console.log(uncleanNewEntry)
+      for (let index = 0; index < uncleanNewEntry.length; index++) {
+        const element = uncleanNewEntry[index];
+        simplifiedObject[element.name] = element.content;
+      };
+      simplifiedObject["type"] = selectedType;
+      return simplifiedObject;
+    },
+  },
+  computed: {
+    getBackendUrl: function () {
+      return this.$store.state.backendUrl;
+    },
+    getCurrentUser: function () {
+      return this.$store.getters.getUser;
     },
   },
 };
