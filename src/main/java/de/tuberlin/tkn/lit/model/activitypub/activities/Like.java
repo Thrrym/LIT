@@ -2,6 +2,7 @@ package de.tuberlin.tkn.lit.model.activitypub.activities;
 
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
+import de.tuberlin.tkn.lit.model.activitypub.objects.Tombstone;
 import de.tuberlin.tkn.lit.model.lit.BibTeXArticle;
 import de.tuberlin.tkn.lit.storage.IStorage;
 import de.tuberlin.tkn.lit.util.UriUtilities;
@@ -30,6 +31,11 @@ public class Like extends Activity {
         ActivityPubObject obj = storage.getObject(getObject().getId());
 
         if (obj != null) {
+            // Set activity object as tombstone so we can return proper http code in ClientController
+            if (obj.getType().equals("Tombstone")) {
+                this.setObject(new LinkOrObject(new Tombstone()));
+                return null;
+            }
             BibTeXArticle bibTeXArticle = (BibTeXArticle) obj;
             List<String> l = bibTeXArticle.getLikedBy();
             if (l != null) {

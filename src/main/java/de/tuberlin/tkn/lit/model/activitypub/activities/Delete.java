@@ -20,36 +20,16 @@ public class Delete extends Activity {
     }
 
     @Override
-    public Activity handle(String actorId, IStorage storage,int port) {
-        String objId = this.getObject().getLitObject().getId();
-
+    public Activity handle(String actorId, IStorage storage, int port) {
+        String objId = this.getObject().getId();
 
         ActivityPubObject toDel = storage.getObject(objId);
         if (toDel == null) {
-        //TODO: Send to the server the object belongs to
-
-
-           /* List<LinkOrObject> customTo = getTo();
-            if (customTo != null) {
-                customTo.add(new LinkOrObject(this.));
-            } else {
-                List<LinkOrObject> temp = new ArrayList<>();
-                temp.add(new LinkOrObject(getObject().getLink()));
-                setTo(temp);
-            }*/
-
-
-        } else
-        {
-
-//TODO: Delete it here
+            return null;
+        }
         Tombstone newObj = new Tombstone();
         newObj.setId(objId);
-        storage.updateObject(actorId,newObj);
-
-        }
-
-
+        storage.updateObject(actorId, newObj);
         return this;
     }
 
