@@ -3,6 +3,11 @@ package de.tuberlin.tkn.lit.model.activitypub.activities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.tuberlin.tkn.lit.storage.IStorage;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "AcceptActivity")
 public class Accept extends Activity {
 
     @JsonIgnore

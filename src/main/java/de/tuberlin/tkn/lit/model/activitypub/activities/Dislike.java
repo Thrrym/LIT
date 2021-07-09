@@ -2,6 +2,11 @@ package de.tuberlin.tkn.lit.model.activitypub.activities;
 
 import de.tuberlin.tkn.lit.storage.IStorage;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "DislikeActivity")
 public class Dislike extends Activity {
     private static final String type = "Dislike";
 

@@ -2,6 +2,9 @@ package de.tuberlin.tkn.lit.model.activitypub.activities;
 
 import de.tuberlin.tkn.lit.storage.IStorage;
 
+import javax.persistence.MappedSuperclass;
+
+@MappedSuperclass
 public class Ignore extends Activity {
     private static final String type = "Ignore";
 
