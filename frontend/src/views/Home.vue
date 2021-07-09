@@ -5,7 +5,7 @@
         <div class="container">
           <h1 class="title">Welcome to the LIT Library</h1>
           <h2 class="subtitle">
-            Make sure to check out recent publications below!
+            Make sure to sign up and login!
           </h2>
           <!-- get rid of this useless button, it's in the way for now -->
           <!-- <div class="button-block"> -->
@@ -15,11 +15,13 @@
       </div>
     </section>
 
-    <b-button @click="refreshObjects">
+    <h3>My Entries
+      <b-button @click="refreshObjects">
       <b-icon icon="arrow-counterclockwise" font-scale="1"></b-icon>
-    </b-button>
+      </b-button>
+    </h3>
 
-    <h3>My Entries</h3>
+    <div> 
     <b-card-group deck>
       <b-card
         v-for="entry in objectsByUser"
@@ -27,6 +29,7 @@
         tag="article"
         style="max-width: 20rem"
         class="mb-2"
+        align="center"
       >
         <b-card-title v-text="entry.author"></b-card-title>
         <b-card-sub-title v-text="entry.journal"></b-card-sub-title>
@@ -39,12 +42,16 @@
               {{ entry.likes }}
             </b-button>
             <b-button href="#" variant="primary-outline">
+              <b-icon icon="pencil-square"></b-icon>
+            </b-button>
+            <b-button href="#" variant="primary-outline">
               <b-icon icon="chevron-double-up" v-on:click="showModal(entry)"></b-icon>
             </b-button>
           </small>
         </template>
       </b-card>
     </b-card-group>
+    </div>
 
     <h3 v-if="userHasRelevantObjects">Activityfeed</h3>
     <b-card-group deck>
@@ -206,15 +213,19 @@ export default {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  height: 400px;
+  height: 700px;
 }
 .hero-body .title {
-  text-shadow: 4px 4px 4px rgb(255, 255, 255);
+  // text-shadow: 4px 4px 4px rgb(255, 255, 255);
+  color: white;
+  background-color: #ff4040ff;
   padding: 40px 0 20px 0;
   font-size: 60px;
 }
 .subtitle {
-  text-shadow: 4px 4px 4px rgb(255, 255, 255);
+  // text-shadow: 4px 4px 4px rgb(255, 255, 255);
+  color: white;
+  background-color: #ff4040ff;
   font-size: 30px;
 }
 .button-block {
@@ -235,6 +246,9 @@ export default {
     margin-left: auto;
     margin-right: auto;
   }
+}
+.b-icon{
+  color: #ff4040ff;
 }
 .is-xl {
   font-size: 1.7rem;
