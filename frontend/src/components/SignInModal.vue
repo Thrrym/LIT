@@ -65,10 +65,14 @@
 
 <script>
 import ServerComSignIn from "@/components/ServerComSignIn";
+// import myEntries from "@/views/myEntries";
 
 export default {
   name: "SignInModal",
-  components: { ServerComSignIn },
+  components: { 
+    ServerComSignIn,
+    // myEntries,
+    },
   data() {
     return {
       modalTitle: "Sign in to LIT",
@@ -116,6 +120,9 @@ export default {
       this.errorMessage = "Sign in error, check your username and password.";
       this.error = true;
     },
+    // redirect(){
+    //   this.$router.push({name:"myentries"});
+    // }
   },
 
   computed: {
