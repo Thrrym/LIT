@@ -66,6 +66,9 @@ public class ServerController {
         else if(activity instanceof Update) {
             activity.handle(activity.getActor().getId(), storage, serverPort);
         }
+        else if(activity instanceof Delete) {
+            activity.handle(activity.getActor().getId(), storage, serverPort);
+        }
         // TODO: notify client
     }
 

@@ -1,4 +1,4 @@
-package de.tuberlin.tkn.lit.model;
+/*package de.tuberlin.tkn.lit.model;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,3 +77,4 @@ class ParseJsonTest {
         System.out.println(json);
     }
 }
+*/
