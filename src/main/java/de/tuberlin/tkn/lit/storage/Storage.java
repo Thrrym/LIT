@@ -3,6 +3,7 @@ package de.tuberlin.tkn.lit.storage;
 import de.tuberlin.tkn.lit.constants.IActivityConstants;
 import de.tuberlin.tkn.lit.constants.ILitObjectConstants;
 import de.tuberlin.tkn.lit.constants.UriConstants;
+import de.tuberlin.tkn.lit.model.activitypub.activities.Accept;
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
@@ -24,6 +25,10 @@ public class Storage implements IStorage {
 
     @Autowired
     private IPersonService personService;
+    @Autowired
+    private ICreateService createService;
+    @Autowired
+    private IAcceptService acceptService;
     @Autowired
     private IAuthorService authorService;
     @Autowired
@@ -139,6 +144,12 @@ public class Storage implements IStorage {
 
     @Override
     public Activity getActivity(UUID id) {
+        IAcceptRepository repo = acceptService.getRepository();
+        List<Accept> list = (List) repo.findAll();
+        for(int i = 0; i<list.size(); i++) {
+            Accept current = list.get(i);
+
+        }
         return activities.get(id);
     }
 
@@ -147,7 +158,9 @@ public class Storage implements IStorage {
         String type = activity.getType();
         //# TODO Fallunterscheidung Activities
         if(type.equals(IActivityConstants.ACCEPT)) {
-
+            Accept accept = new Accept(activity);
+            IAcceptRepository repo = acceptService.getRepository();
+            repo.save(accept);
         }
         if(type.equals(IActivityConstants.BLOCK)) {
 
@@ -196,6 +209,7 @@ public class Storage implements IStorage {
 
         //# TODO Fallunterscheidung Activities
         if(objectType.equals(ILitObjectConstants.AUTHOR)) {
+
 
         }
         if(objectType.equals(ILitObjectConstants.PAPER)) {
