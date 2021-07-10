@@ -15,6 +15,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import java.util.ArrayList;
+
 @RestController
 public class ServerController {
 
@@ -100,6 +102,9 @@ public class ServerController {
     * @param  activity
     */
     public void handleActivity(String actorname, Activity activity) {
+
+        // TODO reset to property (check if correct reasoning)
+        activity.setTo(new ArrayList<>());
         
         // post activity to the actors inbox
     	storage.addToInbox(actorname, new LinkOrObject(activity));
@@ -115,7 +120,15 @@ public class ServerController {
 			activity.handle(activity.getActor().getId(), storage, serverPort);
             storage.addToRelevantObjects(actorname, activity.getObject());
     	}
-        
+        else if(activity instanceof Follow) {
+            activity.handle(activity.getActor().getId(), storage, serverPort);
+        }
+        else if(activity instanceof Update) {
+            activity.handle(activity.getActor().getId(), storage, serverPort);
+        }
+        else if(activity instanceof Delete) {
+            activity.handle(activity.getActor().getId(), storage, serverPort);
+        }
         // TODO: notify client
     }
 }

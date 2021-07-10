@@ -4,6 +4,7 @@ import de.tuberlin.tkn.lit.constants.UriConstants;
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
 import de.tuberlin.tkn.lit.model.activitypub.activities.Like;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
+import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
@@ -39,6 +40,16 @@ public class Storage implements IStorage {
         }
 
         return actor;
+    }
+
+    @Override
+    public ActivityPubCollection getActors() {
+        return new ActivityPubCollection(actors.values().stream().map(LinkOrObject::new).collect(Collectors.toList()));
+    }
+
+    @Override
+    public boolean existsByUsername(String actorName) {
+        return actors.get(actorName) != null;
     }
 
     @Override
@@ -103,7 +114,7 @@ public class Storage implements IStorage {
         return new OrderedCollection(relevantObjects.get(actorName).stream().map((id) -> new LinkOrObject(objects.get(id))).collect(Collectors.toList()));
     }
 
-    public void addToRelevantObjects(String actorName, LinkOrObject toAdd){
+    public void addToRelevantObjects(String actorName, LinkOrObject toAdd) {
         relevantObjects.get(actorName).add(toAdd.getId());
     }
 
@@ -123,6 +134,7 @@ public class Storage implements IStorage {
         if (actors.get(actor.getName()) != null) {
             return null;
         }
+
         actor.setId(UriUtilities.generateId(new String[]{actor.getName()}, serverPort, false));
         actor.setInbox(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.INBOX}, serverPort, false));
         actor.setOutbox(UriUtilities.generateId(new String[]{actor.getName(), UriConstants.OUTBOX}, serverPort, false));
@@ -133,7 +145,10 @@ public class Storage implements IStorage {
         outboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         inboxes.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         relevantObjects.put(actor.getName(), new HashSet<>());
+        followingCollections.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
+        followersCollections.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         liked.put(actor.getName(), new HashSet<>());
+
         return actors.get(actor.getName());
     }
 
@@ -142,9 +157,11 @@ public class Storage implements IStorage {
         if (actors.get(actor.getName()) == null) {
             return false;
         }
+
         actors.remove(actor.getName());
         outboxes.remove(actor.getName());
         inboxes.remove(actor.getName());
+
         return true;
     }
 
@@ -159,12 +176,18 @@ public class Storage implements IStorage {
         String id = UriUtilities.generateId(new String[]{actorName}, serverPort, uuid);
         activity.setId(id);
         activities.put(uuid, activity);
+
         return activities.get(uuid);
     }
 
     @Override
     public ActivityPubObject getObject(String id) {
         return objects.get(id);
+    }
+
+    @Override
+    public ActivityPubCollection getObjects() {
+        return new ActivityPubCollection(objects.values().stream().map(LinkOrObject::new).collect(Collectors.toList()));
     }
 
     @Override
@@ -175,12 +198,14 @@ public class Storage implements IStorage {
         String actorId = getActor(actorName).getId();
         object.setGenerator(new LinkOrObject(actorId));
         objects.put(id, object);
+
         return objects.get(id);
     }
 
     @Override
     public ActivityPubObject createObject(String id, ActivityPubObject object) {
         objects.put(id, object);
+
         return objects.get(id);
     }
 
@@ -188,6 +213,7 @@ public class Storage implements IStorage {
     public ActivityPubObject updateObject(String actorName, ActivityPubObject object) {
         String id = object.getId();
         objects.put(id, object);
+
         return objects.get(id);
     }
 
@@ -202,12 +228,22 @@ public class Storage implements IStorage {
     }
 
     @Override
+    public OrderedCollection getFollowingCollection(String actorName) {
+        return followingCollections.get(actorName);
+    }
+
+    @Override
+    public void addToFollowing(String actorName, LinkOrObject toAdd) {
+        followingCollections.get(actorName).getOrderedItems().add(toAdd);
+    }
+
+    @Override
     public OrderedCollection getFollowersCollection(String actorName) {
         return followersCollections.get(actorName);
     }
 
     @Override
-    public void addToFollowers(String actorName, LinkOrObject toAdd){
+    public void addToFollowers(String actorName, LinkOrObject toAdd) {
         followersCollections.get(actorName).getOrderedItems().add(toAdd);
     }
 }

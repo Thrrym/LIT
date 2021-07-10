@@ -2,9 +2,11 @@ package de.tuberlin.tkn.lit.storage;
 
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
+import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
+import org.springframework.core.annotation.Order;
 
 import java.util.UUID;
 import java.util.List;
@@ -12,9 +14,13 @@ import java.util.List;
 public interface IStorage {
     Actor getActor(String actorName);
 
+    ActivityPubCollection getActors();
+
     Actor createActor(Actor actor);
 
     boolean removeActor(Actor actor);
+
+    boolean existsByUsername(String actorName);
 
     OrderedCollection getInbox(String actorName);
 
@@ -42,6 +48,8 @@ public interface IStorage {
 
     ActivityPubObject getObject(String id);
 
+    ActivityPubCollection getObjects();
+
     ActivityPubObject createObject(String actorName, String objectType, ActivityPubObject object);
 
     ActivityPubObject createObject(String id, ActivityPubObject object);
@@ -55,4 +63,8 @@ public interface IStorage {
     void addToFollowers(String actorName, LinkOrObject toAdd);
 
     OrderedCollection getFollowersCollection(String actorName);
+
+    void addToFollowing(String actorName, LinkOrObject toAdd);
+
+    OrderedCollection getFollowingCollection(String actorName);
 }

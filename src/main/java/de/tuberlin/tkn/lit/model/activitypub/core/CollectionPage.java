@@ -4,10 +4,8 @@ import java.util.List;
 
 public class CollectionPage extends ActivityPubCollection {
 
-
-
-    public CollectionPage(int totalItems, LinkOrObject first, LinkOrObject last, LinkOrObject current) {
-        super(totalItems, first, last, current);
+    public CollectionPage(LinkOrObject first, LinkOrObject last, LinkOrObject current) {
+        super(first, last, current);
     }
 
     public CollectionPage(List<LinkOrObject> items, int totalItems, LinkOrObject first, LinkOrObject last, LinkOrObject current) {

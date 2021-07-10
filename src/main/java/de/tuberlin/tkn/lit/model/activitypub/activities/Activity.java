@@ -56,6 +56,7 @@ public abstract class Activity extends ActivityPubObject {
         handleSendingsIntern(getCc(), storage, federationClient, port);
         handleSendingsIntern(getBto(), storage, federationClient, port);
         handleSendingsIntern(getBcc(), storage, federationClient, port);
+        handleSendingsIntern(storage.getFollowersCollection(UriUtilities.getActor(getActor().getId())).getOrderedItems(), storage, activitySender, port);
     }
 
     private void handleSendingsIntern(List<LinkOrObject> list, IStorage storage, IFederationClient federationClient, int port) {
@@ -96,12 +97,6 @@ public abstract class Activity extends ActivityPubObject {
     public LinkOrObject getObject() {
         return object;
     }
-
-    /*@JsonGetter("object")
-    public ActivityPubObject toJSONObject() throws JsonProcessingException {
-        ActivityPubObject litObject = LinkOrObjectSerializer.serialize(object);
-        return litObject;
-    }*/
 
     public void setObject(LinkOrObject object) {
         this.object = object;
