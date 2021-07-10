@@ -22,14 +22,12 @@ import java.util.UUID;
 @RestController
 public class ClientController {
 
-    @Value("${server.port}")
-    private int serverPort;
-
     @Autowired
     IActivitySender activitySender;
-
     @Autowired
     Storage storage;
+    @Value("${server.port}")
+    private int serverPort;
 
     @RequestMapping(value = "/{actor}", method = RequestMethod.GET)
     public Actor getActor(@PathVariable("actor") String actorName) {
@@ -61,6 +59,11 @@ public class ClientController {
     @RequestMapping(value = "/objects", method = RequestMethod.GET)
     public ActivityPubCollection getObjects() {
         return storage.getObjects();
+    }
+
+    @RequestMapping(value = "/authors", method = RequestMethod.GET)
+    public ActivityPubCollection getAuthors() {
+        return storage.getAuthors();
     }
 
     @RequestMapping(value = "/{actorname}/relevantobjects", method = RequestMethod.GET)

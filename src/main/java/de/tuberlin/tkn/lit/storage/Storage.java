@@ -7,10 +7,10 @@ import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
+import de.tuberlin.tkn.lit.model.lit.Author;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -151,6 +151,17 @@ public class Storage implements IStorage {
     @Override
     public ActivityPubCollection getObjects() {
         return new ActivityPubCollection(objects.values().stream().map(LinkOrObject::new).collect(Collectors.toList()));
+    }
+
+    @Override
+    public ActivityPubCollection getAuthors() {
+        return new ActivityPubCollection(objects.values().stream().filter(o -> o.getType().equals("Author")).map(LinkOrObject::new).collect(Collectors.toList()));
+    }
+
+    @Override
+    public boolean authorExists(String orcId) {
+        List<LinkOrObject> duplicates = getAuthors().getItems().stream().filter(a -> ((Author) a.getLitObject()).getOrcid().equals(orcId)).collect(Collectors.toList());
+        return !duplicates.isEmpty();
     }
 
     @Override

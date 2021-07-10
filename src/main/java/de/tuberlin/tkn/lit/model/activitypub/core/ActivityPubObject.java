@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import de.tuberlin.tkn.lit.jsonutilities.deserializer.ArrayDeserializer;
 import de.tuberlin.tkn.lit.model.activitypub.activities.*;
 import de.tuberlin.tkn.lit.model.activitypub.actors.*;
+import de.tuberlin.tkn.lit.model.lit.Author;
 import de.tuberlin.tkn.lit.model.lit.BibTeXArticle;
 import de.tuberlin.tkn.lit.model.activitypub.objects.*;
 import de.tuberlin.tkn.lit.jsonutilities.serializer.ArraySerializer;
@@ -19,7 +20,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = ActivityPubCollection.class, name = "Collection"),
         @JsonSubTypes.Type(value = OrderedCollection.class, name = "OrderedCollection"),
 
-        @JsonSubTypes.Type(value = BibTeXArticle.class, name = "author"),
+        @JsonSubTypes.Type(value = Author.class, name = "Author"),
         @JsonSubTypes.Type(value = BibTeXArticle.class, name = "bibtex_article"),
 
         @JsonSubTypes.Type(value = Note.class, name = "Note"),

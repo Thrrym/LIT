@@ -1,5 +1,11 @@
 package de.tuberlin.tkn.lit.model.lit;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import de.tuberlin.tkn.lit.jsonutilities.deserializer.ArrayDeserializer;
+import de.tuberlin.tkn.lit.jsonutilities.serializer.ArraySerializer;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 
@@ -30,6 +36,17 @@ public class BibTeXArticle extends ActivityPubObject {
 
     public void setAuthors(List<LinkOrObject> authors) {
         this.authors = authors;
+    }
+
+    @JsonSetter("authors")
+    public void setAuthors(JsonNode s) throws JsonProcessingException {
+        authors = ArrayDeserializer.deserialize(s);
+    }
+
+    @JsonGetter("authors")
+    public List<JsonNode> toJSONAuthors() throws JsonProcessingException {
+        if (authors == null) return null;
+        return ArraySerializer.serialize(authors);
     }
 
     public String getTitle() {
