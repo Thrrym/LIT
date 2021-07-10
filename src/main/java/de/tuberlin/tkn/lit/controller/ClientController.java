@@ -98,7 +98,7 @@ public class ClientController {
 
             return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
         }
-        if (activity.getObject().getLitObject().getType().equals("Tombstone")) {
+        if (activity.getObject().getLitObject() != null && activity.getObject().getLitObject().getType().equals("Tombstone")) {
             return new ResponseEntity<>(HttpStatus.GONE);
         }
 
