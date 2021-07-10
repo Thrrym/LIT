@@ -20,6 +20,8 @@ export default {
       objectRequestResponse: "",
       updatedEntry: "",
       cc: "",
+      jsonPayLoad: "",
+      objectOriginal: "",
     };
   },
 
@@ -29,8 +31,8 @@ export default {
 
   methods: {
     triggerUpdatePost: function (objectToPostUrl, updatedEntry, cc) {
-      // Very first step: Get the original Post / object that needs to be liked.
-      // This needs to be a separate function to ensure correct execution order. Reason AJAX stuff.
+      // Very first step: Get the original Post / object that needs to be updated.
+      // This needs to be a separate function to ensure correct execution order. Reason: AJAX stuff.
       this.cc = cc;
       this.updatedEntry = updatedEntry;
       this.getObject(objectToPostUrl);
@@ -45,9 +47,8 @@ export default {
     setObjectRequestResponse: function (object) {
       // Manage the return of the object by ServerComGetObject component.
       this.objectRequestResponse = object;
-      console.log(this.objectRequestResponse);
-      // Trigger the actual like.
-      this.selectedType = JSON.parse(this.objectRequestResponse.responseText).type
+      this.objectOriginal = JSON.parse(this.objectRequestResponse.responseText);
+      this.selectedType = this.objectOriginal.type;
       this.updatePost();
     },
 
@@ -58,7 +59,7 @@ export default {
     },
 
     updatePost: function () {
-      console.log(this.objectRequestResponse);
+      //console.log(this.objectRequestResponse);
 
       // Prepare content of the http request. Removes unused properties.
       /*var json = this.prepareUpdateJson(
@@ -66,7 +67,7 @@ export default {
         currentUser,
         this.objectRequestResponse
       );*/
-      let json = this.prepareUpdateJson();
+      this.prepareUpdateJson();
 
       // Maintain reference to this component with `this` via a new reference.
       // Reason: Within httpRequest.onreadystatechange the reference changes to httpRequest.
@@ -105,8 +106,8 @@ export default {
           }
         }
       };
-      console.log(json);
-      httpRequest.send(JSON.stringify(json)); // Send the HTTP request with the JSON as payload.
+      //console.log(this.jsonPayLoad);
+      httpRequest.send(JSON.stringify(this.jsonPayLoad)); // Send the HTTP request with the JSON as payload.
     },
 
     callbackResponse: function () {
@@ -159,7 +160,7 @@ export default {
       console.log(simplifiedObject);
       let url = backendUrl + currentUser + "outbox/";
       let jsonLitObject = {
-        id: JSON.parse(this.objectRequestResponse.responseText).id,
+        id: this.objectOriginal.id,
         attributedTo: backendUrl + currentUser,
       };
       for (let property in simplifiedObject) {
@@ -169,9 +170,14 @@ export default {
           jsonLitObject[property] = simplifiedObject[property];
         }
       }
+      for (const property in this.objectOriginal) {
+        if (!Object.prototype.hasOwnProperty.call(jsonLitObject, property)) {
+          jsonLitObject[property] = this.objectOriginal[property];
+        }
+      }
       console.log(jsonLitObject);
 
-      // 2. Construct the main JSON. Contains as object the new entry to lit.
+      // 2. Construct the main JSON. Contains as object the updated entry to lit.
       let jsonMainObject = {
         "@context": "https://www.w3.org/ns/activitystreams/",
         type: "Update",
@@ -181,7 +187,7 @@ export default {
         cc: this.getCc(backendUrl, currentUser, this.cc),
         object: jsonLitObject,
       };
-      return jsonMainObject;
+      this.jsonPayLoad = jsonMainObject;
     },
 
     getCurrentTime: function () {
