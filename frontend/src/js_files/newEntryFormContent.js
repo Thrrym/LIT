@@ -1,6 +1,6 @@
 export default {
   allTypes: {
-    article: [
+    bibtex_article: [
       {
         id: 0,
         name: "author",
@@ -118,6 +118,7 @@ export default {
         label: "DOI",
         content: "",
         required: false,
+        inputVerify: "url"
       },
       {
         id: 6,
@@ -133,6 +134,7 @@ export default {
         label: "URL",
         content: "",
         required: false,
+        inputVerify: "url"
       },
       {
         id: 8,

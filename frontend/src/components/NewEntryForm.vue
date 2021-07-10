@@ -30,6 +30,7 @@
                 v-else
               v-model="field.content"
               v-bind:required="field.required"
+                v-bind:type="getFieldTypeToVerify(field)"
             ></b-form-input>
           </b-form-group>
         </b-form-group>
@@ -66,6 +67,7 @@
                 v-else
                 v-model="field.content"
                 v-bind:required="field.required"
+                v-bind:type="getFieldTypeToVerify(field)"
             ></b-form-input>
 <!--            <b-form-input
               v-model="field.content"
@@ -217,6 +219,13 @@ export default {
     },
     addNewAuthor: function () {
       this.$refs.NewAuthorModal.showNewAuthorModal();
+    },
+    getFieldTypeToVerify: function (field) {
+      if (Object.prototype.hasOwnProperty.call(field, "inputVerify")) {
+        return field["inputVerify"];
+      } else {
+        return "text";
+      }
     },
   },
 };
