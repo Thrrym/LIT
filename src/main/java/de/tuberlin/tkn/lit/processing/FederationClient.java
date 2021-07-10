@@ -186,7 +186,7 @@ public class FederationClient implements IFederationClient{
 
 			// get the staging activities, ignore their known servers
     	    String url = this.protocol + host;
-			List<Activity> morePendingActivities = joinFederation(url); // TODO : timeouts ?!
+			List<Activity> morePendingActivities = joinFederation(url);
 			pendingActivities.addAll(morePendingActivities);
     	}
 
