@@ -5,6 +5,9 @@ import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.storage.IStorage;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 
+import javax.persistence.Entity;
+
+@Entity
 public class Update extends Activity {
     private static final String type = "Update";
 
