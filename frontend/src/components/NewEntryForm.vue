@@ -18,7 +18,11 @@
             label-cols-sm="3"
             label-align-sm="right"
           >
+            <b-form-checkbox v-if="isNotTextInput(field)" v-model="field.content"
+                             v-bind:required="field.required" value="true" unchecked-value="false">
+            </b-form-checkbox>
             <b-form-input
+                v-else
               v-model="field.content"
               v-bind:required="field.required"
             ></b-form-input>
@@ -50,10 +54,18 @@
             label-cols-sm="3"
             label-align-sm="right"
           >
+            <b-form-checkbox v-if="isNotTextInput(field)" v-model="field.content"
+                             v-bind:required="field.required" value="true" unchecked-value="false">
+            </b-form-checkbox>
             <b-form-input
+                v-else
+                v-model="field.content"
+                v-bind:required="field.required"
+            ></b-form-input>
+<!--            <b-form-input
               v-model="field.content"
               v-bind:required="field.required"
-            ></b-form-input>
+            ></b-form-input>-->
           </b-form-group>
         </b-form-group>
       </b-card>
@@ -156,7 +168,7 @@ export default {
     },
     isNotUpdate: function () {
       return !this.update
-    }
+    },
   },
 
   methods: {
@@ -179,6 +191,15 @@ export default {
     },
     setShowCcField: function () {
       this.showCcField = !this.showCcField;
+    },
+    isNotTextInput: function (field) {
+      if (!Object.prototype.hasOwnProperty.call(field, "inputType")) {
+        return false;
+      } else if (field.inputType === "checkbox") {
+        return true;
+      } else {
+        return false;
+      }
     },
   },
 };
