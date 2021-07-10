@@ -3,11 +3,14 @@ package de.tuberlin.tkn.lit.storage;
 import de.tuberlin.tkn.lit.constants.UriConstants;
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
+import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
+import de.tuberlin.tkn.lit.service.IPersonService;
 import de.tuberlin.tkn.lit.util.UriUtilities;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,9 @@ import java.util.stream.Collectors;
 
 @Repository
 public class Storage implements IStorage {
+
+    @Autowired
+    IPersonService personService;
 
     private final Map<String, OrderedCollection> outboxes = new HashMap<>();
     private final Map<String, OrderedCollection> inboxes = new HashMap<>();
@@ -30,72 +36,16 @@ public class Storage implements IStorage {
     @Value("${server.port}")
     private int serverPort;
 
-    @Override
-    public Actor getActor(String actorName) {
-        Actor actor = actors.get(actorName);
-        if (actor == null) {
-            throw new NullPointerException();
-        }
 
-        return actor;
-    }
-
-    @Override
-    public ActivityPubCollection getActors() {
-        return new ActivityPubCollection(actors.values().stream().map(LinkOrObject::new).collect(Collectors.toList()));
-    }
-
-    @Override
-    public boolean existsByUsername(String actorName) {
-        return actors.get(actorName) != null;
-    }
-
-    @Override
-    public OrderedCollection getInbox(String actorName) {
-        OrderedCollection orderedCollection = inboxes.get(actorName);
-        if (orderedCollection == null) {
-            throw new NullPointerException();
-        }
-        return orderedCollection;
-    }
-
-    @Override
-    public OrderedCollection getOutbox(String actorName) {
-        return outboxes.get(actorName);
-    }
-
-
-    @Override
-    public OrderedCollection getObjectsCreatedByActor(String actorName) {
-        String actorId = getActor(actorName).getId();
-        List<LinkOrObject> results = objects.values().stream().filter(value -> value.getGenerator().getLink().equals(actorId)).map(LinkOrObject::new).collect(Collectors.toList());
-        return new OrderedCollection(results);
-    }
-
-    @Override
-    public OrderedCollection getRelevantObjects(String actorName) {
-        return new OrderedCollection(relevantObjects.get(actorName).stream().map((id) -> new LinkOrObject(objects.get(id))).collect(Collectors.toList()));
-    }
-
-    public void addToRelevantObjects(String actorName, LinkOrObject toAdd) {
-        relevantObjects.get(actorName).add(toAdd.getId());
-    }
-
-    @Override
-    public void addToInbox(String actorName, LinkOrObject toAdd) {
-        inboxes.get(actorName).getOrderedItems().add(toAdd);
-    }
-
-    @Override
-    public void addToOutbox(String actorName, LinkOrObject toAdd) {
-        outboxes.get(actorName).getOrderedItems().add(toAdd);
-    }
-
+    //# TODO ACTOR
 
     @Override
     public Actor createActor(Actor actor) {
-        if (actors.get(actor.getName()) != null) {
-            return null;
+
+        IPersonRepository personRepository = personService.getRepository();
+        List<Person> persons = (List) personRepository.findAll();
+        for(Person p : persons) {
+            if (p.getName() == actor.getName()) { return null; }
         }
 
         actor.setId(UriUtilities.generateId(new String[]{actor.getName()}, serverPort, false));
@@ -112,36 +62,47 @@ public class Storage implements IStorage {
         followersCollections.put(actor.getName(), new OrderedCollection(new ArrayList<>()));
         liked.put(actor.getName(), new HashSet<>());
 
+        personRepository.save((Person)actor);
+
         return actors.get(actor.getName());
     }
 
     @Override
-    public boolean removeActor(Actor actor) {
-        if (actors.get(actor.getName()) == null) {
-            return false;
+    public Actor getActor(String actorName) {
+        IPersonRepository personRepository = personService.getRepository();
+        List<Person> persons = (List) personRepository.findAll();
+        for(Person p :  persons) {
+            if(p.getName() == actorName) return p;
         }
-
-        actors.remove(actor.getName());
-        outboxes.remove(actor.getName());
-        inboxes.remove(actor.getName());
-
-        return true;
+        throw new NullPointerException();
     }
 
     @Override
-    public Activity getActivity(UUID id) {
-        return activities.get(id);
+    public boolean removeActor(Actor actor) {
+        IPersonRepository personRepository = personService.getRepository();
+        List<Person> persons = (List) personRepository.findAll();
+        for(Person p :  persons) {
+            if(p.getName() == actor.getName()) {
+                //# TODO remove actor from inboxes & outboxes
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
-    public Activity createActivity(String actorName, Activity activity) {
-        UUID uuid = UUID.randomUUID();
-        String id = UriUtilities.generateId(new String[]{actorName}, serverPort, uuid);
-        activity.setId(id);
-        activities.put(uuid, activity);
-
-        return activities.get(uuid);
+    public ActivityPubCollection getActors() {
+        IPersonRepository personRepository = personService.getRepository();
+        List<Person> persons = (List) personRepository.findAll();
+        return new ActivityPubCollection(persons.stream().map(LinkOrObject::new).collect(Collectors.toList()));
     }
+
+    @Override
+    public boolean existsByUsername(String actorName) {
+        return actors.get(actorName) != null;
+    }
+
+    //# TODO OBJECTS
 
     @Override
     public ActivityPubObject getObject(String id) {
@@ -181,6 +142,39 @@ public class Storage implements IStorage {
     }
 
     @Override
+    public OrderedCollection getObjectsCreatedByActor(String actorName) {
+        String actorId = getActor(actorName).getId();
+        List<LinkOrObject> results = objects.values().stream().filter(value -> value.getGenerator().getLink().equals(actorId)).map(LinkOrObject::new).collect(Collectors.toList());
+        return new OrderedCollection(results);
+    }
+
+    @Override
+    public OrderedCollection getRelevantObjects(String actorName) {
+        return new OrderedCollection(relevantObjects.get(actorName).stream().map((id) -> new LinkOrObject(objects.get(id))).collect(Collectors.toList()));
+    }
+
+    public void addToRelevantObjects(String actorName, LinkOrObject toAdd) {
+        relevantObjects.get(actorName).add(toAdd.getId());
+    }
+
+    //# TODO ACTIVITY
+    @Override
+    public Activity getActivity(UUID id) {
+        return activities.get(id);
+    }
+
+    @Override
+    public Activity createActivity(String actorName, Activity activity) {
+        UUID uuid = UUID.randomUUID();
+        String id = UriUtilities.generateId(new String[]{actorName}, serverPort, uuid);
+        activity.setId(id);
+        activities.put(uuid, activity);
+
+        return activities.get(uuid);
+    }
+
+    //# TODO LIKED
+    @Override
     public OrderedCollection getLikedCollection(String actorName) {
         return new OrderedCollection(liked.get(actorName).stream().map((id) -> new LinkOrObject(objects.get(id))).collect(Collectors.toList()));
     }
@@ -190,6 +184,7 @@ public class Storage implements IStorage {
         liked.get(actorName).add(toAdd.getId());
     }
 
+    //# TODO FOLLOWING
     @Override
     public OrderedCollection getFollowingCollection(String actorName) {
         return followingCollections.get(actorName);
@@ -200,6 +195,7 @@ public class Storage implements IStorage {
         followingCollections.get(actorName).getOrderedItems().add(toAdd);
     }
 
+    //# TODO FOLLOWERS
     @Override
     public OrderedCollection getFollowersCollection(String actorName) {
         return followersCollections.get(actorName);
@@ -209,4 +205,32 @@ public class Storage implements IStorage {
     public void addToFollowers(String actorName, LinkOrObject toAdd) {
         followersCollections.get(actorName).getOrderedItems().add(toAdd);
     }
+
+    //# TODO INBOX
+    @Override
+    public OrderedCollection getInbox(String actorName) {
+        OrderedCollection orderedCollection = inboxes.get(actorName);
+        if (orderedCollection == null) {
+            throw new NullPointerException();
+        }
+        return orderedCollection;
+    }
+
+    @Override
+    public void addToInbox(String actorName, LinkOrObject toAdd) {
+        inboxes.get(actorName).getOrderedItems().add(toAdd);
+    }
+
+    //# TODO OUTBOX
+    @Override
+    public OrderedCollection getOutbox(String actorName) {
+        return outboxes.get(actorName);
+    }
+
+    @Override
+    public void addToOutbox(String actorName, LinkOrObject toAdd) {
+        outboxes.get(actorName).getOrderedItems().add(toAdd);
+    }
+
+
 }
