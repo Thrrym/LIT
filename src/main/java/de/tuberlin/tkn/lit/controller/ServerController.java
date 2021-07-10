@@ -99,7 +99,6 @@ public class ServerController {
     * @param  actorname
     * @param  activity
     */
-    // TODO : Storage is null when federation calls this
     public void handleActivity(String actorname, Activity activity) {
         
         // post activity to the actors inbox

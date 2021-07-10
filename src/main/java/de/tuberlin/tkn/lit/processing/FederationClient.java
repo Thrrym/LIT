@@ -136,10 +136,8 @@ public class FederationClient implements IFederationClient{
 			String url = getFrom.getLink() + "/outbox";
 			
 			// send get request
-    		RestTemplate restTemplate = new RestTemplate();
-			// TODO : we need timeout here aswell
-    		ResponseEntity<OrderedCollection> result = restTemplate.getForEntity(url, OrderedCollection.class);
-			return result.getBody();
+    		OrderedCollection result = sendWithTimeout(url, null, OrderedCollection.class, "GET");
+			return result;
 		});
 	}
 
