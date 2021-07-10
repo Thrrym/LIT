@@ -38,6 +38,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = Reject.class, name = "Reject"),
         @JsonSubTypes.Type(value = Undo.class, name = "Undo"),
         @JsonSubTypes.Type(value = Update.class, name = "Update"),
+        @JsonSubTypes.Type(value = Offer.class, name = "Offer"),
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class ActivityPubObject {
