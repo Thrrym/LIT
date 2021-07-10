@@ -11,6 +11,10 @@ export default {
   data() {
     return {
       requestResponse: "",
+      jsonPayLoad: "",
+      newEntry: "",
+      selectedType: "",
+      cc: "",
     };
   },
 
@@ -18,6 +22,9 @@ export default {
 
   methods: {
     triggerServerCom: function (newEntry, selectedType, cc) {
+      this.newEntry = newEntry;
+      this.selectedType = selectedType;
+      this.cc = cc;
       // Get the current user and URL of backend.
       const backendUrl = this.getBackendUrl;
       const currentUser = this.getCurrentUser;
@@ -26,7 +33,7 @@ export default {
       console.log("ServerCom");
       console.log(newEntry);
       var cleanNewEntry = prepareNewEntry(selectedType, newEntry);
-      var json = prepareNewEntryJson(
+      this.jsonPayLoad = prepareNewEntryJson(
         cleanNewEntry,
         backendUrl,
         currentUser,
@@ -73,8 +80,8 @@ export default {
         console.log("HTTP onerror");
       };
 
-      console.log(json);
-      httpRequest.send(JSON.stringify(json)); // Send the HTTP request with the JSON as payload.
+      //console.log(this.jsonPayLoad);
+      httpRequest.send(JSON.stringify(this.jsonPayLoad)); // Send the HTTP request with the JSON as payload.
     },
 
     callbackResponse: function () {
