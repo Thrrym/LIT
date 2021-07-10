@@ -56,7 +56,7 @@ public abstract class Activity extends ActivityPubObject {
         handleSendingsIntern(getCc(), storage, federationClient, port);
         handleSendingsIntern(getBto(), storage, federationClient, port);
         handleSendingsIntern(getBcc(), storage, federationClient, port);
-        handleSendingsIntern(storage.getFollowersCollection(UriUtilities.getActor(getActor().getId())).getOrderedItems(), storage, activitySender, port);
+        handleSendingsIntern(storage.getFollowersCollection(UriUtilities.getActor(getActor().getId())).getOrderedItems(), storage, federationClient, port);
     }
 
     private void handleSendingsIntern(List<LinkOrObject> list, IStorage storage, IFederationClient federationClient, int port) {
