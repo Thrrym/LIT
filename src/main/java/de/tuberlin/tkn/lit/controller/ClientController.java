@@ -2,13 +2,11 @@ package de.tuberlin.tkn.lit.controller;
 
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
-import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
 import de.tuberlin.tkn.lit.processing.IActivitySender;
-import de.tuberlin.tkn.lit.storage.IStorage;
 import de.tuberlin.tkn.lit.storage.Storage;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +96,7 @@ public class ClientController {
 
             return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
         }
+
         if (activity.getObject().getLitObject() != null && activity.getObject().getLitObject().getType().equals("Tombstone")) {
             return new ResponseEntity<>(HttpStatus.GONE);
         }
