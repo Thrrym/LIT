@@ -16,8 +16,13 @@ public class Accept extends Activity {
     }
 
     @Override
-    public Activity handle(String actorName, IStorage storage,int port) {
-        return this;
+    public Activity handle(String actorName, IStorage storage, int port) {
+        Activity update = new Update(this);
+        Activity offer = storage.getActivity(getObject().getId());
+        update.setType("Update");
+        update.setObject(offer.getObject());
+        update.handle(actorName, storage, port);
+        return update;
     }
 
 }

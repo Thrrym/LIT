@@ -9,7 +9,7 @@ public class Offer extends Activity{
 
     @Override
     public Activity handle(String actorName, IStorage storage, int port) {
-        return null;
+        return this;
     }
 
 
