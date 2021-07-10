@@ -19,6 +19,7 @@ import java.util.List;
         @JsonSubTypes.Type(value = ActivityPubCollection.class, name = "Collection"),
         @JsonSubTypes.Type(value = OrderedCollection.class, name = "OrderedCollection"),
 
+        @JsonSubTypes.Type(value = BibTeXArticle.class, name = "author"),
         @JsonSubTypes.Type(value = BibTeXArticle.class, name = "bibtex_article"),
 
         @JsonSubTypes.Type(value = Note.class, name = "Note"),
@@ -62,8 +63,7 @@ public abstract class ActivityPubObject {
     private String published;
     private ActivityPubCollection replies;
     private List<LinkOrObject> tag;
-    //private OrderedCollection likes;
-    //private int like;
+    private List<String> likedBy;
     private String summary;
     private String updated;
     private List<LinkOrObject> url;
@@ -376,5 +376,23 @@ public abstract class ActivityPubObject {
 
     public void setDuration(String duration) {
         this.duration = duration;
+    }
+
+    @JsonGetter("likes")
+    public int getLikes() {
+        if(likedBy == null)
+            return 0;
+        return likedBy.size();
+    }
+
+    @JsonSetter("likes")
+    public void setLikes(int value){}
+
+    public List<String> getLikedBy() {
+        return likedBy;
+    }
+
+    public void setLikedBy(List<String> likedBy) {
+        this.likedBy = likedBy;
     }
 }
