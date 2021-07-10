@@ -25,8 +25,9 @@ public class LitApplication {
 	public void joinFederation() {
 		
 		// get command line arguments
-		// expecting port to be first and known federation member second
-		String knownMember = argsStore.length == 2 ? argsStore[1] : "";
+		// expecting the optional known 
+		// federation member to be first
+		String knownMember = argsStore.length >= 1 ? argsStore[0] : "";
 
 		// the server wants to join a federation and
 		// supplies the adress of a member

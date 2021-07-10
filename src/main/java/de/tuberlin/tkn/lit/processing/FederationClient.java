@@ -39,6 +39,7 @@ public class FederationClient implements IFederationClient{
 
 	private ExecutorService executor = Executors.newSingleThreadExecutor();
 	volatile ResponseEntity<String> result;
+	private String protocol = "http://";
 
 	/**
     *  Allows sending Activities to an actor (their inbox) on another server
@@ -159,7 +160,7 @@ public class FederationClient implements IFederationClient{
             String thisHost = UriConstants.HOST + serverPort;
 
             // server shouldn't request activities from itself
-            if (thisHost.equals("http://" + host)) {
+            if (thisHost.equals(this.protocol + host)) {
                 continue;
             }
 
@@ -167,17 +168,19 @@ public class FederationClient implements IFederationClient{
             // (makes sense when there is persistent storage)
 
 			// get the staging activities, ignore their known servers
-    	    String url = "http://" + host;
+    	    String url = this.protocol + host;
 			List<Activity> morePendingActivities = joinFederation(url); // TODO : timeouts ?!
 			pendingActivities.addAll(morePendingActivities);
     	}
 
 		// process the pending activities
 		for(Activity activity : pendingActivities) {
-			String[] urlParts = activity.getActor().getLink().split("/"); // TODO : this is wrong, we need the actor from the url
+			String actor = activity.getTo().get(0).getLink();
+			String[] urlParts = actor.split("/");
 			String actorname = urlParts[urlParts.length-1];
 			
 			// process
+			System.out.print("handle activity for actor " + actorname + "\n");
 			serverController.handleActivity(actorname, activity);
 		}
 	} 
