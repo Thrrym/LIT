@@ -1,6 +1,7 @@
-package de.tuberlin.tkn.lit.service;
+package de.tuberlin.tkn.lit.service_impl;
 
 import de.tuberlin.tkn.lit.model.activitypub.activities.Ignore;
+import de.tuberlin.tkn.lit.service.IIgnoreService;
 import de.tuberlin.tkn.lit.storage.IIgnoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class XIgnoreService implements IIgnoreService{
+public class XIgnoreService implements IIgnoreService {
 
     @Override
     public IIgnoreRepository getRepository() {

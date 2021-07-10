@@ -1,6 +1,7 @@
-package de.tuberlin.tkn.lit.service;
+package de.tuberlin.tkn.lit.service_impl;
 
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
+import de.tuberlin.tkn.lit.service.IActivityPubCollectionService;
 import de.tuberlin.tkn.lit.storage.IActivityPubCollectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,7 @@
-package de.tuberlin.tkn.lit.service;
+package de.tuberlin.tkn.lit.service_impl;
 
 import de.tuberlin.tkn.lit.model.activitypub.activities.Delete;
+import de.tuberlin.tkn.lit.service.IDeleteService;
 import de.tuberlin.tkn.lit.storage.IDeleteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

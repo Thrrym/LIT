@@ -44,9 +44,9 @@ public class Storage implements IStorage {
     @Autowired
     IFollowedService followedService;
     @Autowired
-    IInboxService iInboxService;
+    IInboxService inboxService;
     @Autowired
-    IOutboxService iOutboxService;
+    IOutboxService outboxService;
     @Autowired
     IActivityPubCollectionService activityPubCollectionService;
 
@@ -461,6 +461,8 @@ public class Storage implements IStorage {
 
     @Override
     public void addToLiked(String actorName, LinkOrObject toAdd) {
+        ILikedRepository likedRepository = likedService.getRepository();
+        likedRepository.save(toAdd);
         liked.get(actorName).add(toAdd.getId());
     }
 

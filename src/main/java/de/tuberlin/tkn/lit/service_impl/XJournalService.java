@@ -1,7 +1,8 @@
-package de.tuberlin.tkn.lit.service;
+package de.tuberlin.tkn.lit.service_impl;
 
 import de.tuberlin.tkn.lit.model.lit.Journal;
 import de.tuberlin.tkn.lit.model.lit.Paper;
+import de.tuberlin.tkn.lit.service.IJournalService;
 import de.tuberlin.tkn.lit.storage.IJournalRepository;
 import de.tuberlin.tkn.lit.storage.IPaperRepository;
 import org.springframework.beans.factory.annotation.Autowired;
