@@ -21,6 +21,11 @@
             <b-form-checkbox v-if="isNotTextInput(field)" v-model="field.content"
                              v-bind:required="field.required" value="true" unchecked-value="false">
             </b-form-checkbox>
+
+            <b-input-group v-if="isAuthor(field)">
+              <b-form-select></b-form-select>
+              <b-button v-on:click="addNewAuthor">Add new author</b-button>
+            </b-input-group>
             <b-form-input
                 v-else
               v-model="field.content"
@@ -111,12 +116,18 @@
       </b-button>
     </b-form>
     </b-container>
+
+    <NewAuthorModal ref="NewAuthorModal"></NewAuthorModal>
   </div>
 </template>
 
 <script>
+import NewAuthorModal from "@/components/NewAuthorModal";
 export default {
   name: "NewEntryForm",
+  components: {
+    NewAuthorModal,
+  },
 
   props: {
     formContent: {
@@ -200,6 +211,12 @@ export default {
       } else {
         return false;
       }
+    },
+    isAuthor: function (field) {
+      return field.name === "author";
+    },
+    addNewAuthor: function () {
+      this.$refs.NewAuthorModal.showNewAuthorModal();
     },
   },
 };
