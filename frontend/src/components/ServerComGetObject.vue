@@ -9,6 +9,7 @@ export default {
   data() {
     return {
       requestResponse: "",
+      gotObject: "",
     };
   },
 
@@ -60,14 +61,15 @@ export default {
     callbackResponse: function () {
       // Function triggered by the onreadystatechange from the HTTP request.
       // Emits event to parent component to pass result of the HTTP request back upstream.
-      console.log(this.requestResponse);
+      //console.log(this.requestResponse);
+      this.gotObject = JSON.parse(this.requestResponse.responseText)
       this.$emit("requestResponse", this.requestResponse);
     },
 
     callbackError: function () {
       // Function triggered by the onreadystatechange from the HTTP request.
       // Emits error to parent component back upstream.
-      this.$emit("requestResponse", "error");
+      this.$emit("requestError");
     },
 
     getApiObjectUrl: function (objectUrl) {

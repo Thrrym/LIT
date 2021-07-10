@@ -87,10 +87,15 @@
         </b-form-group>
       </b-card>
 
-      <!-- Submit Button -->
-      <b-button type="submit" variant="primary">
+      <!-- Submit Buttons -->
+      <b-button type="submit" variant="primary" v-if="isNotUpdate">
         <b-icon icon="bookmark-plus" aria-hidden="true"></b-icon>
         Create new entry
+      </b-button>
+      <!-- Submit Buttons -->
+      <b-button type="submit" variant="primary" v-else>
+        <b-icon icon="bookmark-plus" aria-hidden="true"></b-icon>
+        Update entry
       </b-button>
     </b-form>
     </b-container>
@@ -106,6 +111,10 @@ export default {
       required: true,
     },
     showForm: {
+      type: Boolean,
+      required: true,
+    },
+    update: {
       type: Boolean,
       required: true,
     },
@@ -145,6 +154,9 @@ export default {
       if (this.getOptionalFields.length === 0) return false;
       else return true;
     },
+    isNotUpdate: function () {
+      return !this.update
+    }
   },
 
   methods: {
