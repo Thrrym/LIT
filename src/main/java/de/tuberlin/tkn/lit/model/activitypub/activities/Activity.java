@@ -54,14 +54,14 @@ public abstract class Activity extends ActivityPubObject {
 
     public void handleSendings(IStorage storage, IActivitySender activitySender, int port) {
         if (this instanceof Offer) {
-            ActivityPubObject objectToUpdate = storage.getObject(getObject().getId());
+            ActivityPubObject objectToUpdate = storage.getObject(getObject().getLitObject().getId());
             handleSendingsIntern(new ArrayList<>() {{
                 add(objectToUpdate.getGenerator());
             }}, storage, activitySender, port);
         }
 
         if (this instanceof Reject) {
-            Activity activityToReject = storage.getActivity(getObject().getId());
+            Activity activityToReject = storage.getActivity(getObject().getLitObject().getId());
             handleSendingsIntern(new ArrayList<>() {{
                 add(activityToReject.getActor());
             }}, storage, activitySender, port);
