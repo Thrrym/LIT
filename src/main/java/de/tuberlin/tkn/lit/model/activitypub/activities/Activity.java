@@ -17,6 +17,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 @MappedSuperclass
@@ -36,6 +37,8 @@ public abstract class Activity extends ActivityPubObject {
     private LinkOrObject origin;
     @OneToOne(targetEntity = LinkOrObject.class)
     private LinkOrObject instrument;
+    @OneToOne(targetEntity = UUID.class)
+    protected UUID uuid;
 
     public Activity() {
     }
