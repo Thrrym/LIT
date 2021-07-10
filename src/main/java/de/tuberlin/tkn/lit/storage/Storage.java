@@ -1,8 +1,9 @@
 package de.tuberlin.tkn.lit.storage;
 
+import de.tuberlin.tkn.lit.constants.IActivityConstants;
 import de.tuberlin.tkn.lit.constants.ILitObjectConstants;
 import de.tuberlin.tkn.lit.constants.UriConstants;
-import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
+import de.tuberlin.tkn.lit.model.activitypub.activities.*;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
@@ -26,7 +27,7 @@ public class Storage implements IStorage {
     @Autowired
     IPersonService personService;
 
-    //# LitObjects
+    //# LITOBJECTS
     @Autowired
     IAuthorService authorService;
     @Autowired
@@ -49,6 +50,30 @@ public class Storage implements IStorage {
     IOutboxService outboxService;
     @Autowired
     IActivityPubCollectionService activityPubCollectionService;
+
+    //# ACTIVITIES
+    @Autowired
+    private IAcceptService acceptService;
+    @Autowired
+    private IBlockService blockService;
+    @Autowired
+    private ICreateService createService;
+    @Autowired
+    private IDeleteService deleteService;
+    @Autowired
+    private IDislikeService dislikeService;
+    @Autowired
+    private IFollowService followService;
+    @Autowired
+    private IIgnoreService ignoreService;
+    @Autowired
+    private ILikeService likeService;
+    @Autowired
+    private IRejectService rejectService;
+    @Autowired
+    private IUndoService undoService;
+    @Autowired
+    private IUpdateService updateService;
 
     private final Map<String, OrderedCollection> outboxes = new HashMap<>();
     private final Map<String, OrderedCollection> inboxes = new HashMap<>();
@@ -440,17 +465,98 @@ public class Storage implements IStorage {
     //# TODO ACTIVITY
     @Override
     public Activity getActivity(UUID id) {
-        return activities.get(id);
+
+        List<Accept> accept = (List<Accept>) acceptService.getRepository().findAll();
+        boolean a = accept.stream().map(Accept::getId).anyMatch(s -> s.substring(s.lastIndexOf("/") + 1).equals(id.toString()));
+        if(a){
+            return accept.stream().filter(s -> s.getId().contains(id.toString())).collect(Collectors.toList()).get(0);
+        }
+        List<Block> block = (List<Block>) blockService.getRepository().findAll();
+        boolean b = block.stream().map(Block::getId).anyMatch(s -> s.substring(s.lastIndexOf("/") + 1).equals(id.toString()));
+        if(b){
+            return block.stream().filter(s -> s.getId().contains(id.toString())).collect(Collectors.toList()).get(0);
+        }
+        List<Create> create = (List<Create>) createService.getRepository().findAll();
+        boolean c = create.stream().map(Create::getId).anyMatch(s -> s.substring(s.lastIndexOf("/") + 1).equals(id.toString()));
+        if(c){
+            return create.stream().filter(s -> s.getId().contains(id.toString())).collect(Collectors.toList()).get(0);
+        }
+        return null;
     }
 
     @Override
     public Activity createActivity(String actorName, Activity activity) {
         UUID uuid = UUID.randomUUID();
         String id = UriUtilities.generateId(new String[]{actorName}, serverPort, uuid);
-        activity.setId(id);
-        activities.put(uuid, activity);
 
-        return activities.get(uuid);
+        String type = activity.getType();
+        if (type.equals(IActivityConstants.ACCEPT)) {
+            Accept accept = new Accept(activity);
+            IAcceptRepository repo = acceptService.getRepository();
+            repo.save(accept);
+            return accept;
+        }
+        if (type.equals(IActivityConstants.BLOCK)) {
+            Block block = new Block(activity);
+            IBlockRepository repo = blockService.getRepository();
+            repo.save(block);
+            return block;
+        }
+        if (type.equals(IActivityConstants.CREATE)) {
+            Create create = new Create(activity);
+            ICreateRepository repo = createService.getRepository();
+            repo.save(create);
+            return create;
+        }
+        if (type.equals(IActivityConstants.DELETE)) {
+            Delete delete = new Delete(activity);
+            IDeleteRepository repo = deleteService.getRepository();
+            repo.save(delete);
+            return delete;
+        }
+        if (type.equals(IActivityConstants.DISLIKE)) {
+            Dislike dislike = new Dislike(activity);
+            IDislikeRepository repo = dislikeService.getRepository();
+            repo.save(dislike);
+            return dislike;
+        }
+        if (type.equals(IActivityConstants.FOLLOW)) {
+            Follow follow = new Follow(activity);
+            IFollowRepository repo = followService.getRepository();
+            repo.save(follow);
+            return follow;
+        }
+        if (type.equals(IActivityConstants.IGNORE)) {
+            Ignore ignore = new Ignore(activity);
+            IIgnoreRepository repo = ignoreService.getRepository();
+            repo.save(ignore);
+            return ignore;
+        }
+        if (type.equals(IActivityConstants.LIKE)) {
+            Like like = new Like(activity);
+            ILikeRepository repo = likeService.getRepository();
+            repo.save(like);
+            return like;
+        }
+        if (type.equals(IActivityConstants.REJECT)) {
+            Reject reject = new Reject(activity);
+            IRejectRepository repo = rejectService.getRepository();
+            repo.save(reject);
+            return reject;
+        }
+        if (type.equals(IActivityConstants.UNDO)) {
+            Undo undo = new Undo(activity);
+            IUndoRepository repo = undoService.getRepository();
+            repo.save(undo);
+            return undo;
+        }
+        if (type.equals(IActivityConstants.UPDATE)) {
+            Update update = new Update(activity);
+            IUpdateRepository repo = updateService.getRepository();
+            repo.save(update);
+            return update;
+        }
+        return null;
     }
 
     //# TODO LIKED
