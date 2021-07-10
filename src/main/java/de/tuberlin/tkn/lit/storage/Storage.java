@@ -38,6 +38,16 @@ public class Storage implements IStorage {
     @Autowired
     IPaperService paperService;
     @Autowired
+    ILikedService likedService;
+    @Autowired
+    IFollowingService followingService;
+    @Autowired
+    IFollowedService followedService;
+    @Autowired
+    IInboxService iInboxService;
+    @Autowired
+    IOutboxService iOutboxService;
+    @Autowired
     IActivityPubCollectionService activityPubCollectionService;
 
     private final Map<String, OrderedCollection> outboxes = new HashMap<>();
