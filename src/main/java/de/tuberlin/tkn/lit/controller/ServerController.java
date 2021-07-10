@@ -69,6 +69,14 @@ public class ServerController {
         else if(activity instanceof Delete) {
             activity.handle(activity.getActor().getId(), storage, serverPort);
         }
+        else if(activity instanceof Offer) {
+            Offer offer = (Offer) activity;
+
+            if (storage.getObject(offer.getObject().getId()) == null) return;
+
+            storage.createObject(offer.getId(), offer);
+            storage.addToRelevantObjects(actorname, new LinkOrObject(offer));
+        }
         // TODO: notify client
     }
 
