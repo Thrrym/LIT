@@ -1,7 +1,6 @@
 package de.tuberlin.tkn.lit.model.activitypub.objects;
 
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
-import de.tuberlin.tkn.lit.model.lit.BibTeXArticle;
 
 public class Tombstone extends ActivityPubObject {
     private static final String type = "Tombstone";
