@@ -6,9 +6,11 @@ import de.tuberlin.tkn.lit.service.IRejectService;
 import de.tuberlin.tkn.lit.storage.IPersonRepository;
 import de.tuberlin.tkn.lit.storage.IRejectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class XRejectService implements IRejectService {
 
     @Override
