@@ -20,7 +20,7 @@ export default {
         name: "orcid",
         label: "ORCiD",
         content: "",
-        required: false,
+        required: true,
       }
     ],
   }
