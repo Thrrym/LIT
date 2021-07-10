@@ -58,7 +58,7 @@ export default {
 
       // Get the current user and URL of backend.
       const backendUrl = this.$store.state.backendUrl;
-      const currentUser = this.$store.state.currentUser;
+      const currentUser = this.$store.getters.getUser;
 
       // Prepare content of the http request. Removes unused properties.
       var json = this.prepareLikeJson(
@@ -84,6 +84,7 @@ export default {
         "Content-Type",
         "application/json;charset=UTF-8"
       );
+      httpRequest.setRequestHeader("Authorization", this.$store.getters.getToken);
 
       httpRequest.onreadystatechange = function () {
         // How to react on change of the HTTP request.
