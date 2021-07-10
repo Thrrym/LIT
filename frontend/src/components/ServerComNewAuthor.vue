@@ -34,7 +34,7 @@ export default {
 
       // Maintain reference to this component with `this` via a new reference.
       // Reason: Within httpRequest.onreadystatechange the reference changes to httpRequest.
-      var component = this;
+      const component = this;
 
       // Create the HTTP Request. Uses xmlhttprequest npm package.
       var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
@@ -88,7 +88,7 @@ export default {
     callbackError: function () {
       // Function triggered by the onreadystatechange from the HTTP request.
       // Emits error to parent component back upstream.
-      this.$emit("requestResponse", "error");
+      this.$emit("requestError", this.requestResponse);
     },
     prepareNewEntry: function (uncleanNewEntry) {
       // Prepare the JSON Object to POST new entry to backend.

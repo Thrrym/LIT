@@ -72,7 +72,13 @@
       </b-container>
     </b-modal>
 
-    <ServerComNewAuthor ref="com"></ServerComNewAuthor>
+    <b-modal ref="successModal" v-if="getNewAuthorSuccess"> Success </b-modal>
+
+    <ServerComNewAuthor
+      ref="com"
+      v-on:requestResponse="handleRequestResponse"
+      v-on:requestError="handleRequestError"
+    ></ServerComNewAuthor>
   </div>
 </template>
 
@@ -91,6 +97,8 @@ export default {
       formContent: newAuthorFormContent.allTypes.author,
       showOptionalFields: "",
       newAuthor: "",
+      responseText: "",
+      success: false,
     };
   },
 
@@ -122,6 +130,15 @@ export default {
     resetOptionalFieldsButton: function () {
       this.showOptionalFields = false;
     },
+    handleRequestResponse: function (response) {
+      this.responseText = JSON.parse(response.responseText);
+      this.$refs["modal-1"].hide();
+      this.success = true;
+      this.$refs.successModal.show();
+    },
+    handleRequestError: function () {
+      this.responseText = "error";
+    },
   },
   computed: {
     getModalTitle: function () {
@@ -143,6 +160,9 @@ export default {
       // Are there any optional fields -> Show the button indicating optional fields and make them available.
       if (this.getOptionalFields.length === 0) return false;
       else return true;
+    },
+    getNewAuthorSuccess: function () {
+      return this.success;
     },
   },
 };
