@@ -74,10 +74,12 @@ public class FederationClient implements IFederationClient{
 	}
 
 	/**
-    *  (Helper) Send method so we can timeout the request
-    * @param  activity the activity to be send
-	* @param  url the receiver of the activity
-	* @return the status code returned by the request
+    *  (Helper) Send method so we can timeout the requests
+    * @param  url The url to request.
+	* @param  body The body (null if none) of the request
+	* @param  returnType The expected return type.
+	* @param  requestType The Type of the http request (currently supports "GET", "POST").
+	* @return The returned data of the expected type. Is null if something went wrong.
     */
 	public <T> T sendWithTimeout(String url, Object body, Class<T> returnType, String requestType) {
 		
@@ -224,7 +226,7 @@ public class FederationClient implements IFederationClient{
 
 	/**
     *  Allows to request which hosts are members of the federation.
-    * @param  baseUrl The base url of a known member.
+    * @param  url The base url of a known member.
 	* @return List of members in federation.
     */
 	private List<String> getFederationMembers(String url) {
