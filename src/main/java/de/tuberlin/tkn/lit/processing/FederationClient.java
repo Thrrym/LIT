@@ -17,6 +17,9 @@ import de.tuberlin.tkn.lit.storage.IStorage;
 import de.tuberlin.tkn.lit.controller.ServerController;
 import de.tuberlin.tkn.lit.constants.UriConstants;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,10 +56,10 @@ public class FederationClient implements IFederationClient{
 			String url = sendTo.getLink() + "/inbox"; // link is guranteed
 
 			// send post request
-			int statusCode = sendWithTimeout(activity, url);
+			String res = sendWithTimeout(url, activity, String.class, "POST");
 
 			// check if request was successful
-    		if (200 >= statusCode && statusCode < 300) {
+    		if (res != null) {
 				return true;
 			}
 
@@ -69,7 +72,6 @@ public class FederationClient implements IFederationClient{
 			return false;
 		});
 	}
-		
 
 	/**
     *  (Helper) Send method so we can timeout the request
@@ -77,7 +79,7 @@ public class FederationClient implements IFederationClient{
 	* @param  url the receiver of the activity
 	* @return the status code returned by the request
     */
-	public int sendWithTimeout(Activity activity, String url) {
+	public <T> T sendWithTimeout(String url, Object body, Class<T> returnType, String requestType) {
 		
 		result = new ResponseEntity("Timeout", HttpStatus.BAD_REQUEST);
 		RestTemplate restTemplate = new RestTemplate();
@@ -86,8 +88,15 @@ public class FederationClient implements IFederationClient{
 		Thread sendThread = new Thread() {
 			public void run() {
 				try {
-					// TODO : does the default have a timeout of it's own (60)
-					result = restTemplate.postForEntity(url, activity, String.class);
+					switch(requestType) {
+						case "GET":
+							result = restTemplate.getForEntity(url, String.class);
+							break;
+
+						case "POST":
+							result = restTemplate.postForEntity(url, body, String.class);
+							break;
+					}
 				} catch(Exception e) {
 
 				}
@@ -101,7 +110,18 @@ public class FederationClient implements IFederationClient{
 		} catch(InterruptedException e) {}
 		sendThread = null;
 
-		return result.getStatusCodeValue();
+		if (result.getStatusCodeValue() < 200 || result.getStatusCodeValue() >= 300) {
+			return null;
+		}
+
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			T res = mapper.readValue(result.getBody(), returnType);
+			return res;
+		} 
+		catch (JsonProcessingException e) {
+			return null;
+		}
 	}
 
 
@@ -164,9 +184,6 @@ public class FederationClient implements IFederationClient{
                 continue;
             }
 
-			// TODO : if this server holds pending activities for others, send them 
-            // (makes sense when there is persistent storage)
-
 			// get the staging activities, ignore their known servers
     	    String url = this.protocol + host;
 			List<Activity> morePendingActivities = joinFederation(url); // TODO : timeouts ?!
@@ -197,18 +214,11 @@ public class FederationClient implements IFederationClient{
 			// List<Activity> pending = storage.getPendingActivities(baseUrl);
 
 			// send post request
-            ResponseEntity<Activity[]> result;
-            try {
-                RestTemplate restTemplate = new RestTemplate();
-    		    result = restTemplate.postForEntity(url, UriConstants.HOST + serverPort, Activity[].class);
-            }
-            catch(HttpClientErrorException e) {
-                return new ArrayList<Activity>();
-            }
+    		Activity[] result = sendWithTimeout(url, UriConstants.HOST + serverPort, Activity[].class, "POST");
 
 			// check if request was successful
-    		if (200 >= result.getStatusCodeValue() && result.getStatusCodeValue() < 300) {
-                return Arrays.asList(result.getBody());
+    		if (result != null) {
+                return Arrays.asList(result);
 			}
 
 			return new ArrayList<Activity>();
@@ -220,14 +230,11 @@ public class FederationClient implements IFederationClient{
 	* @return List of members in federation.
     */
 	private List<String> getFederationMembers(String url) {
-		
 		url += "/federation-members";
 
-		// send get request
-    	RestTemplate restTemplate = new RestTemplate();
-		
-    	ResponseEntity<String[]> result = restTemplate.getForEntity(url, String[].class);
-		return Arrays.asList(result.getBody());
+		// send get request		
+    	String[] result = sendWithTimeout(url, null, String[].class, "GET");
+		return Arrays.asList(result);
 	}
 
 }

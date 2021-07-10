@@ -46,6 +46,7 @@ public class ServerController {
     */
     @RequestMapping(value = "/{actorname}/inbox", method = RequestMethod.POST)
     public void postInbox(@PathVariable("actorname") String actorname, @RequestBody Activity activity) {
+        System.out.print("post inbox " + activity.getActor().getLink());
         handleActivity(actorname, activity);
     }
 
