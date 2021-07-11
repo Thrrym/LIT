@@ -71,6 +71,7 @@ export default {
             // Trigger event.
             component.callbackResponse();
           } else {
+            component.requestResponse = httpRequest;
             component.callbackError();
           }
         }
