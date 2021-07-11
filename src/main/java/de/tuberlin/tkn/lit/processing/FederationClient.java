@@ -188,6 +188,9 @@ public class FederationClient implements IFederationClient{
     	    String url = this.protocol + host;
 			List<Activity> morePendingActivities = joinFederation(url);
 			pendingActivities.addAll(morePendingActivities);
+			
+			// as a side effect this stores the member
+			storage.getPendingActivities(url);
     	}
 
 		// process the pending activities
