@@ -36,6 +36,7 @@ export default {
         label: "Volume",
         content: "",
         required: false,
+        inputVerify: "number",
       },
     ],
     book: [
