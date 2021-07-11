@@ -3,57 +3,33 @@
 </template>
 
 <script>
-import { prepareNewEntry, prepareNewEntryJson } from "@/js_files/serverCom.js";
-
 export default {
-  name: "ServerCom",
+  name: "ServerComGetAuthors",
 
   data() {
     return {
       requestResponse: "",
-      jsonPayLoad: "",
-      newEntry: "",
-      selectedType: "",
-      cc: "",
     };
   },
 
-  props: {},
-
   methods: {
-    triggerServerCom: function (newEntry, selectedType, cc) {
-      this.newEntry = newEntry;
-      this.selectedType = selectedType;
-      this.cc = cc;
-      // Get the current user and URL of backend.
-      const backendUrl = this.getBackendUrl;
-      const currentUser = this.getCurrentUser;
-
-      // Prepare content of the http request. Removes unused properties.
-      console.log("ServerCom");
-      console.log(newEntry);
-      var cleanNewEntry = prepareNewEntry(selectedType, newEntry);
-      this.jsonPayLoad = prepareNewEntryJson(
-        cleanNewEntry,
-        backendUrl,
-        currentUser,
-        cc
-      );
+    triggerGetAuthors: function () {
+      // Get the current user.
+      // const currentUser = this.$store.getters.getUser;
 
       // Maintain reference to this component with `this` via a new reference.
       // Reason: Within httpRequest.onreadystatechange the reference changes to httpRequest.
-      var component = this;
+      const component = this;
 
       // Create the HTTP Request. Uses xmlhttprequest npm package.
-      var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-      var httpRequest = new XMLHttpRequest();
+      const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+      let httpRequest = new XMLHttpRequest();
 
       // Set the HTTP Method. HTTP Request send via Proxy to backend server.
-      let method = "POST";
-      var apiUrl = this.$store.state.proxyBackendUrl + currentUser + "outbox";
+      const method = "GET";
+      const apiUrl = this.$store.state.proxyBackendUrl + "authors/";
 
       httpRequest.open(method, apiUrl, true);
-      //httpRequest.timeout = 4000;
       httpRequest.setRequestHeader(
         "Content-Type",
         "application/json;charset=UTF-8"
@@ -76,13 +52,7 @@ export default {
           }
         }
       };
-
-      httpRequest.onerror = function () {
-        console.log("HTTP onerror");
-      };
-
-      //console.log(this.jsonPayLoad);
-      httpRequest.send(JSON.stringify(this.jsonPayLoad)); // Send the HTTP request with the JSON as payload.
+      httpRequest.send(); // Send the HTTP request with no payload.
     },
 
     callbackResponse: function () {
@@ -94,15 +64,7 @@ export default {
     callbackError: function () {
       // Function triggered by the onreadystatechange from the HTTP request.
       // Emits error to parent component back upstream.
-      this.$emit("requestResponse", "error");
-    },
-  },
-  computed: {
-    getCurrentUser: function () {
-      return this.$store.getters.getUser;
-    },
-    getBackendUrl: function () {
-      return this.$store.state.backendUrl;
+      this.$emit("requestError");
     },
   },
 };

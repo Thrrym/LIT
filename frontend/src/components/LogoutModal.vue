@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal ref="logout-modal" v-bind:title="getModalTitle" hide-footer="true">
+    <b-modal ref="logout-modal" v-bind:title="getModalTitle" hide-footer>
       <!-- <component-to-re-render :key="componentKey"/> -->
       Hello {{ username }}, you are now logged out.
     <button v-on:click="refreshPage">

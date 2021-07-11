@@ -89,6 +89,9 @@
     </div>
     <UpdateModal ref="updateModal"></UpdateModal>
 
+    <b-button v-on:click="showAuthorModal">New Author</b-button>
+    <NewAuthorModal ref="authorModal"></NewAuthorModal>
+
   </div>
 </template>
 
@@ -98,6 +101,7 @@ import ServerComGetObject from "@/components/ServerComGetObject.vue";
 import ServerComLikePost from "@/components/ServerComLikePost.vue";
 import ServerComGetUserObjects from "@/components/ServerComGetUserObjects.vue";
 import ServerComGetUserRelevantObjects from "@/components/ServerComGetUserRelevantObjects.vue";
+import NewAuthorModal from "@/components/NewAuthorModal";
 import UpdateModal from "@/components/UpdateModal";
 
 export default {
@@ -118,6 +122,7 @@ export default {
     ServerComLikePost,
     ServerComGetUserObjects,
     ServerComGetUserRelevantObjects,
+    NewAuthorModal,
   },
 
   methods: {
@@ -162,6 +167,9 @@ export default {
     },
     editObject: function (objectId) {
       this.$refs.updateModal.showUpdateModal(objectId);
+    },
+    showAuthorModal: function () {
+      this.$refs.authorModal.showNewAuthorModal();
     },
   },
 

@@ -18,9 +18,24 @@
             label-cols-sm="3"
             label-align-sm="right"
           >
+            <b-form-checkbox v-if="isNotTextInput(field)" v-model="field.content"
+                             v-bind:required="field.required" value="true" unchecked-value="false">
+            </b-form-checkbox>
+
+            <div v-if="isAuthor(field)" >
+            <b-input-group v-on:input="field.content = selectedAuthors">
+              <b-form-select v-bind:options="authorOptions" v-model="selectedAuthors[0]"></b-form-select>
+              <b-button v-on:click="addNewAuthor">Create new author</b-button>
+<!--              <b-button v-on:click="getAuthorOptions">Get the authors</b-button>-->
+              <b-button v-on:click="setAdditionalAuthors">+</b-button>
+            </b-input-group>
+            <b-form-select v-for="index in additionalAuthors" v-bind:key="index" v-bind:options="authorOptions" v-model="selectedAuthors[index]"></b-form-select>
+            </div>
             <b-form-input
+                v-else
               v-model="field.content"
               v-bind:required="field.required"
+                v-bind:type="getFieldTypeToVerify(field)"
             ></b-form-input>
           </b-form-group>
         </b-form-group>
@@ -50,10 +65,19 @@
             label-cols-sm="3"
             label-align-sm="right"
           >
+            <b-form-checkbox v-if="isNotTextInput(field)" v-model="field.content"
+                             v-bind:required="field.required" value="true" unchecked-value="false">
+            </b-form-checkbox>
             <b-form-input
+                v-else
+                v-model="field.content"
+                v-bind:required="field.required"
+                v-bind:type="getFieldTypeToVerify(field)"
+            ></b-form-input>
+<!--            <b-form-input
               v-model="field.content"
               v-bind:required="field.required"
-            ></b-form-input>
+            ></b-form-input>-->
           </b-form-group>
         </b-form-group>
       </b-card>
@@ -99,12 +123,21 @@
       </b-button>
     </b-form>
     </b-container>
+
+    <NewAuthorModal ref="NewAuthorModal" v-on:newAuthorSuccess="getAuthorOptions"></NewAuthorModal>
+    <GetAuthors ref="GetAuthors" v-on:getAuthorsSuccess="setAuthorOptions"></GetAuthors>
   </div>
 </template>
 
 <script>
+import NewAuthorModal from "@/components/NewAuthorModal";
+import GetAuthors from "@/components/GetAuthors";
 export default {
   name: "NewEntryForm",
+  components: {
+    NewAuthorModal,
+    GetAuthors,
+  },
 
   props: {
     formContent: {
@@ -133,6 +166,9 @@ export default {
       showOptionalFields: false,
       showCcField: false,
       ccContent: "",
+      authorOptions: [],
+      selectedAuthors: [],
+      additionalAuthors: 0,
     };
   },
 
@@ -149,6 +185,12 @@ export default {
         if (elem.required === false) return true;
       });
     },
+    getFilteredAuthorOptions: function () {
+      const component = this;
+      return this.authorOptions.filter(function (elem) {
+        if (!component.selectedAuthors.includes(elem.value)) return true;
+      });
+    },
     showOptionalFieldsButton: function () {
       // Are there any optional fields -> Show the button indicating optional fields and make them available.
       if (this.getOptionalFields.length === 0) return false;
@@ -156,7 +198,7 @@ export default {
     },
     isNotUpdate: function () {
       return !this.update
-    }
+    },
   },
 
   methods: {
@@ -180,6 +222,42 @@ export default {
     setShowCcField: function () {
       this.showCcField = !this.showCcField;
     },
+    isNotTextInput: function (field) {
+      if (!Object.prototype.hasOwnProperty.call(field, "inputType")) {
+        return false;
+      } else if (field.inputType === "checkbox") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    isAuthor: function (field) {
+      return field.name === "authors";
+    },
+    addNewAuthor: function () {
+      this.$refs.NewAuthorModal.showNewAuthorModal();
+    },
+    getFieldTypeToVerify: function (field) {
+      if (Object.prototype.hasOwnProperty.call(field, "inputVerify")) {
+        return field["inputVerify"];
+      } else {
+        return "text";
+      }
+    },
+    getAuthorOptions: function () {
+      this.$refs.GetAuthors.triggerGetAuthors();
+    },
+    setAuthorOptions: function (authorOptions) {
+      this.authorOptions = authorOptions;
+    },
+    setAdditionalAuthors: function () {
+      this.getAuthorOptions();
+      this.additionalAuthors += 1;
+}
+  },
+  mounted: function() {
+    // On loading of the form, get the existing authors from the server.
+    this.getAuthorOptions();
   },
 };
 </script>

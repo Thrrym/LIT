@@ -3,46 +3,38 @@
 </template>
 
 <script>
-import { prepareNewEntry, prepareNewEntryJson } from "@/js_files/serverCom.js";
-
 export default {
-  name: "ServerCom",
+  name: "ServerComNewAuthor",
 
   data() {
     return {
       requestResponse: "",
       jsonPayLoad: "",
       newEntry: "",
-      selectedType: "",
-      cc: "",
     };
   },
 
   props: {},
 
   methods: {
-    triggerServerCom: function (newEntry, selectedType, cc) {
+    triggerServerComNewAuthor: function (newEntry) {
       this.newEntry = newEntry;
-      this.selectedType = selectedType;
-      this.cc = cc;
+
       // Get the current user and URL of backend.
       const backendUrl = this.getBackendUrl;
       const currentUser = this.getCurrentUser;
 
       // Prepare content of the http request. Removes unused properties.
-      console.log("ServerCom");
-      console.log(newEntry);
-      var cleanNewEntry = prepareNewEntry(selectedType, newEntry);
-      this.jsonPayLoad = prepareNewEntryJson(
+      let cleanNewEntry = this.prepareNewEntry(this.newEntry);
+      this.jsonPayLoad = this.prepareNewEntryJson(
         cleanNewEntry,
         backendUrl,
         currentUser,
-        cc
       );
 
       // Maintain reference to this component with `this` via a new reference.
       // Reason: Within httpRequest.onreadystatechange the reference changes to httpRequest.
-      var component = this;
+      const component = this;
 
       // Create the HTTP Request. Uses xmlhttprequest npm package.
       var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
@@ -58,7 +50,10 @@ export default {
         "Content-Type",
         "application/json;charset=UTF-8"
       );
-      httpRequest.setRequestHeader("Authorization", this.$store.getters.getToken);
+      httpRequest.setRequestHeader(
+        "Authorization",
+        this.$store.getters.getToken
+      );
 
       httpRequest.onreadystatechange = function () {
         // How to react on change of the HTTP request.
@@ -94,7 +89,47 @@ export default {
     callbackError: function () {
       // Function triggered by the onreadystatechange from the HTTP request.
       // Emits error to parent component back upstream.
-      this.$emit("requestResponse", "error");
+      this.$emit("requestError", this.requestResponse);
+    },
+    prepareNewEntry: function (uncleanNewEntry) {
+      // Prepare the JSON Object to POST new entry to backend.
+      // 1. Remove unused properties.
+      let simplifiedObject = new Object();
+      console.log(uncleanNewEntry);
+      for (let index = 0; index < uncleanNewEntry.length; index++) {
+        const element = uncleanNewEntry[index];
+        simplifiedObject[element.name] = element.content;
+      }
+      return simplifiedObject;
+    },
+    prepareNewEntryJson: function (simplifiedObject, backendUrl, currentUser) {
+      // 1. Construct JSON object containing the info of the new entry.
+      let url = backendUrl + currentUser + "outbox/";
+      var jsonLitObject = {
+        id: url + "article/" + "1/",
+        attributedTo: backendUrl + currentUser,
+      };
+      for (let property in simplifiedObject) {
+        jsonLitObject[property] = simplifiedObject[property];
+      }
+      jsonLitObject["type"] = "Author";
+
+      // 2. Construct the main JSON. Contains as object the new entry to lit.
+      var jsonMainObject = {
+        "@context": "https://www.w3.org/ns/activitystreams/",
+        type: "Create",
+        id: url + "1/",
+        actor: backendUrl + currentUser,
+        published: this.getCurrentTime(),
+        cc: "",
+        object: jsonLitObject,
+      };
+      return jsonMainObject;
+    },
+    getCurrentTime: function () {
+      // Return current time in standard ISO format.
+      let d = new Date();
+      return d.toISOString();
     },
   },
   computed: {
