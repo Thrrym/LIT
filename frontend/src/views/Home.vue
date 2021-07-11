@@ -42,7 +42,7 @@
               {{ entry.likes }}
             </b-button>
             <b-button href="#" variant="primary-outline">
-              <b-icon icon="pencil-square"></b-icon>
+              <b-icon icon="pencil-square" v-on:click="editObject(entry.id)"></b-icon>
             </b-button>
             <b-button href="#" variant="primary-outline">
               <b-icon icon="chevron-double-up" v-on:click="showModal(entry)"></b-icon>
@@ -103,6 +103,10 @@
         v-on:requestResponse="setRequestResponseLike"
     ></ServerComLikePost>
     <HomeModal ref="modal"></HomeModal>
+    <UpdateModal ref="updateModal"></UpdateModal>
+    <UpdateForm></UpdateForm>
+
+
   </div>
 </template>
 <script>
@@ -111,7 +115,8 @@ import ServerComGetUserObjects from "@/components/ServerComGetUserObjects.vue";
 import ServerComGetUserRelevantObjects from "@/components/ServerComGetUserRelevantObjects.vue";
 import ServerComLikePost from "@/components/ServerComLikePost.vue";
 import HomeModal from "@/components/HomeModal";
-
+import UpdateModal from "@/components/UpdateModal";
+import UpdateForm from "@/components/UpdateForm";
 
 export default {
   name: "home",
@@ -129,6 +134,8 @@ export default {
     ServerComGetUserRelevantObjects,
     ServerComLikePost,
     HomeModal,
+    UpdateForm,
+    UpdateModal,
   },
   methods: {
     setRequestResponse: function (response) {
@@ -177,6 +184,9 @@ export default {
     },
     showModal: function (entry) {
       this.$refs.modal.showHomeModal(entry);
+    },
+    editObject: function (objectId) {
+      this.$refs.updateModal.showUpdateModal(objectId);
     },
   },
   computed: {
