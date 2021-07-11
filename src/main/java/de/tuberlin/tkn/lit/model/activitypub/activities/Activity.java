@@ -65,6 +65,7 @@ public abstract class Activity extends ActivityPubObject {
             handleSendingsIntern(new ArrayList<>() {{
                 add(activityToRespond.getActor());
             }}, storage, activitySender, port);
+            return;
         }
 
         handleSendingsIntern(getTo(), storage, activitySender, port);

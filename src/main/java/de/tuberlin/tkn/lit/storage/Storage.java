@@ -68,7 +68,7 @@ public class Storage implements IStorage {
 
         List<LinkOrObject> inboxItems = orderedCollection.getOrderedItems();
 
-        return new OrderedCollection(inboxItems.stream().filter(item -> item.getLitObject().getType() == "Offer").collect(Collectors.toList()));
+        return new OrderedCollection(inboxItems.stream().filter(item -> item.getLitObject().getType().equals("Offer")).collect(Collectors.toList()));
     }
 
     @Override
