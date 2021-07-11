@@ -3,9 +3,9 @@ export default {
     bibtex_article: [
       {
         id: 0,
-        name: "author",
+        name: "authors",
         label: "Author",
-        content: [],
+        content: "",
         required: true,
       },
       {
@@ -28,6 +28,7 @@ export default {
         label: "Year",
         content: "",
         required: true,
+        inputVerify: "number",
       },
       {
         id: 4,
