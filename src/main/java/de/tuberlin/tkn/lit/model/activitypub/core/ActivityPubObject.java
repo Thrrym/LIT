@@ -4,43 +4,43 @@ import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.tuberlin.tkn.lit.jsonutilities.deserializer.ArrayDeserializer;
-import de.tuberlin.tkn.lit.model.activitypub.activities.*;
-import de.tuberlin.tkn.lit.model.activitypub.actors.*;
-import de.tuberlin.tkn.lit.model.lit.Author;
-import de.tuberlin.tkn.lit.model.lit.BibTeXArticle;
-import de.tuberlin.tkn.lit.model.activitypub.objects.*;
 import de.tuberlin.tkn.lit.jsonutilities.serializer.ArraySerializer;
 import de.tuberlin.tkn.lit.jsonutilities.serializer.LinkOrObjectSerializer;
+import de.tuberlin.tkn.lit.model.activitypub.activities.*;
+import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
+import de.tuberlin.tkn.lit.model.activitypub.objects.Note;
+import de.tuberlin.tkn.lit.model.activitypub.objects.Tombstone;
+import de.tuberlin.tkn.lit.model.lit.Author;
+import de.tuberlin.tkn.lit.model.lit.BibTeXArticle;
+import de.tuberlin.tkn.lit.model.lit.Book;
+import de.tuberlin.tkn.lit.model.lit.Paper;
 
 import java.util.List;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY,
         property = "type", visible = true)
 @JsonSubTypes(value = {
+        @JsonSubTypes.Type(value = Accept.class, name = "Accept"),
+        @JsonSubTypes.Type(value = Create.class, name = "Create"),
+        @JsonSubTypes.Type(value = Delete.class, name = "Delete"),
+        @JsonSubTypes.Type(value = Follow.class, name = "Follow"),
+        @JsonSubTypes.Type(value = Like.class, name = "Like"),
+        @JsonSubTypes.Type(value = Offer.class, name = "Offer"),
+        @JsonSubTypes.Type(value = Reject.class, name = "Reject"),
+        @JsonSubTypes.Type(value = Update.class, name = "Update"),
+
+        @JsonSubTypes.Type(value = Person.class, name = "Person"),
+
         @JsonSubTypes.Type(value = ActivityPubCollection.class, name = "Collection"),
         @JsonSubTypes.Type(value = OrderedCollection.class, name = "OrderedCollection"),
-
-        @JsonSubTypes.Type(value = Author.class, name = "Author"),
-        @JsonSubTypes.Type(value = BibTeXArticle.class, name = "bibtex_article"),
 
         @JsonSubTypes.Type(value = Note.class, name = "Note"),
         @JsonSubTypes.Type(value = Tombstone.class, name = "Tombstone"),
 
-        @JsonSubTypes.Type(value = Actor.class, name = "Actor"),
-        @JsonSubTypes.Type(value = Person.class, name = "Person"),
-
-        @JsonSubTypes.Type(value = Activity.class, name = "Activity"),
-        @JsonSubTypes.Type(value = Accept.class, name = "Accept"),
-        @JsonSubTypes.Type(value = Block.class, name = "Block"),
-        @JsonSubTypes.Type(value = Create.class, name = "Create"),
-        @JsonSubTypes.Type(value = Delete.class, name = "Delete"),
-        @JsonSubTypes.Type(value = Dislike.class, name = "Dislike"),
-        @JsonSubTypes.Type(value = Follow.class, name = "Follow"),
-        @JsonSubTypes.Type(value = Like.class, name = "Like"),
-        @JsonSubTypes.Type(value = Reject.class, name = "Reject"),
-        @JsonSubTypes.Type(value = Undo.class, name = "Undo"),
-        @JsonSubTypes.Type(value = Update.class, name = "Update"),
-        @JsonSubTypes.Type(value = Offer.class, name = "Offer"),
+        @JsonSubTypes.Type(value = Author.class, name = "Author"),
+        @JsonSubTypes.Type(value = BibTeXArticle.class, name = "bibtex_article"),
+        @JsonSubTypes.Type(value = Book.class, name = "Book"),
+        @JsonSubTypes.Type(value = Paper.class, name = "Paper")
 })
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class ActivityPubObject {
@@ -107,14 +107,14 @@ public abstract class ActivityPubObject {
         return attributedTo;
     }
 
+    public void setAttributedTo(List<LinkOrObject> attributedTo) {
+        this.attributedTo = attributedTo;
+    }
+
     @JsonGetter("attributedTo")
     public List<JsonNode> toJSONAttributedTo() throws JsonProcessingException {
         if (attributedTo == null) return null;
         return ArraySerializer.serialize(attributedTo);
-    }
-
-    public void setAttributedTo(List<LinkOrObject> attributedTo) {
-        this.attributedTo = attributedTo;
     }
 
     @JsonSetter("attributedTo")
@@ -122,22 +122,6 @@ public abstract class ActivityPubObject {
         attributedTo = ArrayDeserializer.deserialize(s);
     }
 
-    /*public OrderedCollection getLikes() {
-        return likes;
-    }
-
-    public void setLikes(OrderedCollection likes) {
-        this.likes = likes;
-    }
-
-    public int getLike() {
-        return like;
-    }
-
-    public void setLike(int like) {
-        this.like = like;
-    }
-*/
     public List<LinkOrObject> getAudience() {
         return audience;
     }
@@ -292,12 +276,6 @@ public abstract class ActivityPubObject {
         return to;
     }
 
-    @JsonGetter("to")
-    public List<JsonNode> toJSONTo() throws JsonProcessingException {
-        if (to == null) return null;
-        return ArraySerializer.serialize(to);
-    }
-
     public void setTo(List<LinkOrObject> to) {
         this.to = to;
     }
@@ -307,14 +285,14 @@ public abstract class ActivityPubObject {
         to = ArrayDeserializer.deserialize(s);
     }
 
-    public List<LinkOrObject> getBto() {
-        return bto;
+    @JsonGetter("to")
+    public List<JsonNode> toJSONTo() throws JsonProcessingException {
+        if (to == null) return null;
+        return ArraySerializer.serialize(to);
     }
 
-    @JsonGetter("bto")
-    public List<JsonNode> toJSONBto() throws JsonProcessingException {
-        if (bto == null) return null;
-        return ArraySerializer.serialize(bto);
+    public List<LinkOrObject> getBto() {
+        return bto;
     }
 
     public void setBto(List<LinkOrObject> bto) {
@@ -326,6 +304,12 @@ public abstract class ActivityPubObject {
         bto = ArrayDeserializer.deserialize(s);
     }
 
+    @JsonGetter("bto")
+    public List<JsonNode> toJSONBto() throws JsonProcessingException {
+        if (bto == null) return null;
+        return ArraySerializer.serialize(bto);
+    }
+
     public List<LinkOrObject> getCc() {
         return cc;
     }
@@ -334,25 +318,19 @@ public abstract class ActivityPubObject {
         this.cc = cc;
     }
 
+    @JsonSetter("cc")
+    public void setCc(JsonNode s) throws JsonProcessingException {
+        cc = ArrayDeserializer.deserialize(s);
+    }
+
     @JsonGetter("cc")
     public List<JsonNode> toJSONCc() throws JsonProcessingException {
         if (cc == null) return null;
         return ArraySerializer.serialize(cc);
     }
 
-    @JsonSetter("cc")
-    public void setCc(JsonNode s) throws JsonProcessingException {
-        cc = ArrayDeserializer.deserialize(s);
-    }
-
     public List<LinkOrObject> getBcc() {
         return bcc;
-    }
-
-    @JsonGetter("bcc")
-    public List<JsonNode> toJSONBcc() throws JsonProcessingException {
-        if (bcc == null) return null;
-        return ArraySerializer.serialize(bcc);
     }
 
     public void setBcc(List<LinkOrObject> bcc) {
@@ -362,6 +340,12 @@ public abstract class ActivityPubObject {
     @JsonSetter("bcc")
     public void setBcc(JsonNode s) throws JsonProcessingException {
         bcc = ArrayDeserializer.deserialize(s);
+    }
+
+    @JsonGetter("bcc")
+    public List<JsonNode> toJSONBcc() throws JsonProcessingException {
+        if (bcc == null) return null;
+        return ArraySerializer.serialize(bcc);
     }
 
     public String getMediaType() {
@@ -382,13 +366,14 @@ public abstract class ActivityPubObject {
 
     @JsonGetter("likes")
     public int getLikes() {
-        if(likedBy == null)
+        if (likedBy == null)
             return 0;
         return likedBy.size();
     }
 
     @JsonSetter("likes")
-    public void setLikes(int value){}
+    public void setLikes(int value) {
+    }
 
     public List<String> getLikedBy() {
         return likedBy;
