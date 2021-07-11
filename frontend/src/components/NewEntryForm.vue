@@ -22,10 +22,15 @@
                              v-bind:required="field.required" value="true" unchecked-value="false">
             </b-form-checkbox>
 
-            <b-input-group v-if="isAuthor(field)">
-              <b-form-select></b-form-select>
-              <b-button v-on:click="addNewAuthor">Add new author</b-button>
+            <div v-if="isAuthor(field)" >
+            <b-input-group v-on:input="field.content = selectedAuthors">
+              <b-form-select v-bind:options="authorOptions" v-model="selectedAuthors[0]"></b-form-select>
+              <b-button v-on:click="addNewAuthor">Create new author</b-button>
+              <b-button v-on:click="getAuthorOptions">Get the authors</b-button>
+              <b-button v-on:click="setAdditionalAuthors">+</b-button>
             </b-input-group>
+            <b-form-select v-for="index in additionalAuthors" v-bind:key="index" v-bind:options="authorOptions" v-model="selectedAuthors[index]"></b-form-select>
+            </div>
             <b-form-input
                 v-else
               v-model="field.content"
@@ -120,15 +125,18 @@
     </b-container>
 
     <NewAuthorModal ref="NewAuthorModal"></NewAuthorModal>
+    <GetAuthors ref="GetAuthors" v-on:getAuthorsSuccess="setAuthorOptions"></GetAuthors>
   </div>
 </template>
 
 <script>
 import NewAuthorModal from "@/components/NewAuthorModal";
+import GetAuthors from "@/components/GetAuthors";
 export default {
   name: "NewEntryForm",
   components: {
     NewAuthorModal,
+    GetAuthors,
   },
 
   props: {
@@ -158,6 +166,9 @@ export default {
       showOptionalFields: false,
       showCcField: false,
       ccContent: "",
+      authorOptions: [],
+      selectedAuthors: [],
+      additionalAuthors: 0,
     };
   },
 
@@ -227,6 +238,15 @@ export default {
         return "text";
       }
     },
+    getAuthorOptions: function () {
+      this.$refs.GetAuthors.triggerGetAuthors();
+    },
+    setAuthorOptions: function (authorOptions) {
+      this.authorOptions = authorOptions;
+    },
+    setAdditionalAuthors: function () {
+      this.additionalAuthors += 1;
+}
   },
 };
 </script>
