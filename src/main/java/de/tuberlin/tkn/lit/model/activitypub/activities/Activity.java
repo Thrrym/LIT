@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import de.tuberlin.tkn.lit.jsonutilities.deserializer.LinkOrObjectDeserializer;
+import de.tuberlin.tkn.lit.jsonutilities.serializer.LinkOrObjectSerializer;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.processing.IFederationClient;
@@ -13,6 +14,7 @@ import de.tuberlin.tkn.lit.jsonutilities.serializer.LinkOrObjectSerializer;
 import de.tuberlin.tkn.lit.storage.IStorage;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -52,6 +54,21 @@ public abstract class Activity extends ActivityPubObject {
     public abstract Activity handle(String actorName, IStorage storage, int port);
 
     public void handleSendings(IStorage storage, IFederationClient federationClient, int port) {
+        if (this instanceof Offer) {
+            ActivityPubObject objectToUpdate = storage.getObject(getObject().getLitObject().getId());
+            handleSendingsIntern(new ArrayList<>() {{
+                add(objectToUpdate.getGenerator());
+            }}, storage, federationClient, port);
+        }
+
+        if (this instanceof Reject || this instanceof Accept) {
+            Activity activityToRespond = storage.getActivity(getObject().getLitObject().getId());
+            handleSendingsIntern(new ArrayList<>() {{
+                add(activityToRespond.getActor());
+            }}, storage, federationClient, port);
+            return;
+        }
+
         handleSendingsIntern(getTo(), storage, federationClient, port);
         handleSendingsIntern(getCc(), storage, federationClient, port);
         handleSendingsIntern(getBto(), storage, federationClient, port);

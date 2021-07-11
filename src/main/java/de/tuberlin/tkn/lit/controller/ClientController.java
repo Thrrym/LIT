@@ -22,14 +22,13 @@ import java.util.UUID;
 @RestController
 public class ClientController {
 
-    @Value("${server.port}")
-    private int serverPort;
-
     @Autowired
     IFederationClient federationClient;
 
     @Autowired
     Storage storage;
+    @Value("${server.port}")
+    private int serverPort;
 
     @RequestMapping(value = "/{actor}", method = RequestMethod.GET)
     public Actor getActor(@PathVariable("actor") String actorName) {
@@ -53,6 +52,20 @@ public class ClientController {
         return new ResponseEntity<>(storage.getInbox(username), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{actorname}/offers", method = RequestMethod.GET)
+    public ResponseEntity<OrderedCollection> getOffers(@PathVariable("actorname") String actorname) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+
+        if (!actorname.equals(username)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        OrderedCollection offers = storage.getOffers(actorname);
+
+        return new ResponseEntity<>(offers, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{actorname}/objects", method = RequestMethod.GET)
     public OrderedCollection getObjectsCreatedByActor(@PathVariable("actorname") String actorname) {
         return storage.getObjectsCreatedByActor(actorname);
@@ -63,6 +76,11 @@ public class ClientController {
         return storage.getObjects();
     }
 
+    @RequestMapping(value = "/authors", method = RequestMethod.GET)
+    public ActivityPubCollection getAuthors() {
+        return storage.getAuthors();
+    }
+
     @RequestMapping(value = "/{actorname}/relevantobjects", method = RequestMethod.GET)
     public OrderedCollection getRelevantObjects(@PathVariable("actorname") String actorname) {
         return storage.getRelevantObjects(actorname);
@@ -70,7 +88,7 @@ public class ClientController {
 
     @RequestMapping(value = "/{actorname}/{id}", method = RequestMethod.GET)
     public Activity getActivity(@PathVariable("actorname") String actorname, @PathVariable("id") UUID id) {
-        return storage.getActivity(id);
+        return storage.getActivity(UriUtilities.generateId(new String[]{actorname}, serverPort, id));
     }
 
     @RequestMapping(value = "/{actorname}/{objecttype}/{id}", method = RequestMethod.GET)
@@ -87,14 +105,28 @@ public class ClientController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
+        activity.setActor(new LinkOrObject(storage.getActor(actorName).getId()));
+
         Activity tempActivity = activity.handle(actorName, storage, serverPort);
         if (tempActivity != null) {
-            Activity createdActivity = storage.createActivity(actorName, tempActivity);
-            storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
+            if (!tempActivity.getType().equals(activity.getType())) {
+                tempActivity.handle(actorName, storage, serverPort);
+
+                storage.addToOutbox(actorName, new LinkOrObject(activity));
+                storage.addToOutbox(actorName, new LinkOrObject(tempActivity));
+
+                activity.handleSendings(storage, federationClient, serverPort);
+                tempActivity.handleSendings(storage, federationClient, serverPort);
+
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                Activity createdActivity = storage.createActivity(actorName, tempActivity);
+                storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
             createdActivity.handleSendings(storage, federationClient, serverPort);
 
-            return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
+                return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
+            }
         }
 
         if (activity.getObject().getLitObject() != null && activity.getObject().getLitObject().getType().equals("Tombstone")) {

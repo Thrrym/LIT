@@ -24,6 +24,8 @@ public interface IStorage {
 
     OrderedCollection getInbox(String actorName);
 
+    OrderedCollection getOffers(String actorName);
+
     OrderedCollection getOutbox(String actorName);
 
     List<Activity> getPendingActivities(String url);
@@ -42,13 +44,17 @@ public interface IStorage {
 
     void addToOutbox(String actorName, LinkOrObject toAdd);
 
-    Activity getActivity(UUID id);
+    Activity getActivity(String id);
 
     Activity createActivity(String actorName, Activity activity);
 
     ActivityPubObject getObject(String id);
 
     ActivityPubCollection getObjects();
+
+    ActivityPubCollection getAuthors();
+
+    boolean authorExists(String orcId);
 
     ActivityPubObject createObject(String actorName, String objectType, ActivityPubObject object);
 

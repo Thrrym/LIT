@@ -1,17 +1,12 @@
 package de.tuberlin.tkn.lit.controller;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 
 import de.tuberlin.tkn.lit.model.Requests.LoginRequest;
 import de.tuberlin.tkn.lit.model.Requests.SignupRequest;
 import de.tuberlin.tkn.lit.model.Responses.JwtResponse;
 import de.tuberlin.tkn.lit.model.Responses.MessageResponse;
-import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
 import de.tuberlin.tkn.lit.security.jwt.JwtUtils;
 import de.tuberlin.tkn.lit.security.services.UserDetailsImpl;
@@ -43,6 +38,19 @@ public class AuthController {
 
     @Autowired
     JwtUtils jwtUtils;
+
+    @PostConstruct
+    public void init(){
+        SignupRequest testUser1 = new SignupRequest();
+        testUser1.setUsername("testuser1");
+        testUser1.setPassword("password");
+        registerUser(testUser1);
+
+        SignupRequest testUser2 = new SignupRequest();
+        testUser2.setUsername("testuser2");
+        testUser2.setPassword("password");
+        registerUser(testUser2);
+    }
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
