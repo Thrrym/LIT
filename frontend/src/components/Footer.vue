@@ -5,12 +5,13 @@
         <a href="#">Back to top</a>
       </p>
       <p>
-        New to Lit? <router-link to="/">Visit the Homepage</router-link> or read
-        our <router-link to="/about">About page.</router-link>
+        New to Lit? <router-link to="/">Visit the Homepage</router-link>
       </p>
-      <p>Frontend server: {{ currentFrontendServer }}</p>
+      <b-card text-variant="light" style="border: none">
+      <p clas="muted">Frontend server: {{ currentFrontendServer }}</p>
       <p>Backend server: {{ currentBackendServer }}</p>
       <p>Logged in user: {{ getCurrentUser }}, Login status: {{ getLoginStatus }}</p>
+      </b-card>
     </div>
   </footer>
 </template>
