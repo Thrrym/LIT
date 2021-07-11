@@ -21,8 +21,6 @@ public class Accept extends Activity {
         Activity offer = storage.getActivity(getObject().getId());
         update.setType("Update");
         update.setObject(offer.getObject());
-        update.handle(actorName, storage, port);
         return update;
     }
-
 }

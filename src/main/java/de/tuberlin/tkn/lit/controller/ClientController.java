@@ -11,7 +11,6 @@ import de.tuberlin.tkn.lit.storage.Storage;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -102,9 +101,13 @@ public class ClientController {
 
         Activity tempActivity = activity.handle(actorName, storage, serverPort);
         if (tempActivity != null) {
-            if (!tempActivity.getType().equals( activity.getType())) {
+            if (!tempActivity.getType().equals(activity.getType())) {
+                tempActivity.handle(actorName, storage, serverPort);
+
+                storage.addToOutbox(actorName, new LinkOrObject(activity));
                 storage.addToOutbox(actorName, new LinkOrObject(tempActivity));
 
+                activity.handleSendings(storage, activitySender, serverPort);
                 tempActivity.handleSendings(storage, activitySender, serverPort);
 
                 return new ResponseEntity<>(HttpStatus.OK);

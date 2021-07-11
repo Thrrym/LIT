@@ -60,10 +60,10 @@ public abstract class Activity extends ActivityPubObject {
             }}, storage, activitySender, port);
         }
 
-        if (this instanceof Reject) {
-            Activity activityToReject = storage.getActivity(getObject().getLitObject().getId());
+        if (this instanceof Reject || this instanceof Accept) {
+            Activity activityToRespond = storage.getActivity(getObject().getLitObject().getId());
             handleSendingsIntern(new ArrayList<>() {{
-                add(activityToReject.getActor());
+                add(activityToRespond.getActor());
             }}, storage, activitySender, port);
         }
 
