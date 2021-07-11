@@ -3,14 +3,14 @@ export default {
     author: [
       {
         id: 0,
-        name: "first_name",
+        name: "firstName",
         label: "First name",
         content: "",
         required: true,
       },
       {
         id: 1,
-        name: "last_name",
+        name: "lastName",
         label: "Last name",
         content: "",
         required: true,
