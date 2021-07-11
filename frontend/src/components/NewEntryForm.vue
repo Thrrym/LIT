@@ -124,7 +124,7 @@
     </b-form>
     </b-container>
 
-    <NewAuthorModal ref="NewAuthorModal"></NewAuthorModal>
+    <NewAuthorModal ref="NewAuthorModal" v-on:newAuthorSuccess="getAuthorOptions"></NewAuthorModal>
     <GetAuthors ref="GetAuthors" v-on:getAuthorsSuccess="setAuthorOptions"></GetAuthors>
   </div>
 </template>
@@ -226,7 +226,7 @@ export default {
       }
     },
     isAuthor: function (field) {
-      return field.name === "author";
+      return field.name === "authors";
     },
     addNewAuthor: function () {
       this.$refs.NewAuthorModal.showNewAuthorModal();
@@ -247,6 +247,10 @@ export default {
     setAdditionalAuthors: function () {
       this.additionalAuthors += 1;
 }
+  },
+  mounted: function() {
+    // On loading of the form, get the existing authors from the server.
+    this.getAuthorOptions();
   },
 };
 </script>
