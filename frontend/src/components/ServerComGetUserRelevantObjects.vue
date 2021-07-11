@@ -50,6 +50,7 @@ export default {
             // Trigger event.
             component.callbackResponse();
           } else {
+            component.requestResponse = httpRequest;
             component.callbackError();
           }
         }
@@ -66,7 +67,7 @@ export default {
     callbackError: function () {
       // Function triggered by the onreadystatechange from the HTTP request.
       // Emits error to parent component back upstream.
-      this.$emit("requestResponse", "error");
+      this.$emit("requestError", "error");
     },
   },
 };
