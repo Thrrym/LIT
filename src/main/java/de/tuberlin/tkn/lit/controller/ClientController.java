@@ -51,6 +51,20 @@ public class ClientController {
         return new ResponseEntity<>(storage.getInbox(username), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{actorname}/offers", method = RequestMethod.GET)
+    public ResponseEntity<OrderedCollection> getOffers(@PathVariable("actorname") String actorname) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = userDetails.getUsername();
+
+        if (!actorname.equals(username)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        OrderedCollection offers = storage.getOffers(actorname);
+
+        return new ResponseEntity<>(offers, HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{actorname}/objects", method = RequestMethod.GET)
     public OrderedCollection getObjectsCreatedByActor(@PathVariable("actorname") String actorname) {
         return storage.getObjectsCreatedByActor(actorname);
@@ -73,7 +87,7 @@ public class ClientController {
 
     @RequestMapping(value = "/{actorname}/{id}", method = RequestMethod.GET)
     public Activity getActivity(@PathVariable("actorname") String actorname, @PathVariable("id") UUID id) {
-        return storage.getActivity(id);
+        return storage.getActivity(UriUtilities.generateId(new String[]{actorname}, serverPort, id));
     }
 
     @RequestMapping(value = "/{actorname}/{objecttype}/{id}", method = RequestMethod.GET)
@@ -90,15 +104,28 @@ public class ClientController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
+        activity.setActor(new LinkOrObject(storage.getActor(actorName).getId()));
+
         Activity tempActivity = activity.handle(actorName, storage, serverPort);
         if (tempActivity != null) {
-            tempActivity.setActor(new LinkOrObject(storage.getActor(actorName).getId()));
-            Activity createdActivity = storage.createActivity(actorName, tempActivity);
-            storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
+            if (!tempActivity.getType().equals(activity.getType())) {
+                tempActivity.handle(actorName, storage, serverPort);
 
-            createdActivity.handleSendings(storage, activitySender, serverPort);
+                storage.addToOutbox(actorName, new LinkOrObject(activity));
+                storage.addToOutbox(actorName, new LinkOrObject(tempActivity));
 
-            return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
+                activity.handleSendings(storage, activitySender, serverPort);
+                tempActivity.handleSendings(storage, activitySender, serverPort);
+
+                return new ResponseEntity<>(HttpStatus.OK);
+            } else {
+                Activity createdActivity = storage.createActivity(actorName, tempActivity);
+                storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
+
+                createdActivity.handleSendings(storage, activitySender, serverPort);
+
+                return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
+            }
         }
 
         if (activity.getObject().getLitObject() != null && activity.getObject().getLitObject().getType().equals("Tombstone")) {

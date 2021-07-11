@@ -23,6 +23,8 @@ public interface IStorage {
 
     OrderedCollection getInbox(String actorName);
 
+    OrderedCollection getOffers(String actorName);
+
     OrderedCollection getOutbox(String actorName);
 
     OrderedCollection getObjectsCreatedByActor(String actorName);
@@ -35,7 +37,7 @@ public interface IStorage {
 
     void addToOutbox(String actorName, LinkOrObject toAdd);
 
-    Activity getActivity(UUID id);
+    Activity getActivity(String id);
 
     Activity createActivity(String actorName, Activity activity);
 

@@ -25,7 +25,7 @@ public class Storage implements IStorage {
     private final Map<String, Set<String>> relevantObjects = new HashMap<>();
     private final Map<String, Set<String>> liked = new HashMap<>();
     private final Map<String, Actor> actors = new HashMap<>();
-    private final Map<UUID, Activity> activities = new HashMap<>();
+    private final Map<String, Activity> activities = new HashMap<>();
     private final Map<String, ActivityPubObject> objects = new HashMap<>();
     @Value("${server.port}")
     private int serverPort;
@@ -57,6 +57,18 @@ public class Storage implements IStorage {
             throw new NullPointerException();
         }
         return orderedCollection;
+    }
+
+    @Override
+    public OrderedCollection getOffers(String actorName) {
+        OrderedCollection orderedCollection = inboxes.get(actorName);
+        if (orderedCollection == null) {
+            throw new NullPointerException();
+        }
+
+        List<LinkOrObject> inboxItems = orderedCollection.getOrderedItems();
+
+        return new OrderedCollection(inboxItems.stream().filter(item -> item.getLitObject().getType().equals("Offer")).collect(Collectors.toList()));
     }
 
     @Override
@@ -129,7 +141,7 @@ public class Storage implements IStorage {
     }
 
     @Override
-    public Activity getActivity(UUID id) {
+    public Activity getActivity(String id) {
         return activities.get(id);
     }
 
@@ -138,9 +150,9 @@ public class Storage implements IStorage {
         UUID uuid = UUID.randomUUID();
         String id = UriUtilities.generateId(new String[]{actorName}, serverPort, uuid);
         activity.setId(id);
-        activities.put(uuid, activity);
+        activities.put(id, activity);
 
-        return activities.get(uuid);
+        return activities.get(id);
     }
 
     @Override
