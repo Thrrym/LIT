@@ -66,6 +66,7 @@ export default {
             // Trigger event.
             component.callbackResponse();
           } else {
+            component.requestResponse = httpRequest;
             component.callbackError();
           }
         }
@@ -111,7 +112,7 @@ export default {
       for (let property in simplifiedObject) {
         jsonLitObject[property] = simplifiedObject[property];
       }
-      jsonLitObject["type"] = "author"
+      jsonLitObject["type"] = "Author";
 
       // 2. Construct the main JSON. Contains as object the new entry to lit.
       var jsonMainObject = {
