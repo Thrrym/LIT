@@ -45,6 +45,10 @@ public interface IStorage {
 
     ActivityPubCollection getObjects();
 
+    ActivityPubCollection getAuthors();
+
+    boolean authorExists(String orcId);
+
     ActivityPubObject createObject(String actorName, String objectType, ActivityPubObject object);
 
     ActivityPubObject createObject(String id, ActivityPubObject object);

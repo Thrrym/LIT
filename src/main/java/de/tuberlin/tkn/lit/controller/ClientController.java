@@ -75,6 +75,11 @@ public class ClientController {
         return storage.getObjects();
     }
 
+    @RequestMapping(value = "/authors", method = RequestMethod.GET)
+    public ActivityPubCollection getAuthors() {
+        return storage.getAuthors();
+    }
+
     @RequestMapping(value = "/{actorname}/relevantobjects", method = RequestMethod.GET)
     public OrderedCollection getRelevantObjects(@PathVariable("actorname") String actorname) {
         return storage.getRelevantObjects(actorname);
@@ -98,6 +103,8 @@ public class ClientController {
         if (!actorName.equals(username)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
+
+        activity.setActor(new LinkOrObject(storage.getActor(actorName).getId()));
 
         Activity tempActivity = activity.handle(actorName, storage, serverPort);
         if (tempActivity != null) {
