@@ -17,12 +17,12 @@ public class BibTeXArticle extends ActivityPubObject {
     private String title;
     private String journal;
     private int year;
-    private String volume;
+    private int volume;
 
     public BibTeXArticle() {
     }
 
-    public BibTeXArticle(List<LinkOrObject> authors, String title, String journal, int year, String volume) {
+    public BibTeXArticle(List<LinkOrObject> authors, String title, String journal, int year, int volume) {
         this.authors = authors;
         this.title = title;
         this.journal = journal;
@@ -73,11 +73,11 @@ public class BibTeXArticle extends ActivityPubObject {
         this.year = year;
     }
 
-    public String getVolume() {
+    public int getVolume() {
         return volume;
     }
 
-    public void setVolume(String volume) {
+    public void setVolume(int volume) {
         this.volume = volume;
     }
 }
