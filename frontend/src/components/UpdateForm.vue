@@ -18,6 +18,25 @@
               label-cols-sm="3"
               label-align-sm="right"
             >
+              <div v-if="isAuthor(field)">
+                <b-input-group v-on:input="field.content = selectedAuthors">
+                  <b-form-select
+                      v-bind:options="authorOptions"
+                      v-model="selectedAuthors[0]"
+                  ></b-form-select>
+                  <b-button v-on:click="addNewAuthor">
+                    Create new author
+                  </b-button>
+                  <!--              <b-button v-on:click="getAuthorOptions">Get the authors</b-button>-->
+<!--                  <b-button v-on:click="setAdditionalAuthors">+</b-button>-->
+                </b-input-group>
+                <b-form-select
+                    v-for="index in additionalAuthors"
+                    v-bind:key="index"
+                    v-bind:options="authorOptions"
+                    v-model="selectedAuthors[index]"
+                ></b-form-select>
+              </div>
               <b-form-input
                 v-model="field.content"
                 v-bind:required="field.required"
@@ -104,6 +123,7 @@ export default {
       showOptionalFields: false,
       showCcField: false,
       ccContent: "",
+      selectedAuthors: [],
     };
   },
 
@@ -125,6 +145,9 @@ export default {
       if (this.getOptionalFields.length === 0) return false;
       else return true;
     },
+    /*getOriginalSelectedAuthors: function () {
+      if (this.formContent.)
+    }*/
   },
 
   methods: {
@@ -147,6 +170,9 @@ export default {
     },
     setShowCcField: function () {
       this.showCcField = !this.showCcField;
+    },
+    isAuthor: function (field) {
+      return field.name === "authors";
     },
   },
 };

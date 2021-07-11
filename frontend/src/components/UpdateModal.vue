@@ -83,7 +83,8 @@ export default {
       this.$refs.ServerComUpdatePost.triggerUpdatePost(this.objectUrl, this.entryToUpdate, this.cc);
     },
     setNeededForm: function () {
-      const currentType = this.objectOriginal.type.split("_").slice(1);
+      //const currentType = this.objectOriginal.type.split("_").slice(1);
+      const currentType = this.objectOriginal.type;
       this.neededForm = this.allFormContents[currentType];
       for (const neededFormKey in this.neededForm) {
         const name = this.neededForm[neededFormKey].name;
