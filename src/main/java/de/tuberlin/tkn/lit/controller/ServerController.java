@@ -67,12 +67,6 @@ public class ServerController {
         } else if (activity instanceof Offer) {
             storage.createActivity(actorname, activity);
             activity.handle(activity.getActor().getId(), storage, serverPort);
-         /*   Offer offer = (Offer) activity;
-
-            if (storage.getObject(offer.getObject().getId()) == null) return;
-
-            storage.createObject(offer.getId(), offer);
-            storage.addToRelevantObjects(actorname, new LinkOrObject(offer));*/
         }
         // TODO: notify client
     }
