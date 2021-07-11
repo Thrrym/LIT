@@ -92,6 +92,7 @@ public class ClientController {
 
         Activity tempActivity = activity.handle(actorName, storage, serverPort);
         if (tempActivity != null) {
+            tempActivity.setActor(new LinkOrObject(storage.getActor(actorName).getId()));
             Activity createdActivity = storage.createActivity(actorName, tempActivity);
             storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
