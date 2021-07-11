@@ -123,7 +123,7 @@ public class ClientController {
                 Activity createdActivity = storage.createActivity(actorName, tempActivity);
                 storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
-            createdActivity.handleSendings(storage, federationClient, serverPort);
+                createdActivity.handleSendings(storage, federationClient, serverPort);
 
                 return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
             }
