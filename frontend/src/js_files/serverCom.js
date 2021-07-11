@@ -95,7 +95,7 @@ function prepareNewEntryJson(simplifiedObject, backendUrl, currentUser, cc) {
     };
     for (let property in simplifiedObject) {
         if (property === "type") {
-            jsonLitObject[property] = "bibtex_" + simplifiedObject[property];
+            jsonLitObject[property] = simplifiedObject[property];
         }
         else {
             jsonLitObject[property] = simplifiedObject[property];
