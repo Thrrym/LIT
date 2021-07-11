@@ -5,7 +5,7 @@ export default {
         id: 0,
         name: "author",
         label: "Author",
-        content: "",
+        content: [],
         required: true,
       },
       {
@@ -49,7 +49,7 @@ export default {
         id: 1,
         name: "author",
         label: "Author",
-        content: "",
+        content: [],
         required: true,
       },
       {
