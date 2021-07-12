@@ -71,18 +71,9 @@ public class ServerController {
     */
     @RequestMapping(value = "/join-federation", method = RequestMethod.POST)
     public ResponseEntity<List<Activity>> joinFederation(@RequestBody String newMember) {
-        URL urlObj;
-        try {
-            urlObj = new URL(newMember);
-        } catch(MalformedURLException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // = 400            
-        }
-
-        String newHost = urlObj.getHost() + ':' + urlObj.getPort();
-
         // if the newHost is not already known to the storage,
         // it will be added !
-        List<Activity> res = storage.getPendingActivities(newHost);
+        List<Activity> res = storage.getPendingActivities(newMember);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
