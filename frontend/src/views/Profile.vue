@@ -138,6 +138,9 @@
         v-on:requestResponse="setRequestResponseLike"
       ></ServerComLikePost>
       <HomeModal ref="modal"></HomeModal>
+
+      <FollowJumbotron></FollowJumbotron>
+
     </div>
   </div>
 </template>
@@ -147,6 +150,7 @@ import ServerComGetUserObjects from "@/components/ServerComGetUserObjects.vue";
 import ServerComGetUserRelevantObjects from "@/components/ServerComGetUserRelevantObjects.vue";
 import ServerComLikePost from "@/components/ServerComLikePost.vue";
 import HomeModal from "@/components/HomeModal";
+import FollowJumbotron from "@/components/FollowJumbotron";
 
 export default {
   name: "home",
@@ -165,6 +169,7 @@ export default {
     ServerComGetUserRelevantObjects,
     ServerComLikePost,
     HomeModal,
+    FollowJumbotron,
   },
   methods: {
     setRequestResponse: function (response) {
