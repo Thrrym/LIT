@@ -621,6 +621,20 @@ public class Storage implements IStorage {
             Like like = (Like) activity;
             String like_id = like.getId();
             ActivityPubObject like_obj = like.getObject().getLitObject();
+
+            //id
+            LinkOrObject searchedActor = like.getActor();
+            ActivityPubObject ourobject= searchedActor.getLitObject();
+            Liked newLikes = new Liked();
+            if (ourobject instanceof Actor)
+                {
+                    newLikes.setActorname(ourobject.getName());
+                }
+
+            
+
+
+
             ILikeRepository repo = likeService.getRepository();
             repo.save(like);
             return like;
@@ -667,9 +681,9 @@ public class Storage implements IStorage {
             obj = toAdd.getLitObject();
             Liked liked = new Liked();
             if (obj instanceof Activity) {
-                long l = ((Activity) obj).getObject().getLitObject().getActivityPubID();
+                long l = ((Activity)obj).getObject().getLitObject().getActivityPubID();
                 liked.setObjectID(l);
-                liked.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+                liked.setObjectType(((Activity)obj).getObject().getLitObject().getType());
             }
             liked.setActorname(actorName);
             likedService.getRepository().save(liked);
