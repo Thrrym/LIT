@@ -1,10 +1,10 @@
 export default {
   allTypes: {
-    article: [
+    bibtex_article: [
       {
         id: 0,
-        name: "author",
-        label: "Author",
+        name: "authors",
+        label: "Authors",
         content: "",
         required: true,
       },
@@ -28,6 +28,7 @@ export default {
         label: "Year",
         content: "",
         required: true,
+        inputVerify: "number",
       },
       {
         id: 4,
@@ -35,32 +36,63 @@ export default {
         label: "Volume",
         content: "",
         required: false,
+        inputVerify: "number",
       },
     ],
-    book: [
+    Book: [
       {
         id: 0,
-        name: "author",
-        label: "Author",
+        name: "title",
+        label: "Title",
         content: "",
         required: true,
       },
       {
         id: 1,
-        name: "title",
-        label: "Title",
-        content: "",
+        name: "authors",
+        label: "Authors",
+        content: [],
         required: true,
       },
       {
         id: 2,
-        name: "journal",
-        label: "Journal",
+        name: "year",
+        label: "Year",
+        content: "",
+        required: true,
+        inputVerify: "number",
+      },
+      {
+        id: 3,
+        name: "volume",
+        label: "Volume",
+        content: "",
+        required: true,
+        inputVerify: "number",
+      },
+      {
+        id: 4,
+        name: "category",
+        label: "Category",
+        content: "",
+        required: true,
+      },
+      {
+        id: 5,
+        name: "bookAbstract",
+        label: "Abstract",
+        content: "",
+        required: true,
+      },
+      {
+        id: 6,
+        name: "isbn",
+        label: "ISBN",
         content: "",
         required: true,
       },
     ],
-    booklet: [
+    Paper: [
       {
         id: 0,
         name: "title",
@@ -70,10 +102,32 @@ export default {
       },
       {
         id: 1,
-        name: "author",
-        label: "Author",
+        name: "authors",
+        label: "Authors",
+        content: [],
+        required: true,
+      },
+      {
+        id: 2,
+        name: "category",
+        label: "Category",
         content: "",
         required: false,
+      },
+      {
+        id: 3,
+        name: "paperAbstract",
+        label: "Abstract",
+        content: "",
+        required: true,
+      },
+      {
+        id: 4,
+        name: "peer_reviewed",
+        label: "Peer reviewed",
+        content: "",
+        required: false,
+        inputType: "checkbox",
       },
     ],
   },

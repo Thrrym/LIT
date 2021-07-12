@@ -1,66 +1,76 @@
 <template>
   <b-modal
     ref="modal-1"
-    v-bind:title="getModalTitle"
+    title="T"
     ok-only
   >
-    <p>Title: {{ this.title }}</p>
-    <p>Type: {{this.type}}</p>
-    <p>In: {{ this.journal }}</p>
-    <p>Year: {{ this.year }}</p>
-    <p>Volume: {{ this.volume }}</p>
-    <p>By user: {{ this.attributedTo[0] }}</p>
-    <p>Likes: {{ this.likes }}</p>
-
+    <div v-for="item in getContents" v-bind:key="item.key">
+      <p v-text="item.label + ': ' + item.value"></p>
+    </div>
   </b-modal>
 </template>
 
 <script>
+import newEntryFormContent from "@/js_files/newEntryFormContent.js";
 export default {
   name: "HomeModal",
 
   data() {
     return {
-      attributedTo: "",
-      author: "",
-      generator: "",
-      id: "",
-      journal: "",
-      likedBy: "",
-      likes: "",
-      title: "",
-      type: "",
-      volume: "",
-      year: "",
-    }
-  },
-
-  props: {
+      contents: {},
+      entry: {},
+      formContent: newEntryFormContent.allTypes,
+    };
   },
 
   methods: {
     showHomeModal: function (entry) {
       // Trigger the modal.
-      this.attributedTo = entry.attributedTo;
-      this.author = entry.author
-      this.generator= entry.generator
-      this.id = entry.id
-      this.journal = entry.journal;
-      this.likedBy = entry.likedBy;
-      this.likes = entry.likes;
-      this.title = entry.title;
-      this.type = entry.type;
-      this.volume = entry.volume;
-      this.year = entry.year;
+      this.contents = {};
+      this.entry = entry;
+      if (entry.type === "bibtex_article") this.prepBibtexArticleContent();
+      else if (entry.type === "Paper") this.prepPaperContent();
+      else if (entry.type === "Book") this.prepBookContent();
       this.$refs["modal-1"].show();
+    },
+    prepBibtexArticleContent: function () {
+      for (let key in this.formContent.bibtex_article) {
+        const index = this.formContent.bibtex_article[key];
+        this.contents[key] = {
+          label: index.label,
+          value: this.entry[index.name],
+        }
+      }
+    },
+    prepPaperContent: function () {
+      for (let key in this.formContent.Paper) {
+        const index = this.formContent.Paper[key];
+        this.contents[key] = {
+          label: index.label,
+          value: this.entry[index.name],
+        }
+      }
+    },
+    prepBookContent: function () {
+      const book = this.formContent.Book;
+      for (let key in book) {
+        const index = book[key];
+        this.contents[key] = {
+          label: index.label,
+          value: this.entry[index.name],
+        }
+      }
+    },
+    reset: function () {
+      this.contents = {};
+      this.entry = {};
     },
   },
 
   computed: {
-    getModalTitle: function() {
-      // Generate title of the modal.
-      return this.author;
-      },
+    getContents: function () {
+      return this.contents;
+    }
   },
 }
 </script>

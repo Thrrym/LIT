@@ -5,7 +5,7 @@
         <div class="container">
           <h1 class="title">Welcome to the LIT Library</h1>
           <h2 class="subtitle">
-            Make sure to check out recent publications below!
+            Make sure to sign up and login!
           </h2>
           <!-- get rid of this useless button, it's in the way for now -->
           <!-- <div class="button-block"> -->
@@ -15,20 +15,22 @@
       </div>
     </section>
 
-    <b-button @click="refreshObjects">
+    <h3>My Entries
+      <b-button @click="refreshObjects">
       <b-icon icon="arrow-counterclockwise" font-scale="1"></b-icon>
-    </b-button>
+      </b-button>
+    </h3>
 
-    <h3>My Entries</h3>
-    <b-card-group deck>
+    <div> 
+    <b-card-group deck class="col-md-10">
       <b-card
-        v-for="entry in objectsByUser"
+        v-for="entry in noAuthors"
         v-bind:key="entry.id"
         tag="article"
         style="max-width: 20rem"
         class="mb-2"
+        align="center"
       >
-        <b-card-title v-text="entry.author"></b-card-title>
         <b-card-sub-title v-text="entry.journal"></b-card-sub-title>
         <b-card-text v-text="entry.title"></b-card-text>
 
@@ -39,15 +41,22 @@
               {{ entry.likes }}
             </b-button>
             <b-button href="#" variant="primary-outline">
+              <b-icon icon="pencil-square" v-on:click="editObject(entry.id)"></b-icon>
+            </b-button>
+            <b-button href="#" variant="primary-outline">
+              <b-icon icon="trash" v-on:click="deleteEntry(entry)"></b-icon>
+            </b-button>
+            <b-button href="#" variant="primary-outline">
               <b-icon icon="chevron-double-up" v-on:click="showModal(entry)"></b-icon>
             </b-button>
           </small>
         </template>
       </b-card>
     </b-card-group>
+    </div>
 
     <h3 v-if="userHasRelevantObjects">Activityfeed</h3>
-    <b-card-group deck>
+    <b-card-group deck class="col-md-10">
       <b-card
         v-for="entry in objectsRelevantToUser"
         v-bind:key="entry.id"
@@ -73,6 +82,63 @@
               ></b-icon> {{entry.liked}}
             </b-button>
             <b-button href="#" variant="primary-outline">
+              <b-icon icon="pencil-square" v-on:click="offerObject(entry.id)"></b-icon>
+            </b-button>
+            <b-button href="#" variant="primary-outline">
+              <b-icon
+                  icon="chevron-double-up"
+                  v-on:click="showModal(entry)"
+              ></b-icon>
+            </b-button>
+          </small
+        ></template>
+      </b-card>
+    </b-card-group>
+
+<h3 v-if="hasOffers">new Offers</h3> <!-- v-if is coming as soon as newOffers is implemented -->
+    <b-card-group deck class="col-md-10">
+      <b-card
+        v-for="entry in getOffers"
+        v-bind:key="entry.id"
+        tag="article"
+        style="max-width: 20rem"
+      >
+<!--        <b-card-title v-text="entry.author"></b-card-title>
+        <b-card-sub-title v-text="entry.journal"></b-card-sub-title>-->
+        <b-card-text v-text="entry.object.title"></b-card-text>
+
+        <template #footer>
+          <small class="text-muted">
+<!--            <b-button href="#" variant="primary" v-if="postCanBeLiked(entry)">
+              <b-icon
+                icon="bookmark-heart"
+                v-on:click="likePost(entry.id)"
+              ></b-icon>
+            </b-button>-->
+<!--            <b-button href="#" variant="primary-outline" v-else>
+              <b-icon
+                  icon="bookmark-heart"
+              ></b-icon> {{entry.liked}}
+            </b-button>-->
+<!--            <b-button href="#" variant="primary-outline">
+              <b-icon
+                  icon="chevron-double-up"
+                  v-on:click="showModal(entry)"
+              ></b-icon>
+            </b-button>-->
+            <b-button variant="primary-outline">
+              <b-icon
+                  icon="x-circle"
+                  v-on:click="rejectOffer(entry)"
+              ></b-icon>
+            </b-button>
+            <b-button variant="primary-outline">
+              <b-icon
+                  icon="check"
+                  v-on:click="acceptOffer(entry)"
+              ></b-icon>
+            </b-button>
+            <b-button variant="primary-outline">
               <b-icon
                   icon="chevron-double-up"
                   v-on:click="showModal(entry)"
@@ -86,16 +152,27 @@
     <ServerComGetUserObjects
       ref="userObjects"
       v-on:requestResponse="setRequestResponseUserObjects"
+      v-on:requestError="setRequestResponseUserObjectsError"
     ></ServerComGetUserObjects>
+
     <ServerComGetUserRelevantObjects
       ref="userRelevantObjects"
       v-on:requestResponse="setRequestResponseRelevantUserObjects"
+      v-on:requestError="setRequestResponseRelevantUserObjectsError"
     ></ServerComGetUserRelevantObjects>
+
     <ServerComLikePost
         ref="like"
         v-on:requestResponse="setRequestResponseLike"
     ></ServerComLikePost>
     <HomeModal ref="modal"></HomeModal>
+    <UpdateModal ref="updateModal"></UpdateModal>
+    <OfferModal ref="offerModal"></OfferModal>
+    <GetOffers ref="getOffers" v-on:getOffersSuccess="setOffers"></GetOffers>
+    <AcceptOffer ref="acceptOffer"></AcceptOffer>
+    <RejectOffer ref="rejectOffer"></RejectOffer>
+    <Delete ref="delete"></Delete>
+
   </div>
 </template>
 <script>
@@ -104,24 +181,36 @@ import ServerComGetUserObjects from "@/components/ServerComGetUserObjects.vue";
 import ServerComGetUserRelevantObjects from "@/components/ServerComGetUserRelevantObjects.vue";
 import ServerComLikePost from "@/components/ServerComLikePost.vue";
 import HomeModal from "@/components/HomeModal";
-
+import UpdateModal from "@/components/UpdateModal";
+import OfferModal from "@/components/OfferModal";
+import GetOffers from "@/components/GetOffers";
+import AcceptOffer from "@/components/AcceptOffer";
+import RejectOffer from "@/components/RejectOffer";
+import Delete from "@/components/Delete";
 
 export default {
   name: "home",
   data() {
     return {
       requestResponse: "",
-      objectsByUser: "",
+      objectsByUser: [],
       objectsRelevantToUser: "",
+      offers: [],
     };
   },
 
   components: {
+    RejectOffer,
     // EventsList,
     ServerComGetUserObjects,
     ServerComGetUserRelevantObjects,
     ServerComLikePost,
     HomeModal,
+    UpdateModal,
+    OfferModal,
+    GetOffers,
+    AcceptOffer,
+    Delete,
   },
   methods: {
     setRequestResponse: function (response) {
@@ -130,22 +219,31 @@ export default {
       console.log(this.requestResponse);
     },
     setRequestResponseUserObjects: function (response) {
-      this.setRequestResponse(response);
-      this.objectsByUser = JSON.parse(this.getResponse).orderedItems;
-      console.log("objectsByUser", this.objectsByUser);
+      //this.setRequestResponse(response);
+      this.objectsByUser = JSON.parse(response.responseText).orderedItems;
+      console.log("objectsByUser", this.getUserObjects);
+    },
+    setRequestResponseUserObjectsError: function () {
+      this.objectsByUser = [];
     },
     setRequestResponseRelevantUserObjects: function (response) {
-      this.setRequestResponse(response);
-      this.objectsRelevantToUser = JSON.parse(this.getResponse).orderedItems;
-      console.log("objectsByUser", this.objectsByUser);
+      //this.setRequestResponse(response);
+      this.objectsRelevantToUser = JSON.parse(response.responseText).orderedItems;
+      console.log("objectsRelevantToUser", this.objectsByUser);
+    },
+    setRequestResponseRelevantUserObjectsError: function () {
+      this.objectsRelevantToUser = {};
     },
     setRequestResponseLike: function (response) {
       this.setRequestResponse(response);
       this.refreshObjects();
     },
     refreshObjects: function () {
-      this.$refs.userObjects.triggerGetObjects();
-      this.$refs.userRelevantObjects.triggerGetRelevantObjects();
+      if (this.$store.getters.loggedIn) {
+        this.$refs.userObjects.triggerGetObjects();
+        this.$refs.userRelevantObjects.triggerGetRelevantObjects();
+        this.$refs.getOffers.triggerGetOffers();
+      }
     },
     likePost: function(url) {
       this.$refs.like.triggerLikePost(url);
@@ -171,7 +269,26 @@ export default {
     showModal: function (entry) {
       this.$refs.modal.showHomeModal(entry);
     },
-  },
+    editObject: function (objectId) {
+      this.$refs.updateModal.showUpdateModal(objectId);
+    },
+    offerObject: function (objectId) {
+      this.$refs.offerModal.showOfferModal(objectId);
+    },
+    setOffers: function (offers) {
+      this.offers = offers;
+    },
+    rejectOffer: function (offer) {
+      console.log(offer.id)
+      this.$refs.rejectOffer.triggerRejectOffer(offer.id);
+    },
+    acceptOffer: function (offer) {
+      this.$refs.acceptOffer.triggerAcceptOffer(offer.id);
+    },
+    deleteEntry: function(entry) {
+      this.$refs.delete.trigger(entry.id);
+    },
+},
   computed: {
     getResponse: function () {
       // Facilitate print of the Inbox.
@@ -181,17 +298,36 @@ export default {
       return this.requestResponse.responseText;
     },
     userHasObjects: function () {
-      if (this.objectsByUser === "") return false
-      return true
+      if (this.objectsByUser.length === 0) return false;
+      return true;
     },
     userHasRelevantObjects: function () {
       if (this.objectsRelevantToUser === "") return false;
       if (this.objectsRelevantToUser.length === 0) return false;
       return true
-    }
+    },
+    noAuthors: function()
+    {
+      return this.objectsByUser.filter(function (elem) {
+          if (elem.type !== "Author")
+          {
+            return true;  
+          }
+        }
+      );
+    },
+    getOffers: function () {
+      return this.offers;
+    },
+    hasOffers: function () {
+      return this.getOffers.length !== 0;
+    },
+    getUserObjects: function () {
+      return this.objectsByUser;
+    },
   },
   mounted: function () {
-    this.refreshObjects();
+    if (this.$store.getters.loggedIn) this.refreshObjects();
   },
 };
 </script>
@@ -206,15 +342,19 @@ export default {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  height: 400px;
+  height: 700px;
 }
 .hero-body .title {
-  text-shadow: 4px 4px 4px rgb(255, 255, 255);
+  // text-shadow: 4px 4px 4px rgb(255, 255, 255);
+  color: white;
+  background-color: #ff4040ff;
   padding: 40px 0 20px 0;
   font-size: 60px;
 }
 .subtitle {
-  text-shadow: 4px 4px 4px rgb(255, 255, 255);
+  // text-shadow: 4px 4px 4px rgb(255, 255, 255);
+  color: white;
+  background-color: #ff4040ff;
   font-size: 30px;
 }
 .button-block {
@@ -235,6 +375,9 @@ export default {
     margin-left: auto;
     margin-right: auto;
   }
+}
+.b-icon{
+  color: #ff4040ff;
 }
 .is-xl {
   font-size: 1.7rem;

@@ -2,7 +2,7 @@
   <div>
     <b-container>
       <!-- Create the form the get the information for the selected type. -->
-      <b-form v-if="showForm" v-on:submit="emitNewEntry">
+      <b-form v-on:input="emitNewEntry">
         <b-card bg-varint="light">
           <b-form-group
             label-cols-lg="3"
@@ -18,25 +18,28 @@
               label-cols-sm="3"
               label-align-sm="right"
             >
-              <b-form-checkbox
-                v-if="isNotTextInput(field)"
-                v-model="field.content"
-                v-bind:required="field.required"
-                value="true"
-                unchecked-value="false"
-              >
-              </b-form-checkbox>
-
               <div v-if="isAuthor(field)">
-                <b-input-group v-on:input="field.content = selectedAuthors">
+                <!-- Insert existing authors. Can only be removed. No edit -->
+                <b-input-group
+                  v-for="author in originalAuthors"
+                  v-bind:key="author"
+                >
+                  <b-form-input
+                    readonly
+                    v-bind:placeholder="author"
+                  ></b-form-input>
+                  <b-button v-on:click="removeOriginalAuthor(author)">-</b-button>
+                </b-input-group>
+
+                <!-- Insert option to add further authors. -->
+                <b-input-group v-on:input="selectedAuthors = newAuthors">
                   <b-form-select
                     v-bind:options="authorOptions"
                     v-model="selectedAuthors[0]"
                   ></b-form-select>
-                  <b-button v-on:click="addNewAuthor"
-                    >Create new author</b-button
-                  >
-                  <!--              <b-button v-on:click="getAuthorOptions">Get the authors</b-button>-->
+                  <b-button v-on:click="addNewAuthor">
+                    Create new author
+                  </b-button>
                   <b-button v-on:click="setAdditionalAuthors">+</b-button>
                 </b-input-group>
                 <b-form-select
@@ -46,11 +49,11 @@
                   v-model="selectedAuthors[index]"
                 ></b-form-select>
               </div>
+
               <b-form-input
                 v-else
                 v-model="field.content"
                 v-bind:required="field.required"
-                v-bind:type="getFieldTypeToVerify(field)"
               ></b-form-input>
             </b-form-group>
           </b-form-group>
@@ -80,34 +83,20 @@
               label-cols-sm="3"
               label-align-sm="right"
             >
-              <b-form-checkbox
-                v-if="isNotTextInput(field)"
-                v-model="field.content"
-                v-bind:required="field.required"
-                value="true"
-                unchecked-value="false"
-              >
-              </b-form-checkbox>
               <b-form-input
-                v-else
                 v-model="field.content"
                 v-bind:required="field.required"
-                v-bind:type="getFieldTypeToVerify(field)"
               ></b-form-input>
-              <!--            <b-form-input
-              v-model="field.content"
-              v-bind:required="field.required"
-            ></b-form-input>-->
             </b-form-group>
           </b-form-group>
         </b-card>
 
-        <b-button variant="outline-primary" v-on:click="setShowCcField">
+<!--        <b-button variant="outline-primary" v-on:click="setShowCcField">
           <b-icon icon="caret-down-square" aria-hidden="true"></b-icon> CC
-        </b-button>
+        </b-button>-->
 
         <!-- CC Field. -->
-        <b-card bg-varint="light" v-if="showCcField">
+<!--        <b-card bg-varint="light" v-if="showCcField">
           <b-form-group
             v-if="showCcField"
             label="Send to"
@@ -119,21 +108,9 @@
               <b-form-input v-model="ccContent" type="url"></b-form-input>
             </b-form-group>
           </b-form-group>
-        </b-card>
-
-        <!-- Submit Buttons -->
-        <b-button type="submit" variant="primary" v-if="isNotUpdate">
-          <b-icon icon="bookmark-plus" aria-hidden="true"></b-icon>
-          Create new entry
-        </b-button>
-        <!-- Submit Buttons -->
-        <b-button type="submit" variant="primary" v-else>
-          <b-icon icon="bookmark-plus" aria-hidden="true"></b-icon>
-          Update entry
-        </b-button>
+        </b-card>-->
       </b-form>
     </b-container>
-
     <NewAuthorModal
       ref="NewAuthorModal"
       v-on:newAuthorSuccess="getAuthorOptions"
@@ -146,26 +123,20 @@
 </template>
 
 <script>
-import NewAuthorModal from "@/components/NewAuthorModal";
 import GetAuthors from "@/components/GetAuthors";
+import NewAuthorModal from "@/components/NewAuthorModal";
+
 export default {
-  name: "NewEntryForm",
+  name: "UpdateForm",
   components: {
-    NewAuthorModal,
     GetAuthors,
+    NewAuthorModal,
   },
 
   props: {
     formContent: {
       required: true,
-    },
-    showForm: {
-      type: Boolean,
-      required: true,
-    },
-    update: {
-      type: Boolean,
-      required: true,
+      type: Array,
     },
   },
 
@@ -182,9 +153,14 @@ export default {
       showOptionalFields: false,
       showCcField: false,
       ccContent: "",
-      authorOptions: [],
       selectedAuthors: [],
       additionalAuthors: 0,
+      authorOptions: [],
+      currentAuthors: [],
+      newAuthors: [],
+      consolidatedAuthors: [],
+      originalAuthors: [],
+      formResult: [],
     };
   },
 
@@ -201,19 +177,23 @@ export default {
         if (elem.required === false) return true;
       });
     },
-    getFilteredAuthorOptions: function () {
-      const component = this;
-      return this.authorOptions.filter(function (elem) {
-        if (!component.selectedAuthors.includes(elem.value)) return true;
-      });
-    },
     showOptionalFieldsButton: function () {
       // Are there any optional fields -> Show the button indicating optional fields and make them available.
       if (this.getOptionalFields.length === 0) return false;
       else return true;
     },
-    isNotUpdate: function () {
-      return !this.update;
+    getOriginalSelectedAuthors: function () {
+      return this.formContent.filter(function (elem) {
+        if (elem.name === "authors") return true;
+      })[0].content;
+    },
+    getConsolidatedAuthors: function () {
+      return [].concat(this.originalAuthors, this.newAuthors);
+    },
+    getFormResult: function () {
+      let result = [].concat(this.getRequiredFields, this.getOptionalFields);
+      result.filter(function(elem) {if (elem.name==="authors") return true;})[0].content = this.getConsolidatedAuthors
+      return result
     },
   },
 
@@ -221,13 +201,21 @@ export default {
     emitNewEntry: function () {
       // Gather the fields from the form. Required and optional fields.
       // Combine both arrays with fields.
-      let formResult = [].concat(
-        this.getRequiredFields,
-        this.getOptionalFields
-      );
+      this.consolidatedAuthors = this.getConsolidatedAuthors;
+      /*console.log("consolidatedAuthors", this.consolidatedAuthors);
+      console.log("Fuck!!!!!", this.formContent.filter(function (elem) {
+        if (elem.name === "authors") return true;
+      })[0].content)*/// = this.consolidatedAuthors;
+      /*this.formContent.filter(function (elem) {
+        if (elem.name === "authors") return true;
+      })[0].content = this.getConsolidatedAuthors;*/
+      /*console.log(this.getOriginalSelectedAuthors);*/
+      this.formResult = this.getFormResult;
+      // this.formResult.filter(function(elem) {if (elem.name==="authors") return true;})[0].content = this.getConsolidatedAuthors
+      console.log("formResult", this.formResult)
       // Emit the appropiate event to superior component with the fields as content of event.
       this.$emit("cc", this.ccContent);
-      this.$emit("entryToBeCreated", formResult);
+      this.$emit("entryToBeUpdated", this.formResult);
     },
     setShowOptionalFields: function () {
       this.showOptionalFields = !this.showOptionalFields;
@@ -238,27 +226,8 @@ export default {
     setShowCcField: function () {
       this.showCcField = !this.showCcField;
     },
-    isNotTextInput: function (field) {
-      if (!Object.prototype.hasOwnProperty.call(field, "inputType")) {
-        return false;
-      } else if (field.inputType === "checkbox") {
-        return true;
-      } else {
-        return false;
-      }
-    },
     isAuthor: function (field) {
       return field.name === "authors";
-    },
-    addNewAuthor: function () {
-      this.$refs.NewAuthorModal.showNewAuthorModal();
-    },
-    getFieldTypeToVerify: function (field) {
-      if (Object.prototype.hasOwnProperty.call(field, "inputVerify")) {
-        return field["inputVerify"];
-      } else {
-        return "text";
-      }
     },
     getAuthorOptions: function () {
       this.$refs.GetAuthors.triggerGetAuthors();
@@ -266,14 +235,25 @@ export default {
     setAuthorOptions: function (authorOptions) {
       this.authorOptions = authorOptions;
     },
+    addNewAuthor: function () {
+      this.$refs.NewAuthorModal.showNewAuthorModal();
+    },
+    removeOriginalAuthor: function (authorId) {
+      this.originalAuthors.pop(authorId);
+    },
     setAdditionalAuthors: function () {
       this.getAuthorOptions();
       this.additionalAuthors += 1;
     },
+    updateAuthors: function () {
+      this.consolidatedAuthors = [].concat(this.originalAuthors, this.newAuthors);
+    },
   },
+
   mounted: function () {
     // On loading of the form, get the existing authors from the server.
     this.getAuthorOptions();
+    this.originalAuthors = this.getOriginalSelectedAuthors;
   },
 };
 </script>

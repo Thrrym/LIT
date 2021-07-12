@@ -8,6 +8,7 @@
     <NewEntryForm
       v-bind:formContent="getForm"
       v-bind:showForm="activateForm"
+      v-bind:update="false"
       v-on:entryToBeCreated="setEntryToBeCreated"
       v-on:cc="setEntryCc"
     >
