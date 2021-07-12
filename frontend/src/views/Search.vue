@@ -59,7 +59,7 @@
   <b-container id="content" style="margin-bottom: 2em;">
     <b-row>
       <b-col xs="8">
-        <b-tabs pills vertical align="center">
+        <b-tabs pills vertical align="center" style="margin-bottom: 15px">
           <b-tab active>
             <template #title>
               <b-icon-journal-bookmark-fill aria-hidden="true" font-scale="1.25" shift-v="-1" style="margin-right: 5px;"></b-icon-journal-bookmark-fill>Literature
@@ -69,6 +69,7 @@
             <template #title>
               <b-icon-person-fill aria-hidden="true" font-scale="1.25" shift-v="-1" style="margin-right: 5px;"></b-icon-person-fill>User
             </template>
+            <SearchUserResult></SearchUserResult>
           </b-tab>
         </b-tabs>
       </b-col>
@@ -81,6 +82,7 @@
 export default {
     name: "Search",
     components: {
+      SearchUserResult: () => import('@/components/SearchUserResult.vue')
     },
     data() {
       return {
@@ -103,19 +105,19 @@ export default {
         var meme_src;
         var s_memeid = this.memeid;
 
-        if (['jojo', 'giornos theme', 'giorno\'s theme'].includes(this.query.toLowerCase()) && this.memeid != 0) {
+        if (['jojo', 'giornos theme', 'giorno\'s theme'].includes(this.query.toLowerCase())) {
           this.memeid = 0;
           meme_src = '2MtOpB5LlUA';
         }
-        else if (['initial d', 'deja vu'].includes(this.query.toLowerCase()) && this.memeid != 1) {
+        else if (['initial d', 'deja vu'].includes(this.query.toLowerCase())) {
           this.memeid = 1;
           meme_src = 'dv13gl0a-FA';
         }
-        else if (['megalovania'].includes(this.query.toLowerCase()) && this.memeid != 2) {
+        else if (['megalovania'].includes(this.query.toLowerCase())) {
           this.memeid = 2;
           meme_src = 'wDgQdr8ZkTw';
         }
-        else if (['rickroll'].includes(this.query.toLowerCase()) && this.memeid != 3) {
+        else if (['rickroll'].includes(this.query.toLowerCase())) {
           this.memeid = 3;
           meme_src = 'dQw4w9WgXcQ';
         }
@@ -137,7 +139,6 @@ export default {
           target.style.marginBottom = '0em';
         }
       },
-
       toggle_filter() {
         this.showFilter = !this.showFilter;
       }
