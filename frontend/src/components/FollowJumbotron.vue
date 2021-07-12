@@ -1,9 +1,13 @@
 <template>
   <div>
-    <b-jumbotron
-      header="Follow users"
-      lead="Discover entries by other users federation wide."
+    <b-jumbotron bg-variant="light"
     >
+      <template #header>Follow users</template>
+
+      <template #lead>
+        Discover entries by other users federation wide.
+      </template>
+
       <b-form v-on:submit="triggerFollow">
         <b-input-group>
           <b-form-input type="url" v-model="userToFollow" placeholder="Enter User URI"></b-form-input>
