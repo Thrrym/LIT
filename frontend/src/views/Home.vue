@@ -117,9 +117,21 @@
                   icon="bookmark-heart"
               ></b-icon> {{entry.liked}}
             </b-button>-->
-            <b-button href="#" variant="primary-outline">
+<!--            <b-button href="#" variant="primary-outline">
               <b-icon
                   icon="chevron-double-up"
+                  v-on:click="showModal(entry)"
+              ></b-icon>
+            </b-button>-->
+            <b-button variant="primary-outline">
+              <b-icon
+                  icon="x-circle"
+                  v-on:click="showModal(entry)"
+              ></b-icon>
+            </b-button>
+            <b-button variant="primary-outline">
+              <b-icon
+                  icon="check"
                   v-on:click="showModal(entry)"
               ></b-icon>
             </b-button>
@@ -155,6 +167,7 @@
     <OfferModal ref="offerModal"></OfferModal>
     <GetOffers ref="getOffers" v-on:getOffersSuccess="setOffers"></GetOffers>
     <AcceptOffer ref="acceptOffer"></AcceptOffer>
+    <RejectOffer ref="rejectOffer"></RejectOffer>
 
   </div>
 </template>
@@ -168,6 +181,7 @@ import UpdateModal from "@/components/UpdateModal";
 import OfferModal from "@/components/OfferModal";
 import GetOffers from "@/components/GetOffers";
 import AcceptOffer from "@/components/AcceptOffer";
+import RejectOffer from "@/components/RejectOffer";
 
 export default {
   name: "home",
@@ -181,6 +195,7 @@ export default {
   },
 
   components: {
+    RejectOffer,
     // EventsList,
     ServerComGetUserObjects,
     ServerComGetUserRelevantObjects,
@@ -218,9 +233,11 @@ export default {
       this.refreshObjects();
     },
     refreshObjects: function () {
-      this.$refs.userObjects.triggerGetObjects();
-      this.$refs.userRelevantObjects.triggerGetRelevantObjects();
-      this.$refs.getOffers.triggerGetOffers();
+      if (this.$store.getters.loggedIn) {
+        this.$refs.userObjects.triggerGetObjects();
+        this.$refs.userRelevantObjects.triggerGetRelevantObjects();
+        this.$refs.getOffers.triggerGetOffers();
+      }
     },
     likePost: function(url) {
       this.$refs.like.triggerLikePost(url);
