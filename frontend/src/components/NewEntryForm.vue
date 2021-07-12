@@ -37,7 +37,7 @@
                     >Create new author</b-button
                   >
                   <!--              <b-button v-on:click="getAuthorOptions">Get the authors</b-button>-->
-                  <b-button v-on:click="setAdditionalAuthors">+</b-button>
+                  <b-button v-on:click="setAdditionalAuthors" v-b-tooltip.hover title="Add more authors to lit entry.">+</b-button>
                 </b-input-group>
                 <b-form-select
                   v-for="index in additionalAuthors"

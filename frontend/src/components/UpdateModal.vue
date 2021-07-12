@@ -3,6 +3,7 @@
     <b-modal
       scrollable
       busy
+      size="xl"
       ref="updateModal"
       v-bind:title="modalTitle"
       @ok="sendUpdateToServer"

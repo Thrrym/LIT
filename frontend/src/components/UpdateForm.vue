@@ -37,10 +37,10 @@
                     v-bind:options="authorOptions"
                     v-model="selectedAuthors[0]"
                   ></b-form-select>
-                  <b-button v-on:click="addNewAuthor">
+                  <b-button v-on:click="addNewAuthor" variant="outline-secondary">
                     Create new author
                   </b-button>
-                  <b-button v-on:click="setAdditionalAuthors">+</b-button>
+                  <b-button v-on:click="setAdditionalAuthors" v-b-tooltip.hover title="Add more authors to lit entry.">+</b-button>
                 </b-input-group>
                 <b-form-select
                   v-for="index in additionalAuthors"
