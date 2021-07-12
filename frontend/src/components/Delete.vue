@@ -32,7 +32,7 @@ export default {
     deleteSuccess: function (response) {
       this.requestResponse = response;
       this.responseText = response.responseText;
-      this.responseJson = JSON.parse(this.responseText);
+      this.$emit("deleteSuccess");
       this.$refs.deleteSuccessModal.show();
     },
   },

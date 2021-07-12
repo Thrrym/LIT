@@ -31,6 +31,7 @@ export default {
       this.requestResponse = response;
       this.responseText = response.responseText;
       this.responseJson = JSON.parse(this.responseText);
+      this.$emit("acceptSuccess");
       this.$refs.acceptSuccessModal.show();
     },
   },

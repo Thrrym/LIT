@@ -33,6 +33,7 @@ export default {
       this.requestResponse = response;
       this.responseText = response.responseText;
       this.responseJson = JSON.parse(this.responseText);
+      this.$emit("rejectSuccess");
       this.$refs.acceptSuccessModal.show();
     },
   },

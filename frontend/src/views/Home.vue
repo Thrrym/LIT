@@ -166,12 +166,12 @@
         v-on:requestResponse="setRequestResponseLike"
     ></ServerComLikePost>
     <HomeModal ref="modal"></HomeModal>
-    <UpdateModal ref="updateModal"></UpdateModal>
+    <UpdateModal ref="updateModal" v-on:updateSuccess="refreshObjects"></UpdateModal>
     <OfferModal ref="offerModal"></OfferModal>
     <GetOffers ref="getOffers" v-on:getOffersSuccess="setOffers"></GetOffers>
-    <AcceptOffer ref="acceptOffer"></AcceptOffer>
-    <RejectOffer ref="rejectOffer"></RejectOffer>
-    <Delete ref="delete"></Delete>
+    <AcceptOffer ref="acceptOffer" v-on:acceptSuccess="refreshObjects"></AcceptOffer>
+    <RejectOffer ref="rejectOffer" v-on:rejectSuccess="refreshObjects"></RejectOffer>
+    <Delete ref="delete" v-on:deleteSuccess="refreshObjects"></Delete>
 
   </div>
 </template>
