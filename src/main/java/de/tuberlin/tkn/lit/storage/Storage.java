@@ -109,10 +109,6 @@ public class Storage implements IStorage {
     }
 
     //# ACTOR
-    @Override
-    public OrderedCollection getOutbox(String actorName) {
-        return outboxes.get(actorName);
-    }
 
     @Override
     public List<Activity> getPendingActivities(String url) {
@@ -151,33 +147,6 @@ public class Storage implements IStorage {
     }
 
     @Override
-    public OrderedCollection getObjectsCreatedByActor(String actorName) {
-        String actorId = getActor(actorName).getId();
-        List<LinkOrObject> results = objects.values().stream().filter(value -> value.getGenerator().getLink().equals(actorId)).map(LinkOrObject::new).collect(Collectors.toList());
-        return new OrderedCollection(results);
-    }
-
-    @Override
-    public OrderedCollection getRelevantObjects(String actorName) {
-        return new OrderedCollection(relevantObjects.get(actorName).stream().map((id) -> new LinkOrObject(objects.get(id))).collect(Collectors.toList()));
-    }
-
-    public void addToRelevantObjects(String actorName, LinkOrObject toAdd) {
-        relevantObjects.get(actorName).add(toAdd.getId());
-    }
-
-    @Override
-    public void addToInbox(String actorName, LinkOrObject toAdd) {
-        inboxes.get(actorName).getOrderedItems().add(toAdd);
-    }
-
-    @Override
-    public void addToOutbox(String actorName, LinkOrObject toAdd) {
-        outboxes.get(actorName).getOrderedItems().add(toAdd);
-    }
-
-
-    @Override
     public Actor createActor(Actor actor) {
 
         IPersonRepository personRepository = personService.getRepository();
@@ -201,10 +170,6 @@ public class Storage implements IStorage {
         liked.put(actor.getName(), new HashSet<>());
 
         personRepository.save((Person)actor);
-        Following newFollowing = new Following();
-        newFollowing.setActorname(actor.getName());
-        //TODO create social objects for person
-
         return actors.get(actor.getName());
     }
 
@@ -775,9 +740,14 @@ public class Storage implements IStorage {
             obj = toAdd.getLitObject();
             Outbox outbox = new Outbox();
             if(obj instanceof Activity) {
-                long l = ((Activity) obj).getObject().getLitObject().getActivityPubID();
-                outbox.setObjectID(l); //# TODO: id of object instead of activity
-                outbox.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+                LinkOrObject lor = ((Activity) obj).getObject();
+                // TODO FIX
+                if(lor.getLitObject() != null) {
+                    ActivityPubObject apo = lor.getLitObject();
+                    long l = apo.getActivityPubID();
+                    outbox.setObjectID(l); //# TODO: id of object instead of activity
+                    outbox.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+                }
             }
             outbox.setActorname(actorName);
             outboxService.getRepository().save(outbox);

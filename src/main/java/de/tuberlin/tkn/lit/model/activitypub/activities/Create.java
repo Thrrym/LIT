@@ -35,11 +35,12 @@ public class Create extends Activity {
             }
             if (getObject().getLitObject() instanceof BibTeXArticle) {
                 BibTeXArticle article = (BibTeXArticle) getObject().getLitObject();
-                for (LinkOrObject author : ((BibTeXArticle) getObject().getLitObject()).getAuthors()) {
-                    if (storage.getObject(author.getId()) == null) {
-                        return null;
+                if(article.getAuthors() != null)
+                    for (LinkOrObject author : ((BibTeXArticle) getObject().getLitObject()).getAuthors()) {
+                        if (storage.getObject(author.getId()) == null) {
+                            return null;
+                        }
                     }
-                }
             }
             createdObject = storage.createObject(actorName, getObject().getLitObject().getType(), getObject().getLitObject());
             setObject(new LinkOrObject(createdObject));
