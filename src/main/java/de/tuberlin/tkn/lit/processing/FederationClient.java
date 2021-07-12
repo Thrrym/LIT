@@ -1,5 +1,6 @@
 package de.tuberlin.tkn.lit.processing;
 
+import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
 import java.util.Arrays;
 import java.util.List;
@@ -242,6 +243,23 @@ public class FederationClient implements IFederationClient{
 		// send get request		
     	String[] result = sendWithTimeout(url, null, String[].class, "GET");
 		return new ArrayList<>(Arrays.asList(result));
+	}
+
+	/**
+	 *  Allows to request actor names from all known remote hosts.
+	 * @param  storage The storage which has a list of known hosts.
+	 * @return List of actor names.
+	 */
+	public List<String> getRemoteActors(IStorage storage) {
+		List<String> remote_hosts = storage.getFederatedHosts();
+		List<String> remote_actors = new LinkedList<>();
+
+		for (String host : remote_hosts){
+			List<String> actors = sendWithTimeout(host+"/actors-list", null, List.class, "GET");
+			remote_actors.addAll(actors);
+		}
+
+		return remote_actors;
 	}
 
 }
