@@ -134,6 +134,7 @@ export default {
       this.responseText = response.responseText;
       this.$refs["modal-1"].hide();
       this.success = true;
+      this.$emit("newAuthorSuccess");
       this.$refs.successModal.show();
     },
     handleRequestError: function () {
