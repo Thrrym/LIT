@@ -2,7 +2,7 @@ package de.tuberlin.tkn.lit.service_impl_activities;
 
 import de.tuberlin.tkn.lit.model.activitypub.activities.Ignore;
 import de.tuberlin.tkn.lit.service_interface_activities.IIgnoreService;
-import de.tuberlin.tkn.lit.repos_activities.IIgnoreRepository;
+import de.tuberlin.tkn.lit.storage_activities.IIgnoreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

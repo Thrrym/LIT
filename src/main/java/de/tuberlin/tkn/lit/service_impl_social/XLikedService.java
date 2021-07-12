@@ -1,9 +1,8 @@
 package de.tuberlin.tkn.lit.service_impl_social;
 
-import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.social.Liked;
 import de.tuberlin.tkn.lit.service_interface_social.ILikedService;
-import de.tuberlin.tkn.lit.repos_social.ILikedRepository;
+import de.tuberlin.tkn.lit.storage_social.ILikedRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

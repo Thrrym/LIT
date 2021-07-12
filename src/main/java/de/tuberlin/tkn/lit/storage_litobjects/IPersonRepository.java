@@ -1,4 +1,4 @@
-package de.tuberlin.tkn.lit.repos_litobjects;
+package de.tuberlin.tkn.lit.storage_litobjects;
 
 import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
 import org.springframework.data.repository.CrudRepository;

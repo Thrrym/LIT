@@ -2,7 +2,7 @@ package de.tuberlin.tkn.lit.service_impl_activities;
 
 import de.tuberlin.tkn.lit.model.activitypub.activities.Reject;
 import de.tuberlin.tkn.lit.service_interface_activities.IRejectService;
-import de.tuberlin.tkn.lit.repos_activities.IRejectRepository;
+import de.tuberlin.tkn.lit.storage_activities.IRejectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -2,7 +2,7 @@ package de.tuberlin.tkn.lit.service_impl_litobjects;
 
 import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
 import de.tuberlin.tkn.lit.service_interface_litobjects.IPersonService;
-import de.tuberlin.tkn.lit.repos_litobjects.IPersonRepository;
+import de.tuberlin.tkn.lit.storage_litobjects.IPersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -1,7 +1,7 @@
 package de.tuberlin.tkn.lit.service_interface_activities;
 
 import de.tuberlin.tkn.lit.model.activitypub.activities.Create;
-import de.tuberlin.tkn.lit.repos_activities.ICreateRepository;
+import de.tuberlin.tkn.lit.storage_activities.ICreateRepository;
 
 import java.util.List;
 

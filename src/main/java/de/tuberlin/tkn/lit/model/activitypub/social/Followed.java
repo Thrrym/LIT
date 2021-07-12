@@ -11,6 +11,28 @@ public class Followed {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     private String actorname;
+    private long objectID;
+    private String objectType;
+
+    public void setActorname(String actorname) {
+        this.actorname = actorname;
+    }
+
+    public long getObjectID() {
+        return objectID;
+    }
+
+    public void setObjectID(long objectID) {
+        this.objectID = objectID;
+    }
+
+    public String getObjectType() {
+        return objectType;
+    }
+
+    public void setObjectType(String objectType) {
+        this.objectType = objectType;
+    }
 
     public String getActorname() {
         return actorname;

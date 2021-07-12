@@ -2,7 +2,7 @@ package de.tuberlin.tkn.lit.service_impl_activities;
 
 import de.tuberlin.tkn.lit.model.activitypub.activities.Update;
 import de.tuberlin.tkn.lit.service_interface_activities.IUpdateService;
-import de.tuberlin.tkn.lit.repos_activities.IUpdateRepository;
+import de.tuberlin.tkn.lit.storage_activities.IUpdateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

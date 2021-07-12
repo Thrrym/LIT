@@ -3,8 +3,7 @@ package de.tuberlin.tkn.lit.storage;
 import de.tuberlin.tkn.lit.constants.IActivityConstants;
 import de.tuberlin.tkn.lit.constants.ILitObjectConstants;
 import de.tuberlin.tkn.lit.constants.UriConstants;
-import de.tuberlin.tkn.lit.model.activitypub.social.Inbox;
-import de.tuberlin.tkn.lit.model.activitypub.social.Outbox;
+import de.tuberlin.tkn.lit.model.activitypub.social.*;
 import de.tuberlin.tkn.lit.service_interface_litobjects.*;
 import de.tuberlin.tkn.lit.service_interface_social.*;
 import de.tuberlin.tkn.lit.model.activitypub.activities.*;
@@ -16,10 +15,9 @@ import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
 import de.tuberlin.tkn.lit.model.lit.*;
 import de.tuberlin.tkn.lit.service_interface_activities.*;
-import de.tuberlin.tkn.lit.repos_activities.*;
-import de.tuberlin.tkn.lit.repos_litobjects.*;
+import de.tuberlin.tkn.lit.storage_activities.*;
+import de.tuberlin.tkn.lit.storage_litobjects.*;
 import de.tuberlin.tkn.lit.util.UriUtilities;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -44,6 +42,8 @@ public class Storage implements IStorage {
     IJournalService journalService;
     @Autowired
     IPaperService paperService;
+    @Autowired
+    IActivityPubCollectionService activityPubCollectionService;
 
     //# SOCIAL
     @Autowired
@@ -57,7 +57,8 @@ public class Storage implements IStorage {
     @Autowired
     IOutboxService outboxService;
     @Autowired
-    IActivityPubCollectionService activityPubCollectionService;
+    IRelevantObjectService relevantObjectService;
+
 
     //# ACTIVITIES
     @Autowired
@@ -96,8 +97,7 @@ public class Storage implements IStorage {
     private int serverPort;
 
 
-    //# TODO ACTOR
-
+    //# ACTOR
     @Override
     public Actor createActor(Actor actor) {
 
@@ -137,14 +137,13 @@ public class Storage implements IStorage {
         throw new NullPointerException();
     }
 
-    //# TODO
     @Override
     public boolean removeActor(Actor actor) {
         IPersonRepository personRepository = personService.getRepository();
         List<Person> persons = (List<Person>) personRepository.findAll();
         for(Person p :  persons) {
             if(p.getName().equals(actor.getName())) {
-                //# TODO remove actor from inboxes & outboxes
+                deleteActorInboxOutbox(p);
                 return true;
             }
         }
@@ -168,6 +167,7 @@ public class Storage implements IStorage {
         return false;
     }
 
+    //# OBJECT
     @Override
     public ActivityPubObject createObject(String actorName, String objectType, ActivityPubObject object) {
         UUID uuid = UUID.randomUUID();
@@ -343,7 +343,7 @@ public class Storage implements IStorage {
         return new ActivityPubCollection(activityPubCollections.stream().map(LinkOrObject::new).collect(Collectors.toList()));
     }
 
-    //# TODO
+    //#
     @Override
     public ActivityPubObject createObject(String id, ActivityPubObject object) {
         //objects.put(id, object);
@@ -431,26 +431,62 @@ public class Storage implements IStorage {
 
     }
 
-    //# TODO
     @Override
     public OrderedCollection getObjectsCreatedByActor(String actorName) {
         String actorId = getActor(actorName).getId();
-        List<LinkOrObject> results = objects.values().stream().filter(value -> value.getGenerator().getLink().equals(actorId)).map(LinkOrObject::new).collect(Collectors.toList());
-        return new OrderedCollection(results);
+        List<LinkOrObject> createdByActor = new ArrayList<LinkOrObject>();
+        List<Author> authors = (List<Author>) authorService.getRepository().findAll();
+        for(Author author : authors) { if(author.getGenerator().getLitObject().getName().equals(actorName)) createdByActor.add(new LinkOrObject(author)); }
+        List<Paper> papers = (List<Paper>) paperService.getRepository().findAll();
+        for(Paper paper : papers) { if(paper.getGenerator().getLitObject().getName().equals(actorName)) createdByActor.add(new LinkOrObject(paper)); }
+        List<Book> books = (List<Book>) bookService.getRepository().findAll();
+        for(Book book : books) { if(book.getGenerator().getLitObject().getName().equals(actorName)) createdByActor.add(new LinkOrObject(book)); }
+        List<BibTeXArticle> bibTeXArticles = (List<BibTeXArticle>) bibTeXArticleService.getRepository().findAll();
+        for(BibTeXArticle bibTeXArticle : bibTeXArticles) { if(bibTeXArticle.getGenerator().getLitObject().getName().equals(actorName)) createdByActor.add(new LinkOrObject(bibTeXArticle)); }
+        List<Journal> journals = (List<Journal>) journalService.getRepository().findAll();
+        for(Journal journal : journals) { if(journal.getGenerator().getLitObject().getName().equals(actorName)) createdByActor.add(new LinkOrObject(journal)); }
+        //List<LinkOrObject> results = objects.values().stream().filter(value -> value.getGenerator().getLink().equals(actorId)).map(LinkOrObject::new).collect(Collectors.toList());
+        return new OrderedCollection(createdByActor);
     }
 
-    //# TODO
     @Override
     public OrderedCollection getRelevantObjects(String actorName) {
-        return new OrderedCollection(relevantObjects.get(actorName).stream().map((id) -> new LinkOrObject(objects.get(id))).collect(Collectors.toList()));
+        List<RelevantObject> relevantObjects = (List<RelevantObject>) relevantObjectService.getRepository().findAll();
+        List<LinkOrObject> returnObjects = new ArrayList();
+        for(int i = 0; i<relevantObjects.size(); i++) {
+            RelevantObject current = relevantObjects.get(i);
+            String name = current.getActorname();
+            if(name.equals(actorName)) {
+                String objectType = current.getObjectType();
+
+                long id = current.getObjectID();
+                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
+            }
+        }
+        if(returnObjects.size() > 0) return new OrderedCollection(returnObjects);
+
+        return new OrderedCollection(returnObjects.stream().map((id) -> new LinkOrObject(objects.get(id))).collect(Collectors.toList()));
     }
 
-    //# TODO
+    @Override
     public void addToRelevantObjects(String actorName, LinkOrObject toAdd) {
-        relevantObjects.get(actorName).add(toAdd.getId());
+        ActivityPubObject obj;
+        String link;
+        if(toAdd.getLitObject() == null) {
+            link = toAdd.getLink();
+        }
+        else {
+            obj = toAdd.getLitObject();
+            System.out.println("HELLO");
+            RelevantObject relevantObject = new RelevantObject();
+            relevantObject.setObjectID(obj.getActivityPubID()); //# TODO: id of object instead of activity
+            if(obj instanceof Activity) relevantObject.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+            relevantObject.setActorname(actorName);
+            relevantObjectService.getRepository().save(relevantObject);
+        }
     }
 
-    //# TODO ACTIVITY
+    //# ACTIVITY
     @Override
     public Activity getActivity(UUID id) {
 
@@ -547,10 +583,22 @@ public class Storage implements IStorage {
         return null;
     }
 
-    //# TODO LIKED
+    //# LIKED
     @Override
     public OrderedCollection getLikedCollection(String actorName) {
-        return new OrderedCollection(liked.get(actorName).stream().map((id) -> new LinkOrObject(objects.get(id))).collect(Collectors.toList()));
+        List<Liked> likedList = (List<Liked>) likedService.getRepository().findAll();
+        List<LinkOrObject> returnObjects = new ArrayList();
+        for(int i = 0; i<likedList.size(); i++) {
+            Liked current = likedList.get(i);
+            String name = current.getActorname();
+            if(name.equals(actorName)) {
+                String objectType = current.getObjectType();
+                long id = current.getObjectID();
+                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
+            }
+        }
+        if(returnObjects.size() > 0) return new OrderedCollection(returnObjects);
+        return null;
     }
 
     @Override
@@ -563,53 +611,31 @@ public class Storage implements IStorage {
         else {
             obj = toAdd.getLitObject();
             System.out.println("HELLO");
-            Inbox inbox = new Inbox();
-            inbox.setObjectID(obj.getActivityPubID());
-            if(obj instanceof Activity) inbox.setObjectType(((Activity) obj).getObject().getLitObject().getType());
-            inbox.setActorname(actorName);
-            inboxService.getRepository().save(inbox);
+            Liked liked = new Liked();
+            liked.setObjectID(obj.getActivityPubID());
+            if(obj instanceof Activity) liked.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+            liked.setActorname(actorName);
+            likedService.getRepository().save(liked);
         }
-
-//        IOutboxRepository outboxRepository = outboxService.getRepository();
-//        outboxRepository.save(new Outbox.OutboxItems();
-        return;
-        //outboxes.get(actorName).getOrderedItems().add(toAdd);
     }
 
-    //# TODO FOLLOWING
-    @Override
-    public OrderedCollection getFollowingCollection(String actorName) {
-        return followingCollections.get(actorName);
-    }
-
-    @Override
-    public void addToFollowing(String actorName, LinkOrObject toAdd) {
-        followingCollections.get(actorName).getOrderedItems().add(toAdd);
-    }
-
-    //# TODO FOLLOWERS
-    @Override
-    public OrderedCollection getFollowersCollection(String actorName) {
-        return new OrderedCollection();
-        //return followersCollections.get(actorName);
-    }
-
-    @Override
-    public void addToFollowers(String actorName, LinkOrObject toAdd) {
-        followersCollections.get(actorName).getOrderedItems().add(toAdd);
-    }
-
+    //# INBOX
     @Override
     public OrderedCollection getInbox(String actorName) {
-
-
-        OrderedCollection orderedCollection = inboxes.get(actorName);
-        if (orderedCollection == null) {
-            throw new NullPointerException();
+        List<Inbox> inboxList = (List<Inbox>) inboxService.getRepository().findAll();
+        List<LinkOrObject> returnObjects = new ArrayList();
+        for(int i = 0; i<inboxList.size(); i++) {
+            Inbox current = inboxList.get(i);
+            String name = current.getActorname();
+            if(name.equals(actorName)) {
+                String objectType = current.getObjectType();
+                long id = current.getObjectID();
+                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
+            }
         }
-        return orderedCollection;
+        if(returnObjects.size() > 0) return new OrderedCollection(returnObjects);
+        return null;
     }
-    //# TODO INBOX
 
     @Override
     public void addToInbox(String actorName, LinkOrObject toAdd) {
@@ -634,23 +660,23 @@ public class Storage implements IStorage {
         //outboxes.get(actorName).getOrderedItems().add(toAdd);
     }
 
-    //# TODO OUTBOX
+    //# OUTBOX
     @Override
     public OrderedCollection getOutbox(String actorName) {
         List<Outbox> outboxList = (List<Outbox>) outboxService.getRepository().findAll();
+        List<LinkOrObject> returnObjects = new ArrayList();
         for(int i = 0; i<outboxList.size(); i++) {
             Outbox current = outboxList.get(i);
             String name = current.getActorname();
             if(name.equals(actorName)) {
                 String objectType = current.getObjectType();
 
-
                 long id = current.getObjectID();
-                findObjectinTable(String.valueOf(id), objectType);
+                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
             }
         }
+        if(returnObjects.size() > 0) return new OrderedCollection(returnObjects);
         return null;
-        //return outboxes.get(actorName);
     }
 
     @Override
@@ -662,21 +688,88 @@ public class Storage implements IStorage {
         }
         else {
             obj = toAdd.getLitObject();
-            System.out.println("HELLO");
             Outbox outbox = new Outbox();
             outbox.setObjectID(obj.getActivityPubID()); //# TODO: id of object instead of activity
             if(obj instanceof Activity) outbox.setObjectType(((Activity) obj).getObject().getLitObject().getType());
             outbox.setActorname(actorName);
             outboxService.getRepository().save(outbox);
         }
-
-//        IOutboxRepository outboxRepository = outboxService.getRepository();
-//        outboxRepository.save(new Outbox.OutboxItems();
-        return;
-        //outboxes.get(actorName).getOrderedItems().add(toAdd);
     }
 
-    public ActivityPubObject findObjectinTable(String id, String tableName) {
+    //# FOLLOWING
+    @Override
+    public OrderedCollection getFollowingCollection(String actorName) {
+        List<Following> followingList = (List<Following>) followingService.getRepository().findAll();
+        List<LinkOrObject> returnObjects = new ArrayList();
+        for(int i = 0; i<followingList.size(); i++) {
+            Following current = followingList.get(i);
+            String name = current.getActorname();
+            if(name.equals(actorName)) {
+                String objectType = current.getObjectType();
+
+                long id = current.getObjectID();
+                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
+            }
+        }
+        if(returnObjects.size() > 0) return new OrderedCollection(returnObjects);
+        return null;
+    }
+
+    @Override
+    public void addToFollowing(String actorName, LinkOrObject toAdd) {
+        ActivityPubObject obj;
+        String link;
+        if(toAdd.getLitObject() == null) {
+            link = toAdd.getLink();
+        }
+        else {
+            obj = toAdd.getLitObject();
+            Following following = new Following();
+            following.setObjectID(obj.getActivityPubID()); //# TODO: id of object instead of activity
+            if(obj instanceof Activity) following.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+            following.setActorname(actorName);
+            followingService.getRepository().save(following);
+        }
+    }
+
+    //# FOLLOWERS
+    @Override
+    public OrderedCollection getFollowersCollection(String actorName) {
+        List<Followed> followedList = (List<Followed>) followedService.getRepository().findAll();
+        List<LinkOrObject> returnObjects = new ArrayList();
+        for(int i = 0; i<followedList.size(); i++) {
+            Followed current = followedList.get(i);
+            String name = current.getActorname();
+            if(name.equals(actorName)) {
+                String objectType = current.getObjectType();
+
+                long id = current.getObjectID();
+                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
+            }
+        }
+        if(returnObjects.size() > 0) return new OrderedCollection(returnObjects);
+        return null;
+    }
+
+    @Override
+    public void addToFollowers(String actorName, LinkOrObject toAdd) {
+        ActivityPubObject obj;
+        String link;
+        if(toAdd.getLitObject() == null) {
+            link = toAdd.getLink();
+        }
+        else {
+            obj = toAdd.getLitObject();
+            Followed followed = new Followed();
+            followed.setObjectID(obj.getActivityPubID()); //# TODO: id of object instead of activity
+            if(obj instanceof Activity) followed.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+            followed.setActorname(actorName);
+            followedService.getRepository().save(followed);
+        }
+    }
+
+    //# STORAGE UTIL
+    public ActivityPubObject findObjectInTable(String id, String tableName) {
         if(tableName.equals(ILitObjectConstants.AUTHOR)) {
             IAuthorRepository authorRepo = authorService.getRepository();
             List<Author> authors = (List<Author>) authorRepo.findAll();
@@ -756,4 +849,10 @@ public class Storage implements IStorage {
         return null;
     }
 
+    public void deleteActorInboxOutbox(Actor actor) {
+        List<Inbox> inboxes = (List<Inbox>)inboxService.getRepository().findAll();
+        for(Inbox inbox : inboxes) if(inbox.getActorname().equals(actor.getName())) inboxService.getRepository().delete(inbox);
+        List<Outbox> outboxes = (List<Outbox>)outboxService.getRepository().findAll();
+        for(Outbox outbox : outboxes) if(outbox.getActorname().equals(actor.getName())) outboxService.getRepository().delete(outbox);
+    }
 }

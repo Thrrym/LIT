@@ -2,7 +2,7 @@ package de.tuberlin.tkn.lit.service_impl_litobjects;
 
 import de.tuberlin.tkn.lit.model.lit.Paper;
 import de.tuberlin.tkn.lit.service_interface_litobjects.IPaperService;
-import de.tuberlin.tkn.lit.repos_litobjects.IPaperRepository;
+import de.tuberlin.tkn.lit.storage_litobjects.IPaperRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

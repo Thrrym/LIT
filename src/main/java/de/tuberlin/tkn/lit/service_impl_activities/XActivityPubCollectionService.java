@@ -2,7 +2,7 @@ package de.tuberlin.tkn.lit.service_impl_activities;
 
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.service_interface_litobjects.IActivityPubCollectionService;
-import de.tuberlin.tkn.lit.repos_litobjects.IActivityPubCollectionRepository;
+import de.tuberlin.tkn.lit.storage_litobjects.IActivityPubCollectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -2,7 +2,7 @@ package de.tuberlin.tkn.lit.service_impl_activities;
 
 import de.tuberlin.tkn.lit.model.activitypub.activities.Like;
 import de.tuberlin.tkn.lit.service_interface_activities.ILikeService;
-import de.tuberlin.tkn.lit.repos_activities.ILikeRepository;
+import de.tuberlin.tkn.lit.storage_activities.ILikeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

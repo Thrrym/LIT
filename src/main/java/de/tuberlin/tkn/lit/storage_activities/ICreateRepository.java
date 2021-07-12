@@ -1,4 +1,4 @@
-package de.tuberlin.tkn.lit.repos_activities;
+package de.tuberlin.tkn.lit.storage_activities;
 
 import de.tuberlin.tkn.lit.model.activitypub.activities.Create;
 import org.springframework.data.repository.CrudRepository;

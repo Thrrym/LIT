@@ -1,7 +1,7 @@
 package de.tuberlin.tkn.lit.service_interface_litobjects;
 
 import de.tuberlin.tkn.lit.model.lit.Paper;
-import de.tuberlin.tkn.lit.repos_litobjects.IPaperRepository;
+import de.tuberlin.tkn.lit.storage_litobjects.IPaperRepository;
 
 import java.util.List;
 
