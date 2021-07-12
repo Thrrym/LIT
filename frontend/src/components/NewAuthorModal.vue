@@ -72,7 +72,7 @@
       </b-container>
     </b-modal>
 
-    <b-modal ref="successModal">Success</b-modal>
+    <b-modal ref="successModal" title="Author created" ok-only>You created an new author.</b-modal>
 
     <ServerComNewAuthor
       ref="com"
