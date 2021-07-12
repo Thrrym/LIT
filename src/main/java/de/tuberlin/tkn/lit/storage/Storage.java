@@ -310,78 +310,85 @@ public class Storage implements IStorage {
         String id = object.getId();
         String objectType = object.getType();
 
-        if(objectType.equals(ILitObjectConstants.AUTHOR)) {
+        if(object instanceof Author) {
             IAuthorRepository authorRepo = authorService.getRepository();
             List<Author> authors = (List<Author>) authorRepo.findAll();
             for(Author author : authors) {
                 if(author.getId().equals(id)) {
                     Author newAuthor = (Author) object;
-                    authorRepo.delete(author);
+                    //authorRepo.delete(author);
+                    author.setType("Tombstone");
                     authorRepo.save(newAuthor);
                     return newAuthor;
                 }
             }
             return null;
         }
-        if(objectType.equals(ILitObjectConstants.BIBTEXARTICLE)) {
+        if(object instanceof BibTeXArticle) {
             IBibTeXArticleRepository bibTeXArticleRepository = bibTeXArticleService.getRepository();
             List<BibTeXArticle> bibTeXArticles = (List<BibTeXArticle>) bibTeXArticleRepository.findAll();
             for(BibTeXArticle bibTeXArticle : bibTeXArticles) {
                 if(bibTeXArticle.getId().equals(id)) {
                     BibTeXArticle newBibTeXArticle = (BibTeXArticle) object;
-                    bibTeXArticleRepository.delete(bibTeXArticle);
+                    bibTeXArticle.setType("Tombstone");
                     bibTeXArticleRepository.save(newBibTeXArticle);
                     return newBibTeXArticle;
                 }
             }
             return null;
         }
-        if(objectType.equals(ILitObjectConstants.BOOK)) {
+        if(object instanceof Book) {
             IBookRepository bookRepository = bookService.getRepository();
             List<Book> books = (List<Book>) bookRepository.findAll();
             for(Book book : books) {
                 if(book.getId().equals(id)) {
                     Book newBook = (Book) object;
-                    bookRepository.delete(book);
+                    //bookRepository.delete(book);
+                    book.setType("Tombstone");
                     bookRepository.save(newBook);
                     return newBook;
                 }
             }
             return null;
         }
-        if(objectType.equals(ILitObjectConstants.JOURNAL)) {
+        if(object instanceof Journal) {
             IJournalRepository journalRepository = journalService.getRepository();
             List<Journal> journals = (List<Journal>) journalRepository.findAll();
             for(Journal journal : journals) {
                 if(journal.getId().equals(id)) {
                     Journal newJournal = (Journal) object;
-                    journalRepository.delete(journal);
+                    //journalRepository.delete(journal);
+                    journal.setType("Tombstone");
                     journalRepository.save(newJournal);
                     return newJournal;
                 }
             }
             return null;
         }
-        if(objectType.equals(ILitObjectConstants.PAPER)) {
+        if(object instanceof Paper) {
             IPaperRepository paperRepository = paperService.getRepository();
             List<Paper> papers = (List<Paper>) paperRepository.findAll();
             for(Paper paper : papers) {
                 if(paper.getId().equals(id)) {
                     Paper newPaper = (Paper) object;
-                    paperRepository.delete(paper);
+                    //paperRepository.delete(paper);
+                    paper.setType("Tombstone");
                     paperRepository.save(newPaper);
                     return newPaper;
                 }
             }
             return null;
         }
-        if(objectType.equals(ILitObjectConstants.ACTIVITYPUBCOLLECTION)) {
+
+        //Activityproblem
+        if(object instanceof ActivityPubCollection) {
             IActivityPubCollectionRepository activityPubCollectionRepository = activityPubCollectionService.getRepository();
             List<ActivityPubCollection> activityPubCollections = (List<ActivityPubCollection>) activityPubCollectionRepository.findAll();
             for(ActivityPubCollection activityPubCollection : activityPubCollections) {
                 if(activityPubCollection.getId().equals(id)) {
                     ActivityPubCollection newActivityPubCollection = (ActivityPubCollection) object;
-                    activityPubCollectionRepository.delete(activityPubCollection);
+                    //activityPubCollectionRepository.delete(activityPubCollection);
+                    activityPubCollection.setType("Tombstone");
                     activityPubCollectionRepository.save(newActivityPubCollection);
                     return newActivityPubCollection;
                 }
@@ -410,7 +417,8 @@ public class Storage implements IStorage {
             for(Author author : authors) {
                 if(author.getId().equals(id)) {
                     Author newAuthor = (Author) object;
-                    authorRepo.delete(author);
+                    //authorRepo.delete(author);
+                    author.setType("Tombstone");
                     authorRepo.save(newAuthor);
                     return newAuthor;
                 }
@@ -423,7 +431,8 @@ public class Storage implements IStorage {
             for(BibTeXArticle bibTeXArticle : bibTeXArticles) {
                 if(bibTeXArticle.getId().equals(id)) {
                     BibTeXArticle newBibTeXArticle = (BibTeXArticle) object;
-                    bibTeXArticleRepository.delete(bibTeXArticle);
+                    //bibTeXArticleRepository.delete(bibTeXArticle);
+                    bibTeXArticle.setType("Tombstone");
                     bibTeXArticleRepository.save(newBibTeXArticle);
                     return newBibTeXArticle;
                 }
@@ -436,7 +445,8 @@ public class Storage implements IStorage {
             for(Book book : books) {
                 if(book.getId().equals(id)) {
                     Book newBook = (Book) object;
-                    bookRepository.delete(book);
+                    //bookRepository.delete(book);
+                    book.setType("Tombstone");
                     bookRepository.save(newBook);
                     return newBook;
                 }
@@ -449,7 +459,8 @@ public class Storage implements IStorage {
             for(Journal journal : journals) {
                 if(journal.getId().equals(id)) {
                     Journal newJournal = (Journal) object;
-                    journalRepository.delete(journal);
+                    //journalRepository.delete(journal);
+                    journal.setType("Tombstone");
                     journalRepository.save(newJournal);
                     return newJournal;
                 }
@@ -462,7 +473,8 @@ public class Storage implements IStorage {
             for(Paper paper : papers) {
                 if(paper.getId().equals(id)) {
                     Paper newPaper = (Paper) object;
-                    paperRepository.delete(paper);
+                    //paperRepository.delete(paper);
+                    paper.setType("Tombstone");
                     paperRepository.save(newPaper);
                     return newPaper;
                 }
@@ -475,7 +487,8 @@ public class Storage implements IStorage {
             for(ActivityPubCollection activityPubCollection : activityPubCollections) {
                 if(activityPubCollection.getId().equals(id)) {
                     ActivityPubCollection newActivityPubCollection = (ActivityPubCollection) object;
-                    activityPubCollectionRepository.delete(activityPubCollection);
+                    //activityPubCollectionRepository.delete(activityPubCollection);
+                    activityPubCollection.setType("Tombstone");
                     activityPubCollectionRepository.save(newActivityPubCollection);
                     return newActivityPubCollection;
                 }
@@ -938,8 +951,14 @@ public class Storage implements IStorage {
 
     public void deleteActorInboxOutbox(Actor actor) {
         List<Inbox> inboxes = (List<Inbox>)inboxService.getRepository().findAll();
-        for(Inbox inbox : inboxes) if(inbox.getActorname().equals(actor.getName())) inboxService.getRepository().delete(inbox);
+        for(Inbox inbox : inboxes) if(inbox.getActorname().equals(actor.getName())) {
+            inbox.setObjectType("Tombstone");
+            inboxService.getRepository().save(inbox);
+        }
         List<Outbox> outboxes = (List<Outbox>)outboxService.getRepository().findAll();
-        for(Outbox outbox : outboxes) if(outbox.getActorname().equals(actor.getName())) outboxService.getRepository().delete(outbox);
+        for(Outbox outbox : outboxes) if(outbox.getActorname().equals(actor.getName())) {
+            outbox.setObjectType("Tombstone");
+            outboxService.getRepository().save(outbox);
+        }
     }
 }
