@@ -1,11 +1,18 @@
 <template>
   <div>
-    <b-modal ref="logout-modal" v-bind:title="getModalTitle" hide-footer>
+    <b-modal ref="logout-modal" v-bind:title="getModalTitle" style="">
       <!-- <component-to-re-render :key="componentKey"/> -->
       Hello {{ username }}, you are now logged out.
-    <button v-on:click="refreshPage">
+<!--    <button v-on:click="refreshPage">
       <b-icon icon="house" font-scale="1"></b-icon>
-    </button>
+    </button>-->
+      <template #modal-footer="{ }">
+        <!-- Emulate built in modal footer ok and cancel button actions -->
+<!--        <b-button variant="primary" @click="ok()"> Update entry </b-button>-->
+        <router-link to="/">
+          <b-icon icon="house-fill" font-scale="1" v-on:click="closeModal"></b-icon>
+        </router-link>
+      </template>
     
     </b-modal>
   </div>
@@ -33,6 +40,9 @@ export default {
      refreshPage: function(){
       return this.$router.go();
     },
+    closeModal: function () {
+      this.$refs["logout-modal"].hide();
+    },
     //   forceRerender() {
     //   this.componentKey += 1;
     // }
@@ -45,6 +55,4 @@ export default {
 };
 </script>
 
-<style>
-
-</style>
+<style scoped></style>
