@@ -44,6 +44,9 @@
               <b-icon icon="pencil-square" v-on:click="editObject(entry.id)"></b-icon>
             </b-button>
             <b-button href="#" variant="primary-outline">
+              <b-icon icon="trash" v-on:click="deleteEntry(entry)"></b-icon>
+            </b-button>
+            <b-button href="#" variant="primary-outline">
               <b-icon icon="chevron-double-up" v-on:click="showModal(entry)"></b-icon>
             </b-button>
           </small>
@@ -168,6 +171,7 @@
     <GetOffers ref="getOffers" v-on:getOffersSuccess="setOffers"></GetOffers>
     <AcceptOffer ref="acceptOffer"></AcceptOffer>
     <RejectOffer ref="rejectOffer"></RejectOffer>
+    <Delete ref="delete"></Delete>
 
   </div>
 </template>
@@ -182,6 +186,7 @@ import OfferModal from "@/components/OfferModal";
 import GetOffers from "@/components/GetOffers";
 import AcceptOffer from "@/components/AcceptOffer";
 import RejectOffer from "@/components/RejectOffer";
+import Delete from "@/components/Delete";
 
 export default {
   name: "home",
@@ -205,6 +210,7 @@ export default {
     OfferModal,
     GetOffers,
     AcceptOffer,
+    Delete,
   },
   methods: {
     setRequestResponse: function (response) {
@@ -279,7 +285,10 @@ export default {
     acceptOffer: function (offer) {
       this.$refs.acceptOffer.triggerAcceptOffer(offer.id);
     },
-  },
+    deleteEntry: function(entry) {
+      this.$refs.delete.trigger(entry.id);
+    },
+},
   computed: {
     getResponse: function () {
       // Facilitate print of the Inbox.
