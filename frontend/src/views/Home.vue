@@ -109,6 +109,7 @@
     <UpdateModal ref="updateModal"></UpdateModal>
     <OfferModal ref="offerModal"></OfferModal>
     <GetOffers ref="getOffers"></GetOffers>
+    <AcceptOffer ref="acceptOffer"></AcceptOffer>
 
   </div>
 </template>
@@ -121,6 +122,7 @@ import HomeModal from "@/components/HomeModal";
 import UpdateModal from "@/components/UpdateModal";
 import OfferModal from "@/components/OfferModal";
 import GetOffers from "@/components/GetOffers";
+import AcceptOffer from "@/components/AcceptOffer";
 
 export default {
   name: "home",
@@ -141,6 +143,7 @@ export default {
     UpdateModal,
     OfferModal,
     GetOffers,
+    AcceptOffer,
   },
   methods: {
     setRequestResponse: function (response) {
