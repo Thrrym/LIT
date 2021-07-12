@@ -4,6 +4,7 @@
         ref="ServerComDelete"
         v-on:requestResponse="deleteSuccess">
     </ServerComDelete>
+    <b-modal ref="confirmModal" title="Confirm delete" v-on:ok="deleteConfirmed">Please, verify the deletion of the Lit object.</b-modal>
     <b-modal ref="deleteSuccessModal" titel="You deleted the entry" ok-only></b-modal>
   </div>
 </template>
@@ -27,7 +28,10 @@ export default {
   methods: {
     trigger: function (objectId) {
       this.objectId = objectId;
-      this.$refs.ServerComDelete.trigger(objectId);
+      this.$refs.confirmModal.show();
+    },
+    deleteConfirmed: function () {
+      this.$refs.ServerComDelete.trigger(this.objectId);
     },
     deleteSuccess: function (response) {
       this.requestResponse = response;
