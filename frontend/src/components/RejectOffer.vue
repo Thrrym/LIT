@@ -17,6 +17,7 @@ export default {
   },
   data() {
     return {
+      offerId: "",
       requestResponse: {},
       responseText: "",
       responseJson: {},
@@ -24,7 +25,8 @@ export default {
     };
   },
   methods: {
-    triggerAcceptOffer: function (offerId) {
+    triggerRejectOffer: function (offerId) {
+      this.offerId = offerId;
       this.$refs.ServerComRejectOffer.trigger(offerId);
     },
     requestSuccess: function (response) {

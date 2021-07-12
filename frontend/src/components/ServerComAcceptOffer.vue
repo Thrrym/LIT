@@ -26,7 +26,7 @@ export default {
       const currentUser = this.$store.getters.getUser;
 
       // Prepare content of the http request. Removes unused properties.
-      var json = this.prepareJson(
+      this.prepareJson(
         backendUrl,
         currentUser,
       );
@@ -66,8 +66,8 @@ export default {
           }
         }
       };
-      console.log(json);
-      httpRequest.send(JSON.stringify(json)); // Send the HTTP request with the JSON as payload.
+      console.log(this.jsonPayload);
+      httpRequest.send(JSON.stringify(this.jsonPayload)); // Send the HTTP request with the JSON as payload.
     },
 
     callbackResponse: function () {
@@ -86,10 +86,10 @@ export default {
       // Build the JSON payload for the Like activity.
       let jsonObject = {
         "@context": "https://www.w3.org/ns/activitystreams/",
-        "id": "https://example.net/~mallory/87374",
+        id: this.offerId,
         type: "Accept",
         actor: backendUrl + currentUser,
-        object: this.getObjectId,
+        object: this.offerId,
         published: this.getCurrentTime(),
       };
 

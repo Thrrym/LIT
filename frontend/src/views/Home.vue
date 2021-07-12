@@ -126,13 +126,13 @@
             <b-button variant="primary-outline">
               <b-icon
                   icon="x-circle"
-                  v-on:click="showModal(entry)"
+                  v-on:click="rejectOffer(entry)"
               ></b-icon>
             </b-button>
             <b-button variant="primary-outline">
               <b-icon
                   icon="check"
-                  v-on:click="showModal(entry)"
+                  v-on:click="acceptOffer(entry)"
               ></b-icon>
             </b-button>
             <b-button variant="primary-outline">
@@ -271,7 +271,14 @@ export default {
     },
     setOffers: function (offers) {
       this.offers = offers;
-    }
+    },
+    rejectOffer: function (offer) {
+      console.log(offer.id)
+      this.$refs.rejectOffer.triggerRejectOffer(offer.id);
+    },
+    acceptOffer: function (offer) {
+      this.$refs.acceptOffer.triggerAcceptOffer(offer.id);
+    },
   },
   computed: {
     getResponse: function () {
