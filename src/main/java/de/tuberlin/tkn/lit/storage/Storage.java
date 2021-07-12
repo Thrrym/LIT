@@ -3,6 +3,10 @@ package de.tuberlin.tkn.lit.storage;
 import de.tuberlin.tkn.lit.constants.IActivityConstants;
 import de.tuberlin.tkn.lit.constants.ILitObjectConstants;
 import de.tuberlin.tkn.lit.constants.UriConstants;
+import de.tuberlin.tkn.lit.model.activitypub.social.Inbox;
+import de.tuberlin.tkn.lit.model.activitypub.social.Outbox;
+import de.tuberlin.tkn.lit.service_interface_litobjects.*;
+import de.tuberlin.tkn.lit.service_interface_social.*;
 import de.tuberlin.tkn.lit.model.activitypub.activities.*;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
@@ -11,12 +15,14 @@ import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
 import de.tuberlin.tkn.lit.model.lit.*;
-import de.tuberlin.tkn.lit.service.*;
+import de.tuberlin.tkn.lit.service_interface_activities.*;
+import de.tuberlin.tkn.lit.repos_activities.*;
+import de.tuberlin.tkn.lit.repos_litobjects.*;
 import de.tuberlin.tkn.lit.util.UriUtilities;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -38,6 +44,8 @@ public class Storage implements IStorage {
     IJournalService journalService;
     @Autowired
     IPaperService paperService;
+
+    //# SOCIAL
     @Autowired
     ILikedService likedService;
     @Autowired
@@ -114,6 +122,7 @@ public class Storage implements IStorage {
         liked.put(actor.getName(), new HashSet<>());
 
         personRepository.save((Person)actor);
+        //TODO create social objects for person
 
         return actors.get(actor.getName());
     }
@@ -208,57 +217,36 @@ public class Storage implements IStorage {
 
     @Override
     public ActivityPubObject getObject(String id) {
-
-        String[] parts = id.split("/");
-        String objectType = parts[2];
-        if(objectType.equals(ILitObjectConstants.AUTHOR)) {
             IAuthorRepository authorRepo = authorService.getRepository();
             List<Author> authors = (List<Author>) authorRepo.findAll();
             for(Author author : authors) {
                 if(author.getId().equals(id)) return author;
             }
-            return null;
-        }
-        if(objectType.equals(ILitObjectConstants.BIBTEXARTICLE)) {
             IBibTeXArticleRepository bibTeXArticleRepository = bibTeXArticleService.getRepository();
             List<BibTeXArticle> bibTeXArticles = (List<BibTeXArticle>) bibTeXArticleRepository.findAll();
             for(BibTeXArticle bibTeXArticle : bibTeXArticles) {
                 if(bibTeXArticle.getId().equals(id)) return bibTeXArticle;
             }
-            return null;
-        }
-        if(objectType.equals(ILitObjectConstants.BOOK)) {
             IBookRepository bookRepository = bookService.getRepository();
             List<Book> books = (List<Book>) bookRepository.findAll();
             for(Book bibTeXArticle : books) {
                 if(bibTeXArticle.getId().equals(id)) return bibTeXArticle;
             }
-            return null;
-        }
-        if(objectType.equals(ILitObjectConstants.JOURNAL)) {
             IJournalRepository journalRepository = journalService.getRepository();
             List<Journal> journals = (List<Journal>) journalRepository.findAll();
             for(Journal journal : journals) {
                 if(journal.getId().equals(id)) return journal;
             }
-            return null;
-        }
-        if(objectType.equals(ILitObjectConstants.PAPER)) {
             IPaperRepository paperRepository = paperService.getRepository();
             List<Paper> papers = (List<Paper>) paperRepository.findAll();
             for(Paper paper : papers) {
                 if(paper.getId().equals(id)) return paper;
             }
-            return null;
-        }
-        if(objectType.equals(ILitObjectConstants.ACTIVITYPUBCOLLECTION)) {
             IActivityPubCollectionRepository activityPubCollectionRepository = activityPubCollectionService.getRepository();
             List<ActivityPubCollection> activityPubCollections = (List<ActivityPubCollection>) activityPubCollectionRepository.findAll();
             for(ActivityPubCollection activityPubCollection : activityPubCollections) {
                 if(activityPubCollection.getId().equals(id)) return activityPubCollection;
             }
-            return null;
-        }
         return null;
     }
 
@@ -567,9 +555,25 @@ public class Storage implements IStorage {
 
     @Override
     public void addToLiked(String actorName, LinkOrObject toAdd) {
-        ILikedRepository likedRepository = likedService.getRepository();
-        likedRepository.save(toAdd);
-        liked.get(actorName).add(toAdd.getId());
+        ActivityPubObject obj;
+        String link;
+        if(toAdd.getLitObject() == null) {
+            link = toAdd.getLink();
+        }
+        else {
+            obj = toAdd.getLitObject();
+            System.out.println("HELLO");
+            Inbox inbox = new Inbox();
+            inbox.setObjectID(obj.getActivityPubID());
+            if(obj instanceof Activity) inbox.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+            inbox.setActorname(actorName);
+            inboxService.getRepository().save(inbox);
+        }
+
+//        IOutboxRepository outboxRepository = outboxService.getRepository();
+//        outboxRepository.save(new Outbox.OutboxItems();
+        return;
+        //outboxes.get(actorName).getOrderedItems().add(toAdd);
     }
 
     //# TODO FOLLOWING
@@ -586,7 +590,8 @@ public class Storage implements IStorage {
     //# TODO FOLLOWERS
     @Override
     public OrderedCollection getFollowersCollection(String actorName) {
-        return followersCollections.get(actorName);
+        return new OrderedCollection();
+        //return followersCollections.get(actorName);
     }
 
     @Override
@@ -594,31 +599,161 @@ public class Storage implements IStorage {
         followersCollections.get(actorName).getOrderedItems().add(toAdd);
     }
 
-    //# TODO INBOX
     @Override
     public OrderedCollection getInbox(String actorName) {
+
+
         OrderedCollection orderedCollection = inboxes.get(actorName);
         if (orderedCollection == null) {
             throw new NullPointerException();
         }
         return orderedCollection;
     }
+    //# TODO INBOX
 
     @Override
     public void addToInbox(String actorName, LinkOrObject toAdd) {
-        inboxes.get(actorName).getOrderedItems().add(toAdd);
+        ActivityPubObject obj;
+        String link;
+        if(toAdd.getLitObject() == null) {
+            link = toAdd.getLink();
+        }
+        else {
+            obj = toAdd.getLitObject();
+            System.out.println("HELLO");
+            Inbox inbox = new Inbox();
+            inbox.setObjectID(obj.getActivityPubID());
+            if(obj instanceof Activity) inbox.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+            inbox.setActorname(actorName);
+            inboxService.getRepository().save(inbox);
+        }
+
+//        IOutboxRepository outboxRepository = outboxService.getRepository();
+//        outboxRepository.save(new Outbox.OutboxItems();
+        return;
+        //outboxes.get(actorName).getOrderedItems().add(toAdd);
     }
 
     //# TODO OUTBOX
     @Override
     public OrderedCollection getOutbox(String actorName) {
-        return outboxes.get(actorName);
+        List<Outbox> outboxList = (List<Outbox>) outboxService.getRepository().findAll();
+        for(int i = 0; i<outboxList.size(); i++) {
+            Outbox current = outboxList.get(i);
+            String name = current.getActorname();
+            if(name.equals(actorName)) {
+                String objectType = current.getObjectType();
+
+
+                long id = current.getObjectID();
+                findObjectinTable(String.valueOf(id), objectType);
+            }
+        }
+        return null;
+        //return outboxes.get(actorName);
     }
 
     @Override
     public void addToOutbox(String actorName, LinkOrObject toAdd) {
-        outboxes.get(actorName).getOrderedItems().add(toAdd);
+        ActivityPubObject obj;
+        String link;
+        if(toAdd.getLitObject() == null) {
+            link = toAdd.getLink();
+        }
+        else {
+            obj = toAdd.getLitObject();
+            System.out.println("HELLO");
+            Outbox outbox = new Outbox();
+            outbox.setObjectID(obj.getActivityPubID()); //# TODO: id of object instead of activity
+            if(obj instanceof Activity) outbox.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+            outbox.setActorname(actorName);
+            outboxService.getRepository().save(outbox);
+        }
+
+//        IOutboxRepository outboxRepository = outboxService.getRepository();
+//        outboxRepository.save(new Outbox.OutboxItems();
+        return;
+        //outboxes.get(actorName).getOrderedItems().add(toAdd);
     }
 
+    public ActivityPubObject findObjectinTable(String id, String tableName) {
+        if(tableName.equals(ILitObjectConstants.AUTHOR)) {
+            IAuthorRepository authorRepo = authorService.getRepository();
+            List<Author> authors = (List<Author>) authorRepo.findAll();
+            for(Author author : authors) {
+                if(author.getId().equals(id)) return author;
+            }
+        }
+        if(tableName.equals(ILitObjectConstants.ACTIVITYPUBCOLLECTION)) {
+            IActivityPubCollectionRepository activityPubCollectionRepository = activityPubCollectionService.getRepository();
+            List<ActivityPubCollection> activityPubCollections = (List<ActivityPubCollection>) activityPubCollectionRepository.findAll();
+            for(ActivityPubCollection activityPubCollection : activityPubCollections) {
+                if(activityPubCollection.getId().equals(id)) return activityPubCollection;
+            }
+        }
+        if(tableName.equals(ILitObjectConstants.BOOK)) {
+            IBookRepository bookRepository = bookService.getRepository();
+            List<Book> books = (List<Book>) bookRepository.findAll();
+            for(Book book : books) {
+                if(book.getId().equals(id)) return book;
+            }
+        }
+        if(tableName.equals(ILitObjectConstants.JOURNAL)) {
+            IJournalRepository journalRepository = journalService.getRepository();
+            List<Journal> journals = (List<Journal>) journalRepository.findAll();
+            for(Journal journal : journals) {
+                if(journal.getId().equals(id)) return journal;
+            }
+        }
+        if(tableName.equals(ILitObjectConstants.BIBTEXARTICLE)) {
+            IBibTeXArticleRepository bibTeXArticleRepository = bibTeXArticleService.getRepository();
+            List<BibTeXArticle> bibTeXArticles = (List<BibTeXArticle>) bibTeXArticleRepository.findAll();
+            for(BibTeXArticle bibTeXArticle : bibTeXArticles) {
+                if(bibTeXArticle.getId().equals(id)) return bibTeXArticle;
+            }
+        }
+        if(tableName.equals(ILitObjectConstants.PAPER)) {
+            IPaperRepository paperRepository = paperService.getRepository();
+            List<Paper> papers = (List<Paper>) paperRepository.findAll();
+            for(Paper paper : papers) {
+                if(paper.getId().equals(id)) return paper;
+            }
+        }
+        return null;
+    }
+
+    public ActivityPubObject findObject(String id) {
+        IAuthorRepository authorRepo = authorService.getRepository();
+        List<Author> authors = (List<Author>) authorRepo.findAll();
+        for(Author author : authors) {
+            if(author.getId().equals(id)) return author;
+        }
+        IBibTeXArticleRepository bibTeXArticleRepository = bibTeXArticleService.getRepository();
+        List<BibTeXArticle> bibTeXArticles = (List<BibTeXArticle>) bibTeXArticleRepository.findAll();
+        for(BibTeXArticle bibTeXArticle : bibTeXArticles) {
+            if(bibTeXArticle.getId().equals(id)) return bibTeXArticle;
+        }
+        IBookRepository bookRepository = bookService.getRepository();
+        List<Book> books = (List<Book>) bookRepository.findAll();
+        for(Book book : books) {
+            if(book.getId().equals(id)) return book;
+        }
+        IJournalRepository journalRepository = journalService.getRepository();
+        List<Journal> journals = (List<Journal>) journalRepository.findAll();
+        for(Journal journal : journals) {
+            if(journal.getId().equals(id)) return journal;
+        }
+        IPaperRepository paperRepository = paperService.getRepository();
+        List<Paper> papers = (List<Paper>) paperRepository.findAll();
+        for(Paper paper : papers) {
+            if(paper.getId().equals(id)) return paper;
+        }
+        IActivityPubCollectionRepository activityPubCollectionRepository = activityPubCollectionService.getRepository();
+        List<ActivityPubCollection> activityPubCollections = (List<ActivityPubCollection>) activityPubCollectionRepository.findAll();
+        for(ActivityPubCollection activityPubCollection : activityPubCollections) {
+            if(activityPubCollection.getId().equals(id)) return activityPubCollection;
+        }
+        return null;
+    }
 
 }

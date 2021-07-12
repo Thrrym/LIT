@@ -20,6 +20,8 @@ public class Book extends ActivityPubObject {
     private String shop_url;
     @ElementCollection
     private List<String> likedBy;
+//    @OneToMany(targetEntity = Author.class)
+//    private List<Author> authors;
 
     public Book() {
     }

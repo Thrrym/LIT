@@ -1,6 +1,8 @@
 package de.tuberlin.tkn.lit.model.activitypub.core;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import de.tuberlin.tkn.lit.model.activitypub.activities.Create;
+import de.tuberlin.tkn.lit.model.lit.Author;
 
 import javax.persistence.*;
 
@@ -10,9 +12,12 @@ public class LinkOrObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long linkOrObjectID;
+    public long linkOrObjectID;
+    @Transient
     private String link;
-    @OneToOne(targetEntity = ActivityPubCollection.class)
+    //@OneToOne(targetEntity = ActivityPubObject.class, cascade = CascadeType.ALL, optional = true, fetch = FetchType.LAZY)
+    //@JoinColumn(name = "activity_pub_id", nullable = false)
+    @Transient
     private ActivityPubObject activityPubObject;
 
     public LinkOrObject() {

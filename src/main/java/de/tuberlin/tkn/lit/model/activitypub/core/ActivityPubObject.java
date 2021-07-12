@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import de.tuberlin.tkn.lit.jsonutilities.deserializer.ArrayDeserializer;
 import de.tuberlin.tkn.lit.model.activitypub.activities.*;
 import de.tuberlin.tkn.lit.model.activitypub.actors.*;
-import de.tuberlin.tkn.lit.model.lit.BibTeXArticle;
+import de.tuberlin.tkn.lit.model.lit.*;
 import de.tuberlin.tkn.lit.model.activitypub.objects.*;
 import de.tuberlin.tkn.lit.jsonutilities.serializer.ArraySerializer;
 import de.tuberlin.tkn.lit.jsonutilities.serializer.LinkOrObjectSerializer;
@@ -21,7 +21,10 @@ import java.util.List;
         @JsonSubTypes.Type(value = OrderedCollection.class, name = "OrderedCollection"),
 
         @JsonSubTypes.Type(value = BibTeXArticle.class, name = "bibtex_article"),
-
+        @JsonSubTypes.Type(value = Author.class, name = "Author"),
+        @JsonSubTypes.Type(value = Paper.class, name = "Paper"),
+        @JsonSubTypes.Type(value = Book.class, name = "Book"),
+        @JsonSubTypes.Type(value = Journal.class, name = "Journal"),
         @JsonSubTypes.Type(value = Note.class, name = "Note"),
         @JsonSubTypes.Type(value = Tombstone.class, name = "Tombstone"),
 
@@ -47,53 +50,59 @@ public abstract class ActivityPubObject {
     @JsonProperty("@context")
     private String context;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long activityPubID;
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    public long activityPubID;
+
     private String id;
     private String type;
-    @OneToMany(targetEntity = LinkOrObject.class)
-    private List<LinkOrObject> attachment;
-    @OneToMany(targetEntity = LinkOrObject.class)
-    private List<LinkOrObject> attributedTo;
-    @OneToMany(targetEntity = LinkOrObject.class)
-    private List<LinkOrObject> audience;
+    private String name;
+    private String published;
     private String content;
     private String startTime;
     private String endTime;
-    @OneToOne(targetEntity = LinkOrObject.class)
-    private LinkOrObject generator;
-    @OneToMany(targetEntity = LinkOrObject.class)
-    private List<LinkOrObject> icon;
-    @OneToMany(targetEntity = LinkOrObject.class)
-    private List<LinkOrObject> image;
-    @OneToMany(targetEntity = LinkOrObject.class)
-    private List<LinkOrObject> inReplyTo;
-    @OneToMany(targetEntity = LinkOrObject.class)
-    private List<LinkOrObject> location;
-    private String name;
-    @OneToOne(targetEntity = LinkOrObject.class)
-    private LinkOrObject preview;
-    private String published;
-    @OneToOne(targetEntity = ActivityPubCollection.class)
-    private ActivityPubCollection replies;
-    @OneToMany(targetEntity = LinkOrObject.class)
-    private List<LinkOrObject> tag;
-    //private OrderedCollection likes;
-    //private int like;
     private String summary;
     private String updated;
-    @OneToMany(targetEntity = LinkOrObject.class)
-    private List<LinkOrObject> url;
-    @OneToMany(targetEntity = LinkOrObject.class)
-    private List<LinkOrObject> to;
-    @OneToMany(targetEntity = LinkOrObject.class)
-    private List<LinkOrObject> bto;
-    @OneToMany(targetEntity = LinkOrObject.class)
-    private List<LinkOrObject> cc;
-    @OneToMany(targetEntity = LinkOrObject.class)
-    private List<LinkOrObject> bcc;
     private String mediaType;
     private String duration;
+
+    @Transient
+    private OrderedCollection likes;
+    //private int like;
+
+    @OneToOne(targetEntity = ActivityPubCollection.class, cascade = CascadeType.ALL)
+    private ActivityPubCollection replies;
+
+    @OneToOne(targetEntity = LinkOrObject.class, cascade = CascadeType.ALL)
+    private LinkOrObject generator;
+    @OneToOne(targetEntity = LinkOrObject.class, cascade = CascadeType.ALL)
+    private LinkOrObject preview;
+    @OneToMany(targetEntity = LinkOrObject.class, cascade = CascadeType.ALL)
+    private List<LinkOrObject> icon;
+    @OneToMany(targetEntity = LinkOrObject.class, cascade = CascadeType.ALL)
+    private List<LinkOrObject> image;
+    @OneToMany(targetEntity = LinkOrObject.class, cascade = CascadeType.ALL)
+    private List<LinkOrObject> inReplyTo;
+    @OneToMany(targetEntity = LinkOrObject.class, cascade = CascadeType.ALL)
+    private List<LinkOrObject> location;
+    @OneToMany(targetEntity = LinkOrObject.class, cascade = CascadeType.ALL)
+    private List<LinkOrObject> attachment;
+    @OneToMany(targetEntity = LinkOrObject.class, cascade = CascadeType.ALL)
+    private List<LinkOrObject> attributedTo;
+    @OneToMany(targetEntity = LinkOrObject.class, cascade = CascadeType.ALL)
+    private List<LinkOrObject> audience;
+    @OneToMany(targetEntity = LinkOrObject.class, cascade = CascadeType.ALL)
+    private List<LinkOrObject> tag;
+
+    @OneToMany(targetEntity = LinkOrObject.class, cascade=CascadeType.ALL)
+    private List<LinkOrObject> url;
+    @OneToMany(targetEntity = LinkOrObject.class, cascade=CascadeType.ALL)
+    private List<LinkOrObject> to;
+    @OneToMany(targetEntity = LinkOrObject.class, cascade=CascadeType.ALL)
+    private List<LinkOrObject> bto;
+    @OneToMany(targetEntity = LinkOrObject.class, cascade=CascadeType.ALL)
+    private List<LinkOrObject> cc;
+    @OneToMany(targetEntity = LinkOrObject.class, cascade=CascadeType.ALL)
+    private List<LinkOrObject> bcc;
 
     public ActivityPubObject() {
     }

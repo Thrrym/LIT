@@ -4,10 +4,12 @@ import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
-public class Author extends ActivityPubObject {
+public class Author extends ActivityPubObject implements Serializable {
 
     private String orcid;
     private int publicationCount;
