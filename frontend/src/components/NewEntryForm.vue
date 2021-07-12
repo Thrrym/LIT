@@ -1,131 +1,147 @@
 <template>
   <div>
     <b-container>
-    <!-- Create the form the get the information for the selected type. -->
-    <b-form v-if="showForm" v-on:submit="emitNewEntry">
-      <b-card bg-varint="light">
-        <b-form-group
-          label-cols-lg="3"
-          label="Required fields"
-          label-size="lg"
-          lable-class="font-weight-bold pt-0"
-        >
-          <!-- Create the individual field based on the provided objects. -->
+      <!-- Create the form the get the information for the selected type. -->
+      <b-form v-if="showForm" v-on:submit="emitNewEntry">
+        <b-card bg-varint="light">
           <b-form-group
-            v-for="field in getRequiredFields"
-            v-bind:key="field.id"
-            v-bind:label="field.label"
-            label-cols-sm="3"
-            label-align-sm="right"
+            label-cols-lg="3"
+            label="Required fields"
+            label-size="lg"
+            lable-class="font-weight-bold pt-0"
           >
-            <b-form-checkbox v-if="isNotTextInput(field)" v-model="field.content"
-                             v-bind:required="field.required" value="true" unchecked-value="false">
-            </b-form-checkbox>
+            <!-- Create the individual field based on the provided objects. -->
+            <b-form-group
+              v-for="field in getRequiredFields"
+              v-bind:key="field.id"
+              v-bind:label="field.label"
+              label-cols-sm="3"
+              label-align-sm="right"
+            >
+              <b-form-checkbox
+                v-if="isNotTextInput(field)"
+                v-model="field.content"
+                v-bind:required="field.required"
+                value="true"
+                unchecked-value="false"
+              >
+              </b-form-checkbox>
 
-            <div v-if="isAuthor(field)" >
-            <b-input-group v-on:input="field.content = selectedAuthors">
-              <b-form-select v-bind:options="authorOptions" v-model="selectedAuthors[0]"></b-form-select>
-              <b-button v-on:click="addNewAuthor">Create new author</b-button>
-<!--              <b-button v-on:click="getAuthorOptions">Get the authors</b-button>-->
-              <b-button v-on:click="setAdditionalAuthors">+</b-button>
-            </b-input-group>
-            <b-form-select v-for="index in additionalAuthors" v-bind:key="index" v-bind:options="authorOptions" v-model="selectedAuthors[index]"></b-form-select>
-            </div>
-            <b-form-input
-                v-else
-              v-model="field.content"
-              v-bind:required="field.required"
-                v-bind:type="getFieldTypeToVerify(field)"
-            ></b-form-input>
-          </b-form-group>
-        </b-form-group>
-      </b-card>
-
-      <b-button
-        variant="outline-primary"
-        v-if="showOptionalFieldsButton"
-        v-on:click="setShowOptionalFields"
-      >
-        <b-icon icon="caret-down-square" aria-hidden="true"></b-icon> Advanced
-      </b-button>
-
-      <!-- Optional Fields. -->
-      <b-card bg-varint="light" v-if="showOptionalFields">
-        <b-form-group
-          v-if="showOptionalFields"
-          label="Optional Fields"
-          label-cols-lg="3"
-          label-size="lg"
-          lable-class="font-weight-bold pt-0"
-        >
-          <b-form-group
-            v-for="field in getOptionalFields"
-            v-bind:key="field.id"
-            v-bind:label="field.label"
-            label-cols-sm="3"
-            label-align-sm="right"
-          >
-            <b-form-checkbox v-if="isNotTextInput(field)" v-model="field.content"
-                             v-bind:required="field.required" value="true" unchecked-value="false">
-            </b-form-checkbox>
-            <b-form-input
+              <div v-if="isAuthor(field)">
+                <b-input-group v-on:input="field.content = selectedAuthors">
+                  <b-form-select
+                    v-bind:options="authorOptions"
+                    v-model="selectedAuthors[0]"
+                  ></b-form-select>
+                  <b-button v-on:click="addNewAuthor"
+                    >Create new author</b-button
+                  >
+                  <!--              <b-button v-on:click="getAuthorOptions">Get the authors</b-button>-->
+                  <b-button v-on:click="setAdditionalAuthors">+</b-button>
+                </b-input-group>
+                <b-form-select
+                  v-for="index in additionalAuthors"
+                  v-bind:key="index"
+                  v-bind:options="authorOptions"
+                  v-model="selectedAuthors[index]"
+                ></b-form-select>
+              </div>
+              <b-form-input
                 v-else
                 v-model="field.content"
                 v-bind:required="field.required"
                 v-bind:type="getFieldTypeToVerify(field)"
-            ></b-form-input>
-<!--            <b-form-input
+              ></b-form-input>
+            </b-form-group>
+          </b-form-group>
+        </b-card>
+
+        <b-button
+          variant="outline-primary"
+          v-if="showOptionalFieldsButton"
+          v-on:click="setShowOptionalFields"
+        >
+          <b-icon icon="caret-down-square" aria-hidden="true"></b-icon> Advanced
+        </b-button>
+
+        <!-- Optional Fields. -->
+        <b-card bg-varint="light" v-if="showOptionalFields">
+          <b-form-group
+            v-if="showOptionalFields"
+            label="Optional Fields"
+            label-cols-lg="3"
+            label-size="lg"
+            lable-class="font-weight-bold pt-0"
+          >
+            <b-form-group
+              v-for="field in getOptionalFields"
+              v-bind:key="field.id"
+              v-bind:label="field.label"
+              label-cols-sm="3"
+              label-align-sm="right"
+            >
+              <b-form-checkbox
+                v-if="isNotTextInput(field)"
+                v-model="field.content"
+                v-bind:required="field.required"
+                value="true"
+                unchecked-value="false"
+              >
+              </b-form-checkbox>
+              <b-form-input
+                v-else
+                v-model="field.content"
+                v-bind:required="field.required"
+                v-bind:type="getFieldTypeToVerify(field)"
+              ></b-form-input>
+              <!--            <b-form-input
               v-model="field.content"
               v-bind:required="field.required"
             ></b-form-input>-->
+            </b-form-group>
           </b-form-group>
-        </b-form-group>
-      </b-card>
+        </b-card>
 
-      <b-button
-        variant="outline-primary"
-        v-on:click="setShowCcField"
-      >
-        <b-icon icon="caret-down-square" aria-hidden="true"></b-icon> CC
-      </b-button>
+        <b-button variant="outline-primary" v-on:click="setShowCcField">
+          <b-icon icon="caret-down-square" aria-hidden="true"></b-icon> CC
+        </b-button>
 
-      <!-- CC Field. -->
-      <b-card bg-varint="light" v-if="showCcField">
-        <b-form-group
-          v-if="showCcField"
-          label="Send to"
-          label-cols-lg="3"
-          label-size="lg"
-          lable-class="font-weight-bold pt-0"
-        >
+        <!-- CC Field. -->
+        <b-card bg-varint="light" v-if="showCcField">
           <b-form-group
-            label="CC"
-            label-cols-sm="3"
-            label-align-sm="right"
+            v-if="showCcField"
+            label="Send to"
+            label-cols-lg="3"
+            label-size="lg"
+            lable-class="font-weight-bold pt-0"
           >
-            <b-form-input
-              v-model="ccContent"
-              type="url"
-            ></b-form-input>
+            <b-form-group label="CC" label-cols-sm="3" label-align-sm="right">
+              <b-form-input v-model="ccContent" type="url"></b-form-input>
+            </b-form-group>
           </b-form-group>
-        </b-form-group>
-      </b-card>
+        </b-card>
 
-      <!-- Submit Buttons -->
-      <b-button type="submit" variant="primary" v-if="isNotUpdate">
-        <b-icon icon="bookmark-plus" aria-hidden="true"></b-icon>
-        Create new entry
-      </b-button>
-      <!-- Submit Buttons -->
-      <b-button type="submit" variant="primary" v-else>
-        <b-icon icon="bookmark-plus" aria-hidden="true"></b-icon>
-        Update entry
-      </b-button>
-    </b-form>
+        <!-- Submit Buttons -->
+        <b-button type="submit" variant="primary" v-if="isNotUpdate">
+          <b-icon icon="bookmark-plus" aria-hidden="true"></b-icon>
+          Create new entry
+        </b-button>
+        <!-- Submit Buttons -->
+        <b-button type="submit" variant="primary" v-else>
+          <b-icon icon="bookmark-plus" aria-hidden="true"></b-icon>
+          Update entry
+        </b-button>
+      </b-form>
     </b-container>
 
-    <NewAuthorModal ref="NewAuthorModal" v-on:newAuthorSuccess="getAuthorOptions"></NewAuthorModal>
-    <GetAuthors ref="GetAuthors" v-on:getAuthorsSuccess="setAuthorOptions"></GetAuthors>
+    <NewAuthorModal
+      ref="NewAuthorModal"
+      v-on:newAuthorSuccess="getAuthorOptions"
+    ></NewAuthorModal>
+    <GetAuthors
+      ref="GetAuthors"
+      v-on:getAuthorsSuccess="setAuthorOptions"
+    ></GetAuthors>
   </div>
 </template>
 
@@ -197,7 +213,7 @@ export default {
       else return true;
     },
     isNotUpdate: function () {
-      return !this.update
+      return !this.update;
     },
   },
 
@@ -253,9 +269,9 @@ export default {
     setAdditionalAuthors: function () {
       this.getAuthorOptions();
       this.additionalAuthors += 1;
-}
+    },
   },
-  mounted: function() {
+  mounted: function () {
     // On loading of the form, get the existing authors from the server.
     this.getAuthorOptions();
   },
