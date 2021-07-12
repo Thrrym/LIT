@@ -37,7 +37,7 @@
           "
         >
           Followers:
-          <span class="badge bg-danger rounded-pill">{{ 0 }}</span>
+          <span class="badge bg-danger rounded-pill">{{ getFollowers }}</span>
         </li>
         <li
           class="
@@ -48,7 +48,7 @@
           "
         >
           Following:
-          <span class="badge bg-danger rounded-pill">{{ 0 }}</span>
+          <span class="badge bg-danger rounded-pill">{{ getFollowing }}</span>
         </li>
       </ul>
     </div>
@@ -140,8 +140,9 @@
       <HomeModal ref="modal"></HomeModal>
 
       <FollowJumbotron></FollowJumbotron>
-
+      <GetFollowersFollowing ref="getFF" v-on:followers="setFollowers" v-on:following="setFollowing"></GetFollowersFollowing>
     </div>
+
   </div>
 </template>
 <script>
@@ -151,6 +152,7 @@ import ServerComGetUserRelevantObjects from "@/components/ServerComGetUserReleva
 import ServerComLikePost from "@/components/ServerComLikePost.vue";
 import HomeModal from "@/components/HomeModal";
 import FollowJumbotron from "@/components/FollowJumbotron";
+import GetFollowersFollowing from "@/components/GetFollowersFollowing";
 
 export default {
   name: "Profile",
@@ -160,6 +162,8 @@ export default {
       requestResponse: "",
       objectsByUser: [],
       objectsRelevantToUser: "",
+      following: 0,
+      followers: 0,
     };
   },
 
@@ -170,6 +174,7 @@ export default {
     ServerComLikePost,
     HomeModal,
     FollowJumbotron,
+    GetFollowersFollowing,
   },
   methods: {
     setRequestResponse: function (response) {
@@ -194,6 +199,7 @@ export default {
     refreshObjects: function () {
       this.$refs.userObjects.triggerGetObjects();
       this.$refs.userRelevantObjects.triggerGetRelevantObjects();
+      this.$refs.getFF.trigger();
     },
     likePost: function (url) {
       this.$refs.like.triggerLikePost(url);
@@ -232,6 +238,12 @@ export default {
     showModal: function (entry) {
       this.$refs.modal.showHomeModal(entry);
     },
+    setFollowers: function (i) {
+      this.followers = i;
+    },
+    setFollowing: function (i) {
+      this.following = i;
+    },
   },
   computed: {
     getResponse: function () {
@@ -262,6 +274,12 @@ export default {
             }
           }
       );
+    },
+    getFollowers: function () {
+      return this.followers;
+    },
+    getFollowing: function () {
+      return this.following;
     },
   },
    
