@@ -1,123 +1,98 @@
 package de.tuberlin.tkn.lit.model.lit;
 
-import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import de.tuberlin.tkn.lit.jsonutilities.deserializer.ArrayDeserializer;
+import de.tuberlin.tkn.lit.jsonutilities.serializer.ArraySerializer;
+import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
+import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import java.util.List;
 
 @Entity
 public class Book extends ActivityPubObject {
 
-    private String author;
+    @OneToMany(targetEntity = Author.class,cascade = CascadeType.ALL)
+    @JoinColumn(name = "activity_pub_id")
+    private List<LinkOrObject> authors;
     private String title;
     private String isbn;
     private String category;
-    private String year;
-    private String volume;
-    private String _abstract;
-    private String shop_url;
-    @ElementCollection
-    private List<String> likedBy;
-//    @OneToMany(targetEntity = Author.class)
-//    private List<Author> authors;
+    private int year;
+    private int volume;
+    private String bookAbstract;
 
-    public Book() {
+    public List<LinkOrObject> getAuthors() {
+        return authors;
     }
 
-    public Book(String author, String title, String isbn, String category, String year, String volume, String _abstract, String shop_url) {
-        this.author = author;
-        this.title = title;
-        this.isbn = isbn;
-        this.category = category;
-        this.year = year;
-        this.volume = volume;
-        this._abstract = _abstract;
-        this.shop_url = shop_url;
+    public void setAuthors(List<LinkOrObject> authors) {
+        this.authors = authors;
     }
 
-    public String getAuthor() {
-        return author;
+    @JsonSetter("authors")
+    public void setAuthors(JsonNode s) throws JsonProcessingException {
+        authors = ArrayDeserializer.deserialize(s);
+    }
+
+    @JsonGetter("authors")
+    public List<JsonNode> toJSONAuthors() throws JsonProcessingException {
+        if (authors == null) return null;
+        return ArraySerializer.serialize(authors);
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public String getYear() {
-        return year;
-    }
-
-    public String getVolume() {
-        return volume;
-    }
-
-    public String get_abstract() {
-        return _abstract;
-    }
-
-    public String getShop_url() {
-        return shop_url;
-    }
-
-    public List<String> getLikedBy() {
-        return likedBy;
-    }
-
-
-    @JsonGetter("likes")
-    public int getLikes() {
-        if (likedBy == null)
-            return 0;
-        return likedBy.size();
-    }
-
-    @JsonSetter("likes")
-    public void setLikes(int value) {
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getIsbn() {
+        return isbn;
     }
 
     public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
     public void setCategory(String category) {
         this.category = category;
     }
 
-    public void setYear(String year) {
+    public int getYear() {
+        return year;
+    }
+
+    public void setYear(int year) {
         this.year = year;
     }
 
-    public void setVolume(String volume) {
+    public int getVolume() {
+        return volume;
+    }
+
+    public void setVolume(int volume) {
         this.volume = volume;
     }
 
-    public void set_abstract(String _abstract) {
-        this._abstract = _abstract;
+    public String getBookAbstract() {
+        return bookAbstract;
     }
 
-    public void setShop_url(String shop_url) {
-        this.shop_url = shop_url;
-    }
-
-    public void setLikedBy(List<String> likedBy) {
-        this.likedBy = likedBy;
+    public void setBookAbstract(String bookAbstract) {
+        this.bookAbstract = bookAbstract;
     }
 }

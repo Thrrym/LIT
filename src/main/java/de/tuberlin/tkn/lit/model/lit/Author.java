@@ -2,29 +2,26 @@ package de.tuberlin.tkn.lit.model.lit;
 
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.Transient;
-import java.io.Serializable;
-import java.util.List;
+import javax.validation.constraints.NotNull;
 
 @Entity
-public class Author extends ActivityPubObject implements Serializable {
+public class Author extends ActivityPubObject {
 
+    @NotNull
     private String orcid;
     private int publicationCount;
+    @NotNull
     private String firstName;
+    @NotNull
     private String lastName;
-    @ElementCollection
-    private List<String> likedBy;
 
     public Author() {
     }
 
-    public Author(int publicationCount, String firstName, String lastName, String orcid) {
+    public Author(String firstName, String lastName, String orcid) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.publicationCount = publicationCount;
         this.orcid = orcid;
     }
 
@@ -60,4 +57,18 @@ public class Author extends ActivityPubObject implements Serializable {
         this.lastName = lastName;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+
+        if (!(o instanceof Author)) {
+            return false;
+        }
+
+        Author author = (Author) o;
+
+        return orcid == author.getOrcid();
+    }
 }

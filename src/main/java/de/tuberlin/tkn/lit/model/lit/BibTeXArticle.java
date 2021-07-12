@@ -2,69 +2,88 @@ package de.tuberlin.tkn.lit.model.lit;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import de.tuberlin.tkn.lit.jsonutilities.deserializer.ArrayDeserializer;
+import de.tuberlin.tkn.lit.jsonutilities.serializer.ArraySerializer;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
+import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
 public class BibTeXArticle extends ActivityPubObject {
 
-    private String author;
+    @OneToMany(targetEntity = Author.class,cascade = CascadeType.ALL)
+    @JoinColumn(name = "activity_pub_id")
+    private List<LinkOrObject> authors;
     private String title;
     private String journal;
-    private String year;
-    private String volume;
+    private int year;
+    private int volume;
     @ElementCollection
     private List<String> likedBy;
 
     public BibTeXArticle() {
     }
 
-    public BibTeXArticle(String author, String title, String journal, String year, String volume) {
-        this.author = author;
+    public BibTeXArticle(List<LinkOrObject> authors, String title, String journal, int year, int volume) {
+        this.authors = authors;
         this.title = title;
         this.journal = journal;
         this.year = year;
         this.volume = volume;
     }
 
-    public String getAuthor() {
-        return author;
+    public List<LinkOrObject> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<LinkOrObject> authors) {
+        this.authors = authors;
+    }
+
+    @JsonSetter("authors")
+    public void setAuthors(JsonNode s) throws JsonProcessingException {
+        authors = ArrayDeserializer.deserialize(s);
+    }
+
+    @JsonGetter("authors")
+    public List<JsonNode> toJSONAuthors() throws JsonProcessingException {
+        if (authors == null) return null;
+        return ArraySerializer.serialize(authors);
     }
 
     public String getTitle() {
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public String getJournal() {
         return journal;
     }
 
-    public String getYear() {
+    public void setJournal(String journal) {
+        this.journal = journal;
+    }
+
+    public int getYear() {
         return year;
     }
 
-    public String getVolume() {
+    public void setYear(int year) {
+        this.year = year;
+    }
+
+    public int getVolume() {
         return volume;
     }
 
-    @JsonGetter("likes")
-    public int getLikes() {
-        if(likedBy == null)
-            return 0;
-        return likedBy.size();
-    }
-
-    @JsonSetter("likes")
-    public void setLikes(int value){}
-
-    public List<String> getLikedBy() {
-        return likedBy;
-    }
-
-    public void setLikedBy(List<String> likedBy) {
-        this.likedBy = likedBy;
+    public void setVolume(int volume) {
+        this.volume = volume;
     }
 }

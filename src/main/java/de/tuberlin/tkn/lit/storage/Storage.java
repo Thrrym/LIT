@@ -3,9 +3,6 @@ package de.tuberlin.tkn.lit.storage;
 import de.tuberlin.tkn.lit.constants.IActivityConstants;
 import de.tuberlin.tkn.lit.constants.ILitObjectConstants;
 import de.tuberlin.tkn.lit.constants.UriConstants;
-import de.tuberlin.tkn.lit.model.activitypub.social.*;
-import de.tuberlin.tkn.lit.service_interface_litobjects.*;
-import de.tuberlin.tkn.lit.service_interface_social.*;
 import de.tuberlin.tkn.lit.model.activitypub.activities.*;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
@@ -13,8 +10,12 @@ import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
+import de.tuberlin.tkn.lit.model.activitypub.social.*;
+import de.tuberlin.tkn.lit.model.lit.Author;
 import de.tuberlin.tkn.lit.model.lit.*;
 import de.tuberlin.tkn.lit.service_interface_activities.*;
+import de.tuberlin.tkn.lit.service_interface_litobjects.*;
+import de.tuberlin.tkn.lit.service_interface_social.*;
 import de.tuberlin.tkn.lit.storage_activities.*;
 import de.tuberlin.tkn.lit.storage_litobjects.*;
 import de.tuberlin.tkn.lit.util.UriUtilities;
@@ -60,17 +61,14 @@ public class Storage implements IStorage {
     IRelevantObjectService relevantObjectService;
 
 
+
     //# ACTIVITIES
     @Autowired
     private IAcceptService acceptService;
     @Autowired
-    private IBlockService blockService;
-    @Autowired
     private ICreateService createService;
     @Autowired
     private IDeleteService deleteService;
-    @Autowired
-    private IDislikeService dislikeService;
     @Autowired
     private IFollowService followService;
     @Autowired
@@ -79,8 +77,6 @@ public class Storage implements IStorage {
     private ILikeService likeService;
     @Autowired
     private IRejectService rejectService;
-    @Autowired
-    private IUndoService undoService;
     @Autowired
     private IUpdateService updateService;
 
@@ -91,11 +87,22 @@ public class Storage implements IStorage {
     private final Map<String, Set<String>> relevantObjects = new HashMap<>();
     private final Map<String, Set<String>> liked = new HashMap<>();
     private final Map<String, Actor> actors = new HashMap<>();
-    private final Map<UUID, Activity> activities = new HashMap<>();
+    private final Map<String, Activity> activities = new HashMap<>();
     private final Map<String, ActivityPubObject> objects = new HashMap<>();
     @Value("${server.port}")
     private int serverPort;
 
+    @Override
+    public OrderedCollection getOffers(String actorName) {
+        OrderedCollection orderedCollection = inboxes.get(actorName);
+        if (orderedCollection == null) {
+            throw new NullPointerException();
+        }
+
+        List<LinkOrObject> inboxItems = orderedCollection.getOrderedItems();
+
+        return new OrderedCollection(inboxItems.stream().filter(item -> item.getLitObject().getType().equals("Offer")).collect(Collectors.toList()));
+    }
 
     //# ACTOR
     @Override
@@ -150,7 +157,6 @@ public class Storage implements IStorage {
         return false;
     }
 
-    @Override
     public ActivityPubCollection getActors() {
         IPersonRepository personRepository = personService.getRepository();
         List<Person> persons = (List<Person>) personRepository.findAll();
@@ -165,6 +171,17 @@ public class Storage implements IStorage {
             if(p.getName().equals(actorName)) { return true; }
         }
         return false;
+    }
+
+    @Override
+    public ActivityPubCollection getAuthors() {
+        return new ActivityPubCollection(objects.values().stream().filter(o -> o.getType().equals("Author")).map(LinkOrObject::new).collect(Collectors.toList()));
+    }
+
+    @Override
+    public boolean authorExists(String orcId) {
+        List<LinkOrObject> duplicates = getAuthors().getItems().stream().filter(a -> ((Author) a.getLitObject()).getOrcid().equals(orcId)).collect(Collectors.toList());
+        return !duplicates.isEmpty();
     }
 
     //# OBJECT
@@ -488,17 +505,12 @@ public class Storage implements IStorage {
 
     //# ACTIVITY
     @Override
-    public Activity getActivity(UUID id) {
+    public Activity getActivity(String id) {
 
         List<Accept> accept = (List<Accept>) acceptService.getRepository().findAll();
         boolean a = accept.stream().map(Accept::getId).anyMatch(s -> s.substring(s.lastIndexOf("/") + 1).equals(id.toString()));
         if(a){
             return accept.stream().filter(s -> s.getId().contains(id.toString())).collect(Collectors.toList()).get(0);
-        }
-        List<Block> block = (List<Block>) blockService.getRepository().findAll();
-        boolean b = block.stream().map(Block::getId).anyMatch(s -> s.substring(s.lastIndexOf("/") + 1).equals(id.toString()));
-        if(b){
-            return block.stream().filter(s -> s.getId().contains(id.toString())).collect(Collectors.toList()).get(0);
         }
         List<Create> create = (List<Create>) createService.getRepository().findAll();
         boolean c = create.stream().map(Create::getId).anyMatch(s -> s.substring(s.lastIndexOf("/") + 1).equals(id.toString()));
@@ -520,12 +532,6 @@ public class Storage implements IStorage {
             repo.save(accept);
             return accept;
         }
-        if (type.equals(IActivityConstants.BLOCK)) {
-            Block block = new Block(activity);
-            IBlockRepository repo = blockService.getRepository();
-            repo.save(block);
-            return block;
-        }
         if (type.equals(IActivityConstants.CREATE)) {
             Create create = new Create(activity);
             ICreateRepository repo = createService.getRepository();
@@ -537,12 +543,6 @@ public class Storage implements IStorage {
             IDeleteRepository repo = deleteService.getRepository();
             repo.save(delete);
             return delete;
-        }
-        if (type.equals(IActivityConstants.DISLIKE)) {
-            Dislike dislike = new Dislike(activity);
-            IDislikeRepository repo = dislikeService.getRepository();
-            repo.save(dislike);
-            return dislike;
         }
         if (type.equals(IActivityConstants.FOLLOW)) {
             Follow follow = new Follow(activity);
@@ -567,12 +567,6 @@ public class Storage implements IStorage {
             IRejectRepository repo = rejectService.getRepository();
             repo.save(reject);
             return reject;
-        }
-        if (type.equals(IActivityConstants.UNDO)) {
-            Undo undo = new Undo(activity);
-            IUndoRepository repo = undoService.getRepository();
-            repo.save(undo);
-            return undo;
         }
         if (type.equals(IActivityConstants.UPDATE)) {
             Update update = new Update(activity);

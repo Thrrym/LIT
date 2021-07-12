@@ -2,89 +2,78 @@ package de.tuberlin.tkn.lit.model.lit;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import de.tuberlin.tkn.lit.jsonutilities.deserializer.ArrayDeserializer;
+import de.tuberlin.tkn.lit.jsonutilities.serializer.ArraySerializer;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
+import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import java.util.List;
 
 @Entity
 public class Paper extends ActivityPubObject {
 
-    private String author;
+    @OneToMany(targetEntity = Author.class,cascade = CascadeType.ALL)
+    @JoinColumn(name = "activity_pub_id")
+    private List<LinkOrObject> authors;
     private String title;
-    private String year;
+    private int year;
     private String category;
-    private String _abstract;
-    @ElementCollection
-    private List<String> likedBy;
+    private String paperAbstract;
 
-    public Paper() {
+    public List<LinkOrObject> getAuthors() {
+        return authors;
     }
 
-    public Paper(String author, String title, String year, String category, String _abstract) {
-        this.author = author;
-        this.title = title;
-        this.year = year;
-        this.category = category;
-        this._abstract = _abstract;
+    public void setAuthors(List<LinkOrObject> authors) {
+        this.authors = authors;
     }
 
-    public String getAuthor() {
-        return author;
+    @JsonSetter("authors")
+    public void setAuthors(JsonNode s) throws JsonProcessingException {
+        authors = ArrayDeserializer.deserialize(s);
+    }
+
+    @JsonGetter("authors")
+    public List<JsonNode> toJSONAuthors() throws JsonProcessingException {
+        if (authors == null) return null;
+        return ArraySerializer.serialize(authors);
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getYear() {
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public int getYear() {
         return year;
+    }
+
+    public void setYear(int year) {
+        this.year = year;
     }
 
     public String getCategory() {
         return category;
     }
 
-    public String get_abstract() {
-        return _abstract;
-    }
-
-    public List<String> getLikedBy() {
-        return likedBy;
-    }
-
-    @JsonGetter("likes")
-    public int getLikes() {
-        if (likedBy == null)
-            return 0;
-        return likedBy.size();
-    }
-
-    @JsonSetter("likes")
-    public void setLikes(int value) {
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
-    }
-
     public void setCategory(String category) {
         this.category = category;
     }
 
-    public void set_abstract(String _abstract) {
-        this._abstract = _abstract;
+    public String getPaperAbstract() {
+        return paperAbstract;
     }
 
-    public void setLikedBy(List<String> likedBy) {
-        this.likedBy = likedBy;
+    public void setPaperAbstract(String paperAbstract) {
+        this.paperAbstract = paperAbstract;
     }
 }

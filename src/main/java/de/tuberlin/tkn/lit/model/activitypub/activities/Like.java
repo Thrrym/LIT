@@ -28,12 +28,14 @@ public class Like extends Activity {
 
     @Override
     public Activity handle(String actorId, IStorage storage, int port) {
-        if (getActor().isObject()){
+        if (getActor().isObject()) {
             getActor().getLitObject().setId(storage.getActor(getActor().getLitObject().getName()).getId());
         }
 
-        if(!actorId.startsWith("http"))
+        if (!actorId.startsWith("http")) {
             actorId = storage.getActor(actorId).getId();
+        }
+
         ActivityPubObject obj = storage.getObject(getObject().getId());
 
         if (obj != null) {
@@ -59,19 +61,13 @@ public class Like extends Activity {
                 bibTeXArticle.setLikedBy(list);
             }
 
-            if(UriUtilities.isLocaleServer(actorId, port))
+            if (UriUtilities.isLocaleServer(actorId, port))
                 storage.addToLiked(UriUtilities.getActor(actorId), new LinkOrObject(bibTeXArticle));
 
-
-            // Inform followers
-           // if (storage.getFollowersCollection(getActor().getLitObject().getName()).getOrderedItems() != null)
-             //   setTo(storage.getFollowersCollection(getActor().getLitObject().getName()).getOrderedItems());
-            // TOD add_to
-         //   if (storage.getFollowersCollection(UriUtilities.getActor(getActor().getId())).getOrderedItems() != null)
-           //     setTo(storage.getFollowersCollection(UriUtilities.getActor(getActor().getId())).getOrderedItems());
+            return this;
         }
 
-        return this;
+        return null;
     }
 
     public String getType() {

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import de.tuberlin.tkn.lit.jsonutilities.deserializer.ArrayDeserializer;
 import de.tuberlin.tkn.lit.jsonutilities.serializer.ArraySerializer;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -15,7 +16,7 @@ import java.util.List;
 @Entity
 public class ActivityPubCollection extends ActivityPubObject {
 
-    @OneToMany(targetEntity = LinkOrObject.class)
+    @OneToMany(targetEntity = LinkOrObject.class, cascade = CascadeType.ALL)
     private List<LinkOrObject> items;
     @OneToOne(targetEntity = LinkOrObject.class)
     private LinkOrObject first;

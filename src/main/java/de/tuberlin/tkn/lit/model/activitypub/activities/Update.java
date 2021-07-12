@@ -6,8 +6,10 @@ import de.tuberlin.tkn.lit.storage.IStorage;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 
 import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "UpdateActivity")
 public class Update extends Activity {
     private static final String type = "Update";
 
