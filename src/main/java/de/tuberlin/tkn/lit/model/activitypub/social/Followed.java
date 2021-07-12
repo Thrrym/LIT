@@ -1,15 +1,17 @@
 package de.tuberlin.tkn.lit.model.activitypub.social;
 
+import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Followed {
+public class Followed extends ActivityPubObject {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private long followedID;
     private String actorname;
     private long objectID;
     private String objectType;
@@ -37,4 +39,9 @@ public class Followed {
     public String getActorname() {
         return actorname;
     }
+
+    public long getFollowedID() {
+        return followedID;
+    }
+
 }

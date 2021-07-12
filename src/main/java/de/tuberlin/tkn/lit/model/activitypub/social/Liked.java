@@ -1,16 +1,17 @@
 package de.tuberlin.tkn.lit.model.activitypub.social;
 
+import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Liked {
+public class Liked extends ActivityPubObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private long likedID;
     private long objectID;
     private String objectType;
     private String actorname;
@@ -40,8 +41,8 @@ public class Liked {
         this.actorname = actorname;
     }
 
-    public long getId() {
-        return id;
+    public long getLikedID() {
+        return likedID;
     }
 
     //@OneToMany(targetEntity = ActivityPubObject.class)

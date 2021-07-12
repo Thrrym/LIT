@@ -1,16 +1,18 @@
 package de.tuberlin.tkn.lit.model.activitypub.social;
 
+import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class RelevantObject {
+public class RelevantObject extends ActivityPubObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private long relevantObjectID;
     private String link;
     private long objectID;
     private String objectType;
@@ -40,8 +42,8 @@ public class RelevantObject {
         this.actorname = actorname;
     }
 
-    public long getId() {
-        return id;
+    public long getRelevantObjectID() {
+        return relevantObjectID;
     }
 
     public String getLink() {

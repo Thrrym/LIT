@@ -7,11 +7,11 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-public class Outbox {
+public class Outbox extends ActivityPubObject {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private long outboxID;
     private long objectID;
     private String objectType;
     private String actorname;
@@ -43,8 +43,8 @@ public class Outbox {
         this.actorname = actorname;
     }
 
-    public long getId() {
-        return id;
+    public long getOutboxID() {
+        return outboxID;
     }
 
     //@OneToMany(targetEntity = ActivityPubObject.class)

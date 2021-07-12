@@ -2,6 +2,7 @@ package de.tuberlin.tkn.lit.storage;
 
 import de.tuberlin.tkn.lit.constants.IActivityConstants;
 import de.tuberlin.tkn.lit.constants.ILitObjectConstants;
+import de.tuberlin.tkn.lit.constants.ISocialConstants;
 import de.tuberlin.tkn.lit.constants.UriConstants;
 import de.tuberlin.tkn.lit.model.activitypub.activities.*;
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
@@ -20,6 +21,7 @@ import de.tuberlin.tkn.lit.service_interface_litobjects.*;
 import de.tuberlin.tkn.lit.service_interface_social.*;
 import de.tuberlin.tkn.lit.storage_activities.*;
 import de.tuberlin.tkn.lit.storage_litobjects.*;
+import de.tuberlin.tkn.lit.storage_social.IInboxRepository;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -528,7 +530,7 @@ public class Storage implements IStorage {
                 String objectType = current.getObjectType();
 
                 long id = current.getObjectID();
-                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
+                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id), objectType)));
             }
         }
         if(returnObjects.size() > 0) return new OrderedCollection(returnObjects);
@@ -632,22 +634,6 @@ public class Storage implements IStorage {
         }
         if (activity instanceof Like) {
             Like like = (Like) activity;
-            String like_id = like.getId();
-            ActivityPubObject like_obj = like.getObject().getLitObject();
-
-            //id
-            LinkOrObject searchedActor = like.getActor();
-            ActivityPubObject ourobject= searchedActor.getLitObject();
-            Liked newLikes = new Liked();
-            if (ourobject instanceof Actor)
-                {
-                    newLikes.setActorname(ourobject.getName());
-                }
-
-
-
-
-
             ILikeRepository repo = likeService.getRepository();
             repo.save(like);
             return like;
@@ -678,7 +664,7 @@ public class Storage implements IStorage {
             if(name.equals(actorName)) {
                 String objectType = current.getObjectType();
                 long id = current.getObjectID();
-                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
+                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id), objectType)));
             }
         }
         return new OrderedCollection(returnObjects);
@@ -686,13 +672,20 @@ public class Storage implements IStorage {
     //Hristina
     @Override
     public void addToLiked(String actorName, LinkOrObject toAdd) {
+        Liked liked = new Liked();
         ActivityPubObject obj;
         String link;
         if (toAdd.getLitObject() == null) {
             link = toAdd.getLink();
         } else {
             obj = toAdd.getLitObject();
-            Liked liked = new Liked();
+            if (obj instanceof Author
+            || obj instanceof Paper
+            || obj instanceof BibTeXArticle
+            || obj instanceof Book) {
+                liked.setObjectID(obj.getActivityPubID());
+                liked.setObjectType(obj.getType());
+            }
             if (obj instanceof Activity) {
                 long l = ((Activity)obj).getObject().getLitObject().getActivityPubID();
                 liked.setObjectID(l);
@@ -714,7 +707,7 @@ public class Storage implements IStorage {
             if(name.equals(actorName)) {
                 String objectType = current.getObjectType();
                 long id = current.getObjectID();
-                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
+                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id), objectType)));
             }
         }
         return new OrderedCollection(returnObjects);
@@ -752,7 +745,7 @@ public class Storage implements IStorage {
                 String objectType = current.getObjectType();
 
                 long id = current.getObjectID();
-                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
+                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id), objectType)));
             }
         }
         return new OrderedCollection(returnObjects);
@@ -771,11 +764,10 @@ public class Storage implements IStorage {
             if(obj instanceof Activity) {
                 LinkOrObject lor = ((Activity) obj).getObject();
                 ActivityPubObject a_obj = lor.getLitObject();
-                // TODO FIX
                 if(a_obj != null) {
                     ActivityPubObject apo = lor.getLitObject();
                     long l = apo.getActivityPubID();
-                    outbox.setObjectID(l); //# TODO: id of object instead of activity
+                    outbox.setObjectID(l);
                     outbox.setObjectType(((Activity) obj).getObject().getLitObject().getType());
                 }
                 else {
@@ -801,7 +793,7 @@ public class Storage implements IStorage {
                 String objectType = current.getObjectType();
 
                 long id = current.getObjectID();
-                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
+                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id), objectType)));
             }
         }
         return new OrderedCollection(returnObjects);
@@ -840,7 +832,7 @@ public class Storage implements IStorage {
                 String objectType = current.getObjectType();
 
                 long id = current.getObjectID();
-                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
+                returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id), objectType)));
             }
         }
         return new OrderedCollection(returnObjects);
@@ -874,7 +866,7 @@ public class Storage implements IStorage {
             IAuthorRepository authorRepo = authorService.getRepository();
             List<Author> authors = (List<Author>) authorRepo.findAll();
             for(Author author : authors) {
-                if(author.getId().equals(id)) return author;
+                if(author.getActivityPubID() == Long.valueOf(id)) return author;
             }
         }
         if(tableName.equals(ILitObjectConstants.ACTIVITYPUBCOLLECTION)) {
@@ -910,6 +902,48 @@ public class Storage implements IStorage {
             List<Paper> papers = (List<Paper>) paperRepository.findAll();
             for(Paper paper : papers) {
                 if(paper.getId().equals(id)) return paper;
+            }
+        }
+        if(tableName.equals(ISocialConstants.INBOX)) {
+            IInboxRepository authorRepo = inboxService.getRepository();
+            List<Inbox> inboxes = (List<Inbox>) authorRepo.findAll();
+            for(Inbox inbox : inboxes) {
+                if(inbox.getObjectID() == Long.valueOf(id)) return inbox;
+            }
+        }
+        if(tableName.equals(ISocialConstants.LIKED)) {
+            IAuthorRepository authorRepo = authorService.getRepository();
+            List<Author> authors = (List<Author>) authorRepo.findAll();
+            for(Author author : authors) {
+                if(author.getActivityPubID() == Long.valueOf(id)) return author;
+            }
+        }
+        if(tableName.equals(ISocialConstants.OUTBOX)) {
+            IAuthorRepository authorRepo = authorService.getRepository();
+            List<Author> authors = (List<Author>) authorRepo.findAll();
+            for(Author author : authors) {
+                if(author.getActivityPubID() == Long.valueOf(id)) return author;
+            }
+        }
+        if(tableName.equals(ISocialConstants.FOLLOWING)) {
+            IAuthorRepository authorRepo = authorService.getRepository();
+            List<Author> authors = (List<Author>) authorRepo.findAll();
+            for(Author author : authors) {
+                if(author.getActivityPubID() == Long.valueOf(id)) return author;
+            }
+        }
+        if(tableName.equals(ISocialConstants.FOLLOWED)) {
+            IAuthorRepository authorRepo = authorService.getRepository();
+            List<Author> authors = (List<Author>) authorRepo.findAll();
+            for(Author author : authors) {
+                if(author.getActivityPubID() == Long.valueOf(id)) return author;
+            }
+        }
+        if(tableName.equals(ISocialConstants.RELEVANTOBJECT)) {
+            IAuthorRepository authorRepo = authorService.getRepository();
+            List<Author> authors = (List<Author>) authorRepo.findAll();
+            for(Author author : authors) {
+                if(author.getActivityPubID() == Long.valueOf(id)) return author;
             }
         }
         return null;
