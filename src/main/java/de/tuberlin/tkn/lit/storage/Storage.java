@@ -4,6 +4,8 @@ import de.tuberlin.tkn.lit.constants.IActivityConstants;
 import de.tuberlin.tkn.lit.constants.ILitObjectConstants;
 import de.tuberlin.tkn.lit.constants.UriConstants;
 import de.tuberlin.tkn.lit.model.activitypub.activities.*;
+import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
+import de.tuberlin.tkn.lit.model.activitypub.activities.Like;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
@@ -89,6 +91,8 @@ public class Storage implements IStorage {
     private final Map<String, Actor> actors = new HashMap<>();
     private final Map<String, Activity> activities = new HashMap<>();
     private final Map<String, ActivityPubObject> objects = new HashMap<>();
+    private final Map<String, List<Activity>> federation = new HashMap<>(); // other server uris as keys to pending send tasks
+
     @Value("${server.port}")
     private int serverPort;
 
@@ -105,6 +109,74 @@ public class Storage implements IStorage {
     }
 
     //# ACTOR
+    @Override
+    public OrderedCollection getOutbox(String actorName) {
+        return outboxes.get(actorName);
+    }
+
+    @Override
+    public List<Activity> getPendingActivities(String url) {
+        if (federation.containsKey(url)) {
+            List<Activity> toReturn = federation.get(url);
+            federation.replace(url, new ArrayList<Activity>());
+            return toReturn;
+        }
+        else {
+            List<Activity> l = new ArrayList<Activity>();
+            federation.put(url, l);
+            return l;
+        }
+    }
+
+    @Override
+    public void addPendingActivity(String url, Activity activity) {
+        if (federation.containsKey(url)) {
+            List<Activity> l = federation.get(url);
+            l.add(activity);
+            federation.replace(url, l);
+        }
+        else {
+            List<Activity> l = new ArrayList<Activity>();
+            l.add(activity);
+            federation.put(url, l);
+        }
+
+        System.out.print("Add activity as pending for " + url + "\n");
+    }
+
+    @Override
+    public List<String> getFederatedHosts() {
+        List<String> federatedHosts = new ArrayList<>(federation.keySet());
+        return federatedHosts;
+    }
+
+    @Override
+    public OrderedCollection getObjectsCreatedByActor(String actorName) {
+        String actorId = getActor(actorName).getId();
+        List<LinkOrObject> results = objects.values().stream().filter(value -> value.getGenerator().getLink().equals(actorId)).map(LinkOrObject::new).collect(Collectors.toList());
+        return new OrderedCollection(results);
+    }
+
+    @Override
+    public OrderedCollection getRelevantObjects(String actorName) {
+        return new OrderedCollection(relevantObjects.get(actorName).stream().map((id) -> new LinkOrObject(objects.get(id))).collect(Collectors.toList()));
+    }
+
+    public void addToRelevantObjects(String actorName, LinkOrObject toAdd) {
+        relevantObjects.get(actorName).add(toAdd.getId());
+    }
+
+    @Override
+    public void addToInbox(String actorName, LinkOrObject toAdd) {
+        inboxes.get(actorName).getOrderedItems().add(toAdd);
+    }
+
+    @Override
+    public void addToOutbox(String actorName, LinkOrObject toAdd) {
+        outboxes.get(actorName).getOrderedItems().add(toAdd);
+    }
+
+
     @Override
     public Actor createActor(Actor actor) {
 

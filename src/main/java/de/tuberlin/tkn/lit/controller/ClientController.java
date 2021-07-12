@@ -6,7 +6,7 @@ import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
-import de.tuberlin.tkn.lit.processing.IActivitySender;
+import de.tuberlin.tkn.lit.processing.IFederationClient;
 import de.tuberlin.tkn.lit.storage.Storage;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,8 @@ import java.util.UUID;
 public class ClientController {
 
     @Autowired
-    IActivitySender activitySender;
+    IFederationClient federationClient;
+
     @Autowired
     Storage storage;
     @Value("${server.port}")
@@ -114,15 +115,15 @@ public class ClientController {
                 storage.addToOutbox(actorName, new LinkOrObject(activity));
                 storage.addToOutbox(actorName, new LinkOrObject(tempActivity));
 
-                activity.handleSendings(storage, activitySender, serverPort);
-                tempActivity.handleSendings(storage, activitySender, serverPort);
+                activity.handleSendings(storage, federationClient, serverPort);
+                tempActivity.handleSendings(storage, federationClient, serverPort);
 
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
                 Activity createdActivity = storage.createActivity(actorName, tempActivity);
                 storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
-                createdActivity.handleSendings(storage, activitySender, serverPort);
+                createdActivity.handleSendings(storage, federationClient, serverPort);
 
                 return new ResponseEntity<>(createdActivity.getId(), HttpStatus.CREATED);
             }

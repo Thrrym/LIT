@@ -9,6 +9,7 @@ import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
 import org.springframework.core.annotation.Order;
 
 import java.util.UUID;
+import java.util.List;
 
 public interface IStorage {
     Actor getActor(String actorName);
@@ -26,6 +27,12 @@ public interface IStorage {
     OrderedCollection getOffers(String actorName);
 
     OrderedCollection getOutbox(String actorName);
+
+    List<Activity> getPendingActivities(String url);
+
+    void addPendingActivity(String url, Activity activity);
+
+    List<String> getFederatedHosts();
 
     OrderedCollection getObjectsCreatedByActor(String actorName);
 
