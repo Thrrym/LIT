@@ -43,7 +43,7 @@ public class ClientController {
         return storage.getActors();
     }
 
-    @RequestMapping(value = "/actors-names", method = RequestMethod.GET)
+    @RequestMapping(value = "/actorids", method = RequestMethod.GET)
     public List<String> getActorsList(){
         ActivityPubCollection actors_collection = storage.getActors();
 

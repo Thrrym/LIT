@@ -255,7 +255,7 @@ public class FederationClient implements IFederationClient{
 		List<String> remote_actors = new LinkedList<>();
 
 		for (String host : remote_hosts){
-			List<String> actors = sendWithTimeout(host+"/actors-list", null, List.class, "GET");
+			List<String> actors = sendWithTimeout(host+"/actorids", null, List.class, "GET");
 			remote_actors.addAll(actors);
 		}
 
