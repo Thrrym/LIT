@@ -547,16 +547,17 @@ public class Storage implements IStorage {
     public Activity createActivity(String actorName, Activity activity) {
         UUID uuid = UUID.randomUUID();
         String id = UriUtilities.generateId(new String[]{actorName}, serverPort, uuid);
+        activity.setId(id);
 
         String type = activity.getType();
-        if (type.equals(IActivityConstants.ACCEPT)) {
-            Accept accept = new Accept(activity);
+        if (activity instanceof Accept) {
+            Accept accept = (Accept)activity;
             IAcceptRepository repo = acceptService.getRepository();
             repo.save(accept);
             return accept;
         }
         if (type.equals(IActivityConstants.CREATE)) {
-            Create create = new Create(activity);
+            Create create = (Create)activity;
             ICreateRepository repo = createService.getRepository();
             repo.save(create);
             return create;

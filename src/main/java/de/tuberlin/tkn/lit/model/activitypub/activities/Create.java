@@ -34,6 +34,7 @@ public class Create extends Activity {
                 return null;
             }
             if (getObject().getLitObject() instanceof BibTeXArticle) {
+                BibTeXArticle article = (BibTeXArticle) getObject().getLitObject();
                 for (LinkOrObject author : ((BibTeXArticle) getObject().getLitObject()).getAuthors()) {
                     if (storage.getObject(author.getId()) == null) {
                         return null;
