@@ -616,20 +616,21 @@ public class Storage implements IStorage {
         }
         return new OrderedCollection(returnObjects);
     }
-
+    //Hristina
     @Override
     public void addToLiked(String actorName, LinkOrObject toAdd) {
         ActivityPubObject obj;
         String link;
-        if(toAdd.getLitObject() == null) {
+        if (toAdd.getLitObject() == null) {
             link = toAdd.getLink();
-        }
-        else {
+        } else {
             obj = toAdd.getLitObject();
-            System.out.println("HELLO");
             Liked liked = new Liked();
-            liked.setObjectID(obj.getActivityPubID());
-            if(obj instanceof Activity) liked.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+            if (obj instanceof Activity) {
+                long l = ((Activity) obj).getObject().getLitObject().getActivityPubID();
+                liked.setObjectID(l);
+                liked.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+            }
             liked.setActorname(actorName);
             likedService.getRepository().save(liked);
         }
@@ -652,26 +653,27 @@ public class Storage implements IStorage {
         return new OrderedCollection(returnObjects);
     }
 
+    //Hristina
     @Override
     public void addToInbox(String actorName, LinkOrObject toAdd) {
         ActivityPubObject obj;
         String link;
-        if(toAdd.getLitObject() == null) {
+        if (toAdd.getLitObject() == null) {
             link = toAdd.getLink();
-        }
-        else {
+        } else {
             obj = toAdd.getLitObject();
-            System.out.println("HELLO");
             Inbox inbox = new Inbox();
-            inbox.setObjectID(obj.getActivityPubID());
-            if(obj instanceof Activity) inbox.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+            if (obj instanceof Activity) {
+                long l = ((Activity) obj).getObject().getLitObject().getActivityPubID();
+                inbox.setObjectID(l);
+                inbox.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+            }
             inbox.setActorname(actorName);
             inboxService.getRepository().save(inbox);
         }
-        return;
     }
 
-    //# OUTBOX
+    //# OUTBOX MUSTERBEISPIEL
     @Override
     public OrderedCollection getOutbox(String actorName) {
         List<Outbox> outboxList = (List<Outbox>) outboxService.getRepository().findAll();
@@ -727,6 +729,7 @@ public class Storage implements IStorage {
         return new OrderedCollection(returnObjects);
     }
 
+    //Karim DONE(X)
     @Override
     public void addToFollowing(String actorName, LinkOrObject toAdd) {
         ActivityPubObject obj;
@@ -737,8 +740,11 @@ public class Storage implements IStorage {
         else {
             obj = toAdd.getLitObject();
             Following following = new Following();
-            following.setObjectID(obj.getActivityPubID()); //# TODO: id of object instead of activity
-            if(obj instanceof Activity) following.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+            if(obj instanceof Activity) {
+                long l = ((Activity) obj).getObject().getLitObject().getActivityPubID();
+                following.setObjectID(l); //# TODO: id of object instead of activity
+                following.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+            }
             following.setActorname(actorName);
             followingService.getRepository().save(following);
         }
@@ -762,6 +768,7 @@ public class Storage implements IStorage {
         return new OrderedCollection(returnObjects);
     }
 
+    //Karim DONE (X)
     @Override
     public void addToFollowers(String actorName, LinkOrObject toAdd) {
         ActivityPubObject obj;
@@ -772,8 +779,12 @@ public class Storage implements IStorage {
         else {
             obj = toAdd.getLitObject();
             Followed followed = new Followed();
-            followed.setObjectID(obj.getActivityPubID()); //# TODO: id of object instead of activity
-            if(obj instanceof Activity) followed.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+            if (obj instanceof Activity)
+                {
+                    long l = ((Activity)obj).getObject().getLitObject().getActivityPubID();
+                    followed.setObjectID(l);
+                    followed.setObjectType(((Activity)obj).getObject().getLitObject().getType());
+                }
             followed.setActorname(actorName);
             followedService.getRepository().save(followed);
         }
