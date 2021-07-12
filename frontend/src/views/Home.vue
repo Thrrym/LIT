@@ -22,16 +22,15 @@
     </h3>
 
     <div> 
-    <b-card-group deck>
+    <b-card-group deck class="col-md-10">
       <b-card
-        v-for="entry in objectsByUser"
+        v-for="entry in noAuthors"
         v-bind:key="entry.id"
         tag="article"
         style="max-width: 20rem"
         class="mb-2"
         align="center"
       >
-        <b-card-title v-text="entry.author"></b-card-title>
         <b-card-sub-title v-text="entry.journal"></b-card-sub-title>
         <b-card-text v-text="entry.title"></b-card-text>
 
@@ -54,13 +53,49 @@
     </div>
 
     <h3 v-if="userHasRelevantObjects">Activityfeed</h3>
-    <b-card-group deck>
+    <b-card-group deck class="col-md-10">
       <b-card
         v-for="entry in objectsRelevantToUser"
         v-bind:key="entry.id"
         tag="article"
         style="max-width: 20rem"
         class="mb-2"
+      >
+        <b-card-title v-text="entry.author"></b-card-title>
+        <b-card-sub-title v-text="entry.journal"></b-card-sub-title>
+        <b-card-text v-text="entry.title"></b-card-text>
+
+        <template #footer>
+          <small class="text-muted">
+            <b-button href="#" variant="primary" v-if="postCanBeLiked(entry)">
+              <b-icon
+                icon="bookmark-heart"
+                v-on:click="likePost(entry.id)"
+              ></b-icon>
+            </b-button>
+            <b-button href="#" variant="primary-outline" v-else>
+              <b-icon
+                  icon="bookmark-heart"
+              ></b-icon> {{entry.liked}}
+            </b-button>
+            <b-button href="#" variant="primary-outline">
+              <b-icon
+                  icon="chevron-double-up"
+                  v-on:click="showModal(entry)"
+              ></b-icon>
+            </b-button>
+          </small
+        ></template>
+      </b-card>
+    </b-card-group>
+
+<h3>new Offers</h3> <!-- v-if is coming as soon as newOffers is implemented -->
+    <b-card-group deck class="col-md-10">
+      <b-card
+        v-for="entry in objectsRelevantToUser"
+        v-bind:key="entry.id"
+        tag="article"
+        style="max-width: 20rem"
       >
         <b-card-title v-text="entry.author"></b-card-title>
         <b-card-sub-title v-text="entry.journal"></b-card-sub-title>
@@ -123,7 +158,7 @@ export default {
   data() {
     return {
       requestResponse: "",
-      objectsByUser: "",
+      objectsByUser: [],
       objectsRelevantToUser: "",
     };
   },
@@ -205,7 +240,20 @@ export default {
       if (this.objectsRelevantToUser === "") return false;
       if (this.objectsRelevantToUser.length === 0) return false;
       return true
-    }
+    },
+    noAuthors: function()
+    {
+      return this.objectsByUser.filter
+      (
+        function(elem)
+        {
+          if (elem.type !== "Author")
+          {
+            return true;  
+          }
+        }
+      );
+    },
   },
   mounted: function () {
     this.refreshObjects();
