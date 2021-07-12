@@ -72,7 +72,7 @@
       </b-container>
     </b-modal>
 
-    <b-modal ref="successModal" v-if="getNewAuthorSuccess"> Success </b-modal>
+    <b-modal ref="successModal">Success</b-modal>
 
     <ServerComNewAuthor
       ref="com"
@@ -131,7 +131,7 @@ export default {
       this.showOptionalFields = false;
     },
     handleRequestResponse: function (response) {
-      this.responseText = JSON.parse(response.responseText);
+      this.responseText = response.responseText;
       this.$refs["modal-1"].hide();
       this.success = true;
       this.$refs.successModal.show();
