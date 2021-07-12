@@ -129,6 +129,8 @@ public class Storage implements IStorage {
         liked.put(actor.getName(), new HashSet<>());
 
         personRepository.save((Person)actor);
+        Following newFollowing = new Following();
+        newFollowing.setActorname(actor.getName());
         //TODO create social objects for person
 
         return actors.get(actor.getName());
@@ -494,7 +496,6 @@ public class Storage implements IStorage {
         }
         else {
             obj = toAdd.getLitObject();
-            System.out.println("HELLO");
             RelevantObject relevantObject = new RelevantObject();
             relevantObject.setObjectID(obj.getActivityPubID()); //# TODO: id of object instead of activity
             if(obj instanceof Activity) relevantObject.setObjectType(((Activity) obj).getObject().getLitObject().getType());
@@ -508,15 +509,37 @@ public class Storage implements IStorage {
     public Activity getActivity(String id) {
 
         List<Accept> accept = (List<Accept>) acceptService.getRepository().findAll();
-        boolean a = accept.stream().map(Accept::getId).anyMatch(s -> s.substring(s.lastIndexOf("/") + 1).equals(id.toString()));
-        if(a){
-            return accept.stream().filter(s -> s.getId().contains(id.toString())).collect(Collectors.toList()).get(0);
-        }
+        List<Accept> a = accept.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
+        if (a.size() != 0) return a.get(0);
+
         List<Create> create = (List<Create>) createService.getRepository().findAll();
-        boolean c = create.stream().map(Create::getId).anyMatch(s -> s.substring(s.lastIndexOf("/") + 1).equals(id.toString()));
-        if(c){
-            return create.stream().filter(s -> s.getId().contains(id.toString())).collect(Collectors.toList()).get(0);
-        }
+        List<Create> c = create.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
+        if (c.size() != 0) return c.get(0);
+
+        List<Delete> delete = (List<Delete>) deleteService.getRepository().findAll();
+        List<Delete> d = delete.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
+        if (d.size() != 0) return d.get(0);
+
+        List<Follow> follow = (List<Follow>) followService.getRepository().findAll();
+        List<Follow> f = follow.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
+        if (f.size() != 0) return f.get(0);
+
+        List<Ignore> ignore = (List<Ignore>) ignoreService.getRepository().findAll();
+        List<Ignore> i = ignore.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
+        if (i.size() != 0) return i.get(0);
+
+        List<Like> like = (List<Like>) likeService.getRepository().findAll();
+        List<Like> l = like.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
+        if (l.size() != 0) return l.get(0);
+
+        List<Reject> reject = (List<Reject>) rejectService.getRepository().findAll();
+        List<Reject> r = reject.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
+        if (r.size() != 0) return r.get(0);
+
+        List<Update> update = (List<Update>) updateService.getRepository().findAll();
+        List<Update> u = update.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
+        if (u.size() != 0) return u.get(0);
+
         return null;
     }
 
@@ -591,8 +614,7 @@ public class Storage implements IStorage {
                 returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
             }
         }
-        if(returnObjects.size() > 0) return new OrderedCollection(returnObjects);
-        return null;
+        return new OrderedCollection(returnObjects);
     }
 
     @Override
@@ -627,8 +649,7 @@ public class Storage implements IStorage {
                 returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
             }
         }
-        if(returnObjects.size() > 0) return new OrderedCollection(returnObjects);
-        return null;
+        return new OrderedCollection(returnObjects);
     }
 
     @Override
@@ -647,11 +668,7 @@ public class Storage implements IStorage {
             inbox.setActorname(actorName);
             inboxService.getRepository().save(inbox);
         }
-
-//        IOutboxRepository outboxRepository = outboxService.getRepository();
-//        outboxRepository.save(new Outbox.OutboxItems();
         return;
-        //outboxes.get(actorName).getOrderedItems().add(toAdd);
     }
 
     //# OUTBOX
@@ -669,8 +686,7 @@ public class Storage implements IStorage {
                 returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
             }
         }
-        if(returnObjects.size() > 0) return new OrderedCollection(returnObjects);
-        return null;
+        return new OrderedCollection(returnObjects);
     }
 
     @Override
@@ -683,8 +699,11 @@ public class Storage implements IStorage {
         else {
             obj = toAdd.getLitObject();
             Outbox outbox = new Outbox();
-            outbox.setObjectID(obj.getActivityPubID()); //# TODO: id of object instead of activity
-            if(obj instanceof Activity) outbox.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+            if(obj instanceof Activity) {
+                long l = ((Activity) obj).getObject().getLitObject().getActivityPubID();
+                outbox.setObjectID(l); //# TODO: id of object instead of activity
+                outbox.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+            }
             outbox.setActorname(actorName);
             outboxService.getRepository().save(outbox);
         }
@@ -705,8 +724,7 @@ public class Storage implements IStorage {
                 returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
             }
         }
-        if(returnObjects.size() > 0) return new OrderedCollection(returnObjects);
-        return null;
+        return new OrderedCollection(returnObjects);
     }
 
     @Override
@@ -741,8 +759,7 @@ public class Storage implements IStorage {
                 returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id-1), objectType)));
             }
         }
-        if(returnObjects.size() > 0) return new OrderedCollection(returnObjects);
-        return null;
+        return new OrderedCollection(returnObjects);
     }
 
     @Override

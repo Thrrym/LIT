@@ -13,7 +13,6 @@ public class LinkOrObject {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public long linkOrObjectID;
-    @Transient
     private String link;
     //@OneToOne(targetEntity = ActivityPubObject.class, cascade = CascadeType.ALL, optional = true, fetch = FetchType.LAZY)
     //@JoinColumn(name = "activity_pub_id", nullable = false)
