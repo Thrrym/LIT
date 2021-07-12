@@ -39,7 +39,7 @@ export default {
         inputVerify: "number",
       },
     ],
-    book: [
+    Book: [
       {
         id: 0,
         name: "title",
@@ -92,7 +92,7 @@ export default {
         required: true,
       },
     ],
-    paper: [
+    Paper: [
       {
         id: 0,
         name: "title",
