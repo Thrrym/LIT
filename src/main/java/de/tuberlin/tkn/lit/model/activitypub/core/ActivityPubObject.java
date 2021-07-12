@@ -70,6 +70,7 @@ public abstract class ActivityPubObject {
     private String context;
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
+    @JsonIgnore
     public long activityPubID;
 
     private String id;

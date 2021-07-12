@@ -15,6 +15,8 @@ public class Outbox {
     private long objectID;
     private String objectType;
     private String actorname;
+    private String link;
+
 
     public String getObjectType() {
         return objectType;

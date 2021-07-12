@@ -228,7 +228,7 @@ public class Storage implements IStorage {
         String id = UriUtilities.generateId(new String[]{actorName, objectType}, serverPort, uuid);
         object.setId(id);
         String actorId = getActor(actorName).getId();
-        object.setGenerator(new LinkOrObject(actorId));
+        object.setGenerator(new LinkOrObject(getActor(actorName)));
 
         if(objectType.equals(ILitObjectConstants.AUTHOR)
                 && object instanceof Author) {
@@ -236,10 +236,11 @@ public class Storage implements IStorage {
             authorRepo.save((Author) object);
             return object;
         }
-        if(objectType.equals(ILitObjectConstants.BIBTEXARTICLE)
-                && object instanceof BibTeXArticle) {
+        if(object instanceof BibTeXArticle) {
             IBibTeXArticleRepository bibTeXArticleRepository = bibTeXArticleService.getRepository();
             bibTeXArticleRepository.save((BibTeXArticle) object);
+            Author newAuthor = new Author();
+
             return object;
         }
         if(objectType.equals(ILitObjectConstants.BOOK)
@@ -544,32 +545,43 @@ public class Storage implements IStorage {
     public Activity getActivity(String id) {
 
         List<Accept> accept = (List<Accept>) acceptService.getRepository().findAll();
-        List<Accept> a = accept.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
-        if (a.size() != 0) return a.get(0);
-
+        if(accept.size() > 0) {
+            List<Accept> a = accept.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
+            if (a.size() != 0) return a.get(0);
+        }
         List<Create> create = (List<Create>) createService.getRepository().findAll();
-        List<Create> c = create.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
-        if (c.size() != 0) return c.get(0);
-
+        if(create.size() > 0) {
+            List<Create> c = create.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
+            if (c.size() != 0) return c.get(0);
+        }
         List<Delete> delete = (List<Delete>) deleteService.getRepository().findAll();
-        List<Delete> d = delete.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
-        if (d.size() != 0) return d.get(0);
-
+        if(delete.size() > 0) {
+            List<Delete> d = delete.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
+            if (d.size() != 0) return d.get(0);
+        }
         List<Follow> follow = (List<Follow>) followService.getRepository().findAll();
+        if(follow.size() > 0) {
+            List<Follow> f = follow.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
+            if (f.size() != 0) return f.get(0);
+        }
         List<Follow> f = follow.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
         if (f.size() != 0) return f.get(0);
 
         List<Like> like = (List<Like>) likeService.getRepository().findAll();
-        List<Like> l = like.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
-        if (l.size() != 0) return l.get(0);
-
+        if(like.size() > 0) {
+            List<Like> l = like.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
+            if (l.size() != 0) return l.get(0);
+        }
         List<Reject> reject = (List<Reject>) rejectService.getRepository().findAll();
-        List<Reject> r = reject.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
-        if (r.size() != 0) return r.get(0);
-
+        if(reject.size() > 0) {
+            List<Reject> r = reject.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
+            if (r.size() != 0) return r.get(0);
+        }
         List<Update> update = (List<Update>) updateService.getRepository().findAll();
-        List<Update> u = update.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
-        if (u.size() != 0) return u.get(0);
+        if(update.size() > 0) {
+            List<Update> u = update.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
+            if (u.size() != 0) return u.get(0);
+        }
 
         return null;
     }
@@ -587,38 +599,40 @@ public class Storage implements IStorage {
             repo.save(accept);
             return accept;
         }
-        if (type.equals(IActivityConstants.CREATE)) {
+        if (activity instanceof Create) {
             Create create = (Create)activity;
             ICreateRepository repo = createService.getRepository();
             repo.save(create);
             return create;
         }
-        if (type.equals(IActivityConstants.DELETE)) {
-            Delete delete = new Delete(activity);
+        if (activity instanceof Delete) {
+            Delete delete = (Delete) activity;
             IDeleteRepository repo = deleteService.getRepository();
             repo.save(delete);
             return delete;
         }
-        if (type.equals(IActivityConstants.FOLLOW)) {
-            Follow follow = new Follow(activity);
+        if (activity instanceof Follow) {
+            Follow follow = (Follow) activity;
             IFollowRepository repo = followService.getRepository();
             repo.save(follow);
             return follow;
         }
-        if (type.equals(IActivityConstants.LIKE)) {
-            Like like = new Like(activity);
+        if (activity instanceof Like) {
+            Like like = (Like) activity;
+            String like_id = like.getId();
+            ActivityPubObject like_obj = like.getObject().getLitObject();
             ILikeRepository repo = likeService.getRepository();
             repo.save(like);
             return like;
         }
-        if (type.equals(IActivityConstants.REJECT)) {
-            Reject reject = new Reject(activity);
+        if (activity instanceof Reject) {
+            Reject reject = (Reject) activity;
             IRejectRepository repo = rejectService.getRepository();
             repo.save(reject);
             return reject;
         }
-        if (type.equals(IActivityConstants.UPDATE)) {
-            Update update = new Update(activity);
+        if (activity instanceof Update) {
+            Update update = (Update) activity;
             IUpdateRepository repo = updateService.getRepository();
             repo.save(update);
             return update;
@@ -729,12 +743,18 @@ public class Storage implements IStorage {
             Outbox outbox = new Outbox();
             if(obj instanceof Activity) {
                 LinkOrObject lor = ((Activity) obj).getObject();
+                ActivityPubObject a_obj = lor.getLitObject();
                 // TODO FIX
-                if(lor.getLitObject() != null) {
+                if(a_obj != null) {
                     ActivityPubObject apo = lor.getLitObject();
                     long l = apo.getActivityPubID();
                     outbox.setObjectID(l); //# TODO: id of object instead of activity
                     outbox.setObjectType(((Activity) obj).getObject().getLitObject().getType());
+                }
+                else {
+                    String link1 = lor.getLink();
+                    System.out.println(link1);
+
                 }
             }
             outbox.setActorname(actorName);
