@@ -156,23 +156,19 @@ public class FederationClient implements IFederationClient{
     * @param  knownMember The base url of a known member.
     */
 	public void handleJoinFederation(String knownMember) {
-		List<Activity> pendingActivities = null;
-		List<String> federationMembers = null;
-		while(true) {
-            try {
-				// get pendingActivities
-                pendingActivities = joinFederation(knownMember);
-				
-				// get other federation members
-                federationMembers = getFederationMembers(knownMember);
-			}
-			catch(Exception e) {}
+		List<Activity> pendingActivities = new ArrayList<>();
+		ArrayList<String> federationMembers = new ArrayList<>();
 
-			// handle successful join
-			if (pendingActivities != null || federationMembers != null) {
-				System.out.print("Connected to " + knownMember + "\n");
+		// retry every 2 seconds to get federation
+		// information from known member
+		while(true) {
+			try {
+				// get other federation members
+				federationMembers = getFederationMembers(this.protocol + knownMember);
+				federationMembers.add(knownMember);
 				break;
 			}
+			catch(Exception e) {}
 
 			System.out.print("Couldn't establish connection with " + knownMember + ", trying again in 2 seconds \n");
 
@@ -189,7 +185,7 @@ public class FederationClient implements IFederationClient{
 
             // server shouldn't request activities from itself
             if (thisHost.equals(this.protocol + host)) {
-                continue;
+				continue;
             }
 
 			// get the staging activities, ignore their known servers
@@ -198,7 +194,7 @@ public class FederationClient implements IFederationClient{
 			pendingActivities.addAll(morePendingActivities);
 			
 			// as a side effect this stores the member
-			storage.getPendingActivities(url);
+			storage.getPendingActivities(host);
     	}
 
 		// process the pending activities
@@ -208,7 +204,7 @@ public class FederationClient implements IFederationClient{
 			String actorname = urlParts[urlParts.length-1];
 			
 			// process
-			System.out.print("handle activity for actor " + actorname + "\n");
+			System.out.print("Handle activity for actor " + actorname + "\n");
 			serverController.handleActivity(actorname, activity);
 		}
 	} 
@@ -225,7 +221,7 @@ public class FederationClient implements IFederationClient{
 			// List<Activity> pending = storage.getPendingActivities(baseUrl);
 
 			// send post request
-    		Activity[] result = sendWithTimeout(url, UriConstants.HOST + serverPort, Activity[].class, "POST");
+    		Activity[] result = sendWithTimeout(url, UriConstants.NAME + serverPort, Activity[].class, "POST");
 
 			// check if request was successful
     		if (result != null) {
@@ -240,12 +236,12 @@ public class FederationClient implements IFederationClient{
     * @param  url The base url of a known member.
 	* @return List of members in federation.
     */
-	private List<String> getFederationMembers(String url) {
+	private ArrayList<String> getFederationMembers(String url) {
 		url += "/federation-members";
 
 		// send get request		
     	String[] result = sendWithTimeout(url, null, String[].class, "GET");
-		return Arrays.asList(result);
+		return new ArrayList<>(Arrays.asList(result));
 	}
 
 }
