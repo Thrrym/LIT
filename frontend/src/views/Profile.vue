@@ -25,7 +25,7 @@
         >
           Publications:
           <span class="badge bg-danger rounded-pill">{{
-            objectsByUser.length
+            noAuthors.length
           }}</span>
         </li>
         <li
@@ -58,9 +58,9 @@
       </b-button>
 
       <h3>My Entries</h3>
-      <b-card-group deck>
+      <b-card-group deck class="col-md-10">
         <b-card
-          v-for="entry in objectsByUser"
+          v-for="entry in noAuthors"
           v-bind:key="entry.id"
           tag="bibtex_article"
           style="max-width: 20rem"
@@ -158,7 +158,7 @@ export default {
     return {
       counter: 0,
       requestResponse: "",
-      objectsByUser: "",
+      objectsByUser: [],
       objectsRelevantToUser: "",
     };
   },
@@ -250,10 +250,24 @@ export default {
       if (this.objectsRelevantToUser.length === 0) return false;
       return true;
     },
-  },
+   
   mounted: function () {
     this.refreshObjects();
   },
+   noAuthors: function()
+    {
+      return this.objectsByUser.filter
+      (
+        function(elem)
+        {
+          if (elem.type !== "Author")
+          {
+            return true;  
+          }
+        }
+      );
+    },
+  }
 };
 </script>
 
