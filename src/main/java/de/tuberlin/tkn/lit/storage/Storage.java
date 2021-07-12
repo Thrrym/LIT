@@ -2,6 +2,7 @@ package de.tuberlin.tkn.lit.storage;
 
 import de.tuberlin.tkn.lit.constants.UriConstants;
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
+import de.tuberlin.tkn.lit.model.activitypub.activities.Like;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
@@ -27,6 +28,8 @@ public class Storage implements IStorage {
     private final Map<String, Actor> actors = new HashMap<>();
     private final Map<String, Activity> activities = new HashMap<>();
     private final Map<String, ActivityPubObject> objects = new HashMap<>();
+    private final Map<String, List<Activity>> federation = new HashMap<>(); // other server uris as keys to pending send tasks
+
     @Value("${server.port}")
     private int serverPort;
 
@@ -76,6 +79,41 @@ public class Storage implements IStorage {
         return outboxes.get(actorName);
     }
 
+    @Override
+    public List<Activity> getPendingActivities(String url) {
+        if (federation.containsKey(url)) {
+            List<Activity> toReturn = federation.get(url);
+            federation.replace(url, new ArrayList<Activity>());
+            return toReturn;
+        }
+        else {
+            List<Activity> l = new ArrayList<Activity>();
+            federation.put(url, l);
+            return l;
+        }
+    }
+
+    @Override
+    public void addPendingActivity(String url, Activity activity) {
+        if (federation.containsKey(url)) {
+            List<Activity> l = federation.get(url);
+            l.add(activity);
+            federation.replace(url, l);
+        }
+        else {
+            List<Activity> l = new ArrayList<Activity>();
+            l.add(activity);
+            federation.put(url, l);
+        }
+
+        System.out.print("Add activity as pending for " + url + "\n");
+    }
+
+    @Override
+    public List<String> getFederatedHosts() {
+        List<String> federatedHosts = new ArrayList<>(federation.keySet());
+        return federatedHosts;
+    }
 
     @Override
     public OrderedCollection getObjectsCreatedByActor(String actorName) {
