@@ -110,7 +110,7 @@ public class FederationClient implements IFederationClient{
 		
 		// send request with timeout
 		sendThread.start();
-		int i = 20; // 20 * 500 = 10000 is the timeout
+		int i = 8; // 8 * 500 = 4000 is the timeout
 		while(!threadDone && i > 0) {
 			try {
 				Thread.sleep(500);

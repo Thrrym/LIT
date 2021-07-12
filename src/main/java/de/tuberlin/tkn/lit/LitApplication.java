@@ -27,7 +27,7 @@ public class LitApplication {
 		// get command line arguments
 		// expecting the optional known 
 		// federation member to be first
-		String knownMember = argsStore.length >= 1 ? argsStore[0] : "";
+		String knownMember = argsStore.length > 1 ? argsStore[0] : "";
 
 		// the server wants to join a federation and
 		// supplies the adress of a member
