@@ -39,7 +39,7 @@ public class AuthController {
     @Autowired
     JwtUtils jwtUtils;
 
-    @PostConstruct
+   /* @PostConstruct
     public void init(){
         SignupRequest testUser1 = new SignupRequest();
         testUser1.setUsername("testuser1");
@@ -50,7 +50,7 @@ public class AuthController {
         testUser2.setUsername("testuser2");
         testUser2.setPassword("password");
         registerUser(testUser2);
-    }
+    } */
 
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
