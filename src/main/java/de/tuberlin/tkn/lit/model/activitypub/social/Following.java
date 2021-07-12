@@ -9,9 +9,6 @@ import java.util.List;
 @Entity
 public class Following extends ActivityPubObject {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long followingID;
     private String actorname;
     private long objectID;
     private String objectType;
@@ -38,10 +35,6 @@ public class Following extends ActivityPubObject {
 
     public String getActorname() {
         return actorname;
-    }
-    
-    public long getFollowingID() {
-        return followingID;
     }
 
 }

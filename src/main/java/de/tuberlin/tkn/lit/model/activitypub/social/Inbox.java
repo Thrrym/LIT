@@ -9,9 +9,6 @@ import java.util.List;
 @Entity
 public class Inbox extends ActivityPubObject {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long inboxID;
     private long objectID;
     private String objectType;
     private String actorname;
@@ -40,11 +37,6 @@ public class Inbox extends ActivityPubObject {
     public void setActorname(String actorname) {
         this.actorname = actorname;
     }
-
-    public long getInboxID() {
-        return inboxID;
-    }
-
     //@OneToMany(targetEntity = ActivityPubObject.class)
     //@OneToOne(targetEntity = ActivityPubObject.class, cascade = CascadeType.ALL, optional = true, fetch = FetchType.LAZY)
     //@JoinColumn(name = "activity_pub_id")

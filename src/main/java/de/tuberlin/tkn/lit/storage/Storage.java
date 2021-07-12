@@ -743,8 +743,9 @@ public class Storage implements IStorage {
             String name = current.getActorname();
             if(name.equals(actorName)) {
                 String objectType = current.getObjectType();
-
                 long id = current.getObjectID();
+                long id2 = current.getActivityPubID();
+                ActivityPubObject xobj = findObjectInTable(String.valueOf(id), objectType);
                 returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id), objectType)));
             }
         }
@@ -890,7 +891,7 @@ public class Storage implements IStorage {
                 if(journal.getId().equals(id)) return journal;
             }
         }
-        if(tableName.equals(ILitObjectConstants.BIBTEXARTICLE)) {
+        if(tableName.equals("bibtex_article")) {
             IBibTeXArticleRepository bibTeXArticleRepository = bibTeXArticleService.getRepository();
             List<BibTeXArticle> bibTeXArticles = (List<BibTeXArticle>) bibTeXArticleRepository.findAll();
             for(BibTeXArticle bibTeXArticle : bibTeXArticles) {

@@ -10,9 +10,6 @@ import javax.persistence.Id;
 @Entity
 public class RelevantObject extends ActivityPubObject {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long relevantObjectID;
     private String link;
     private long objectID;
     private String objectType;
@@ -40,10 +37,6 @@ public class RelevantObject extends ActivityPubObject {
 
     public void setActorname(String actorname) {
         this.actorname = actorname;
-    }
-
-    public long getRelevantObjectID() {
-        return relevantObjectID;
     }
 
     public String getLink() {

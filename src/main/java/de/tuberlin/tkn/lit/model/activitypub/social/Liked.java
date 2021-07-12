@@ -9,9 +9,6 @@ import java.util.List;
 @Entity
 public class Liked extends ActivityPubObject {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long likedID;
     private long objectID;
     private String objectType;
     private String actorname;
@@ -41,9 +38,6 @@ public class Liked extends ActivityPubObject {
         this.actorname = actorname;
     }
 
-    public long getLikedID() {
-        return likedID;
-    }
 
     //@OneToMany(targetEntity = ActivityPubObject.class)
     //@OneToOne(targetEntity = ActivityPubObject.class, cascade = CascadeType.ALL, optional = true, fetch = FetchType.LAZY)
