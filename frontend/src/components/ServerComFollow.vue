@@ -80,7 +80,7 @@ export default {
       this.$emit("requestError", this.requestResponse);
     },
 
-    prepareFollowJson: function (backendUrl, currentUser) {
+    prepareFollowJson: function () {
       // Prepare the json as http payload.
       // var objectJson = JSON.parse(this.objectRequestResponse.responseText); // Transform the base object from string to JSON.
 
@@ -96,11 +96,11 @@ export default {
       let jsonObject = {
         "@context": "https://www.w3.org/ns/activitystreams/",
         type: "Follow",
-        to: this.userToFollow,
+        /*to: this.userToFollow,
         actor: {
           type: "Person",
           name: backendUrl + currentUser,
-        },
+        },*/
         object: this.userToFollow,
       };
 

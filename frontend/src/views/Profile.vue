@@ -153,7 +153,7 @@ import HomeModal from "@/components/HomeModal";
 import FollowJumbotron from "@/components/FollowJumbotron";
 
 export default {
-  name: "home",
+  name: "Profile",
   data() {
     return {
       counter: 0,
@@ -250,24 +250,25 @@ export default {
       if (this.objectsRelevantToUser.length === 0) return false;
       return true;
     },
+    noAuthors: function()
+    {
+      return this.objectsByUser.filter
+      (
+          function(elem)
+          {
+            if (elem.type !== "Author")
+            {
+              return true;
+            }
+          }
+      );
+    },
+  },
    
   mounted: function () {
     this.refreshObjects();
   },
-   noAuthors: function()
-    {
-      return this.objectsByUser.filter
-      (
-        function(elem)
-        {
-          if (elem.type !== "Author")
-          {
-            return true;  
-          }
-        }
-      );
-    },
-  }
+
 };
 </script>
 

@@ -124,13 +124,13 @@ export default {
 
     prepareOfferJson: function () {
       // Get the current user and URL of backend.
-      const backendUrl = this.getBackendUrl;
-      const currentUser = this.getCurrentUser;
+      //const backendUrl = this.getBackendUrl;
+      //const currentUser = this.getCurrentUser;
 
       let simplifiedObject = this.prepareNewEntry(this.selectedType, this.updatedEntry);
       // 1. Construct JSON object containing the info of the new entry.
       console.log(simplifiedObject);
-      let url = backendUrl + currentUser + "outbox/";
+      //let url = backendUrl + currentUser + "outbox/";
       let jsonLitObject = {
         id: this.objectOriginal.id,
         attributedTo: this.objectOriginal.attributedTo,
@@ -147,16 +147,13 @@ export default {
           jsonLitObject[property] = this.objectOriginal[property];
         }
       }
-      console.log(jsonLitObject);
+      //console.log(jsonLitObject);
 
       // 2. Construct the main JSON. Contains as object the updated entry to lit.
       let jsonMainObject = {
         "@context": "https://www.w3.org/ns/activitystreams/",
         type: "Offer",
-        id: url + "1/",
-        actor: backendUrl + currentUser,
         published: this.getCurrentTime(),
-        cc: this.getCc(backendUrl, currentUser, this.cc),
         object: jsonLitObject,
       };
       this.jsonPayLoad = jsonMainObject;

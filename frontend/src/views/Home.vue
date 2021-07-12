@@ -123,6 +123,12 @@
                   v-on:click="showModal(entry)"
               ></b-icon>
             </b-button>
+            <b-button variant="primary-outline">
+              <b-icon
+                  icon="chevron-double-up"
+                  v-on:click="showModal(entry)"
+              ></b-icon>
+            </b-button>
           </small
         ></template>
       </b-card>
@@ -288,7 +294,7 @@ export default {
     },
   },
   mounted: function () {
-    this.refreshObjects();
+    if (this.$store.getters.loggedIn) this.refreshObjects();
   },
 };
 </script>
