@@ -80,6 +80,9 @@
               ></b-icon> {{entry.liked}}
             </b-button>
             <b-button href="#" variant="primary-outline">
+              <b-icon icon="pencil-square" v-on:click="offerObject(entry.id)"></b-icon>
+            </b-button>
+            <b-button href="#" variant="primary-outline">
               <b-icon
                   icon="chevron-double-up"
                   v-on:click="showModal(entry)"
@@ -104,8 +107,9 @@
     ></ServerComLikePost>
     <HomeModal ref="modal"></HomeModal>
     <UpdateModal ref="updateModal"></UpdateModal>
-    <UpdateForm></UpdateForm>
-
+    <OfferModal ref="offerModal"></OfferModal>
+    <GetOffers ref="getOffers"></GetOffers>
+    <AcceptOffer ref="acceptOffer"></AcceptOffer>
 
   </div>
 </template>
@@ -116,7 +120,9 @@ import ServerComGetUserRelevantObjects from "@/components/ServerComGetUserReleva
 import ServerComLikePost from "@/components/ServerComLikePost.vue";
 import HomeModal from "@/components/HomeModal";
 import UpdateModal from "@/components/UpdateModal";
-import UpdateForm from "@/components/UpdateForm";
+import OfferModal from "@/components/OfferModal";
+import GetOffers from "@/components/GetOffers";
+import AcceptOffer from "@/components/AcceptOffer";
 
 export default {
   name: "home",
@@ -134,8 +140,10 @@ export default {
     ServerComGetUserRelevantObjects,
     ServerComLikePost,
     HomeModal,
-    UpdateForm,
     UpdateModal,
+    OfferModal,
+    GetOffers,
+    AcceptOffer,
   },
   methods: {
     setRequestResponse: function (response) {
@@ -160,6 +168,7 @@ export default {
     refreshObjects: function () {
       this.$refs.userObjects.triggerGetObjects();
       this.$refs.userRelevantObjects.triggerGetRelevantObjects();
+      this.$refs.getOffers.triggerGetOffers();
     },
     likePost: function(url) {
       this.$refs.like.triggerLikePost(url);
@@ -188,6 +197,9 @@ export default {
     editObject: function (objectId) {
       this.$refs.updateModal.showUpdateModal(objectId);
     },
+    offerObject: function (objectId) {
+      this.$refs.offerModal.showOfferModal(objectId);
+    }
   },
   computed: {
     getResponse: function () {
