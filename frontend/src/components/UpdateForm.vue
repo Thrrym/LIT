@@ -160,6 +160,7 @@ export default {
       newAuthors: [],
       consolidatedAuthors: [],
       originalAuthors: [],
+      formResult: [],
     };
   },
 
@@ -187,7 +188,12 @@ export default {
       })[0].content;
     },
     getConsolidatedAuthors: function () {
-      return [].concat(this.getOriginalSelectedAuthors, this.newAuthors);
+      return [].concat(this.originalAuthors, this.newAuthors);
+    },
+    getFormResult: function () {
+      let result = [].concat(this.getRequiredFields, this.getOptionalFields);
+      result.filter(function(elem) {if (elem.name==="authors") return true;})[0].content = this.getConsolidatedAuthors
+      return result
     },
   },
 
@@ -195,20 +201,21 @@ export default {
     emitNewEntry: function () {
       // Gather the fields from the form. Required and optional fields.
       // Combine both arrays with fields.
-      this.updateAuthors();
-      console.log("consolidatedAuthors", this.consolidatedAuthors);
-      this.formContent.filter(function (elem) {
+      this.consolidatedAuthors = this.getConsolidatedAuthors;
+      /*console.log("consolidatedAuthors", this.consolidatedAuthors);
+      console.log("Fuck!!!!!", this.formContent.filter(function (elem) {
         if (elem.name === "authors") return true;
-      })[0].content = this.consolidatedAuthors;
+      })[0].content)*/// = this.consolidatedAuthors;
+      /*this.formContent.filter(function (elem) {
+        if (elem.name === "authors") return true;
+      })[0].content = this.getConsolidatedAuthors;*/
       /*console.log(this.getOriginalSelectedAuthors);*/
-      let formResult = [].concat(
-        this.getRequiredFields,
-        this.getOptionalFields
-      );
-      console.log("formResult", formResult)
+      this.formResult = this.getFormResult;
+      // this.formResult.filter(function(elem) {if (elem.name==="authors") return true;})[0].content = this.getConsolidatedAuthors
+      console.log("formResult", this.formResult)
       // Emit the appropiate event to superior component with the fields as content of event.
       this.$emit("cc", this.ccContent);
-      this.$emit("entryToBeUpdated", formResult);
+      this.$emit("entryToBeUpdated", this.formResult);
     },
     setShowOptionalFields: function () {
       this.showOptionalFields = !this.showOptionalFields;
@@ -239,7 +246,7 @@ export default {
       this.additionalAuthors += 1;
     },
     updateAuthors: function () {
-      this.consolidatedAuthors = [].concat(this.getOriginalSelectedAuthors, this.newAuthors);
+      this.consolidatedAuthors = [].concat(this.originalAuthors, this.newAuthors);
     },
   },
 
