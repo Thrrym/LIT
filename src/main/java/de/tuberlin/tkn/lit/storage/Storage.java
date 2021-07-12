@@ -74,8 +74,6 @@ public class Storage implements IStorage {
     @Autowired
     private IFollowService followService;
     @Autowired
-    private IIgnoreService ignoreService;
-    @Autowired
     private ILikeService likeService;
     @Autowired
     private IRejectService rejectService;
@@ -561,10 +559,6 @@ public class Storage implements IStorage {
         List<Follow> f = follow.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
         if (f.size() != 0) return f.get(0);
 
-        List<Ignore> ignore = (List<Ignore>) ignoreService.getRepository().findAll();
-        List<Ignore> i = ignore.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
-        if (i.size() != 0) return i.get(0);
-
         List<Like> like = (List<Like>) likeService.getRepository().findAll();
         List<Like> l = like.stream().filter(s -> s.getId().equals(id)).collect(Collectors.toList());
         if (l.size() != 0) return l.get(0);
@@ -610,12 +604,6 @@ public class Storage implements IStorage {
             IFollowRepository repo = followService.getRepository();
             repo.save(follow);
             return follow;
-        }
-        if (type.equals(IActivityConstants.IGNORE)) {
-            Ignore ignore = new Ignore(activity);
-            IIgnoreRepository repo = ignoreService.getRepository();
-            repo.save(ignore);
-            return ignore;
         }
         if (type.equals(IActivityConstants.LIKE)) {
             Like like = new Like(activity);
