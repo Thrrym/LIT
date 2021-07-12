@@ -41,9 +41,12 @@ public class FederationClient implements IFederationClient{
 	ServerController serverController;
 
 	private ExecutorService executor = Executors.newSingleThreadExecutor();
-	volatile ResponseEntity<String> result;
 	private String protocol = "http://";
-
+	
+	// Reserved for communication with timeout thread :
+	volatile ResponseEntity<String> result;
+	volatile Boolean threadDone; 
+	
 	/**
     *  Allows sending Activities to an actor (their inbox) on another server
     * @param  activity the activity to send
@@ -84,6 +87,7 @@ public class FederationClient implements IFederationClient{
 	public <T> T sendWithTimeout(String url, Object body, Class<T> returnType, String requestType) {
 		
 		result = new ResponseEntity("Timeout", HttpStatus.BAD_REQUEST);
+		threadDone = false;
 		RestTemplate restTemplate = new RestTemplate();
 
 		// thread for request execution
@@ -99,17 +103,21 @@ public class FederationClient implements IFederationClient{
 							result = restTemplate.postForEntity(url, body, String.class);
 							break;
 					}
-				} catch(Exception e) {
-
-				}
+				} catch(Exception e) {}
+				threadDone = true;
 			}  
 		};		
 		
 		// send request with timeout
 		sendThread.start();
-		try{
-			Thread.sleep(500);
-		} catch(InterruptedException e) {}
+		int i = 20; // 20 * 500 = 10000 is the timeout
+		while(!threadDone && i > 0) {
+			try {
+				Thread.sleep(500);
+			}
+			catch(InterruptedException e) { /* TODO : handle this case */}
+			i--;
+		}
 		sendThread = null;
 
 		if (result.getStatusCodeValue() < 200 || result.getStatusCodeValue() >= 300) {
