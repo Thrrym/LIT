@@ -3,7 +3,6 @@ package de.tuberlin.tkn.lit.model.activitypub.activities;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.objects.Tombstone;
-import de.tuberlin.tkn.lit.model.lit.BibTeXArticle;
 import de.tuberlin.tkn.lit.storage.IStorage;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 
@@ -38,8 +37,8 @@ public class Like extends Activity {
                 this.setObject(new LinkOrObject(new Tombstone()));
                 return null;
             }
-            BibTeXArticle bibTeXArticle = (BibTeXArticle) obj;
-            List<String> l = bibTeXArticle.getLikedBy();
+
+            List<String> l = obj.getLikedBy();
             if (l != null) {
                 for (String o : l) {
                     if (o.equals(actorId)) {
@@ -52,11 +51,11 @@ public class Like extends Activity {
             } else {
                 List<String> list = new ArrayList<>();
                 list.add(actorId);
-                bibTeXArticle.setLikedBy(list);
+                obj.setLikedBy(list);
             }
 
             if (UriUtilities.isLocaleServer(actorId, port))
-                storage.addToLiked(UriUtilities.getActor(actorId), new LinkOrObject(bibTeXArticle));
+                storage.addToLiked(UriUtilities.getActor(actorId), new LinkOrObject(obj));
 
             return this;
         }
