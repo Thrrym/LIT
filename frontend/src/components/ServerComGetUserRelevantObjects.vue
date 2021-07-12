@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: "ServerComGetUserObjects",
+  name: "ServerComGetUserRelevantObjects",
 
   data() {
     return {
@@ -67,7 +67,7 @@ export default {
     callbackError: function () {
       // Function triggered by the onreadystatechange from the HTTP request.
       // Emits error to parent component back upstream.
-      this.$emit("requestError", "error");
+      this.$emit("requestError", this.requestResponse);
     },
   },
 };
