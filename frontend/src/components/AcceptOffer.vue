@@ -1,16 +1,20 @@
 <template>
   <div>
-    <ServerComGetOffers
-        ref="ServerComGetOffers"
-        v-on:requestResponse="requestSuccess"></ServerComGetOffers>
+    <ServerComAcceptOffer
+        ref="ServerComAcceptOffer"
+        v-on:requestResponse="requestSuccess"></ServerComAcceptOffer>
+    <b-modal ref="acceptSuccessModal" titel="You accepted the offer" ok-only></b-modal>
   </div>
 </template>
 
 <script>
-import ServerComGetOffers from "@/components/ServerComGetOffers";
+import ServerComAcceptOffer from "@/components/ServerComAcceptOffer";
+
 export default {
-  name: "GetOffers",
-  components: {ServerComAcceptOffer},
+  name: "AcceptOffer",
+  components: {
+    ServerComAcceptOffer,
+  },
   data() {
     return {
       requestResponse: {},
@@ -27,8 +31,7 @@ export default {
       this.requestResponse = response;
       this.responseText = response.responseText;
       this.responseJson = JSON.parse(this.responseText);
-      this.offerObjects = this.responseJson.orderedItems;
-      this.$emit("getOffersSuccess", this.offerObjects);
+      this.$refs.acceptSuccessModal.show();
     },
   },
 };
