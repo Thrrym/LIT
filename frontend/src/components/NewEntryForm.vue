@@ -33,7 +33,7 @@
                     v-bind:options="authorOptions"
                     v-model="selectedAuthors[0]"
                   ></b-form-select>
-                  <b-button v-on:click="addNewAuthor"
+                  <b-button v-on:click="addNewAuthor" variant="outline-secondary"
                     >Create new author</b-button
                   >
                   <!--              <b-button v-on:click="getAuthorOptions">Get the authors</b-button>-->
