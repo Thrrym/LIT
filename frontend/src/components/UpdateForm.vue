@@ -21,17 +21,18 @@
               <div v-if="isAuthor(field)">
                 <!-- Insert existing authors. Can only be removed. No edit -->
                 <b-input-group
-                  v-for="author in getOriginalSelectedAuthors"
+                  v-for="author in originalAuthors"
                   v-bind:key="author"
                 >
                   <b-form-input
                     readonly
                     v-bind:placeholder="author"
                   ></b-form-input>
-                  <b-button v-on:click="removeAuthor(author)">-</b-button>
+                  <b-button v-on:click="removeOriginalAuthor(author)">-</b-button>
                 </b-input-group>
+
                 <!-- Insert option to add further authors. -->
-                <b-input-group v-on:input="newAuthors = selectedAuthors">
+                <b-input-group v-on:input="selectedAuthors = newAuthors">
                   <b-form-select
                     v-bind:options="authorOptions"
                     v-model="selectedAuthors[0]"
@@ -158,6 +159,7 @@ export default {
       currentAuthors: [],
       newAuthors: [],
       consolidatedAuthors: [],
+      originalAuthors: [],
     };
   },
 
@@ -184,6 +186,9 @@ export default {
         if (elem.name === "authors") return true;
       })[0].content;
     },
+    getConsolidatedAuthors: function () {
+      return [].concat(this.getOriginalSelectedAuthors, this.newAuthors);
+    },
   },
 
   methods: {
@@ -195,11 +200,12 @@ export default {
       this.formContent.filter(function (elem) {
         if (elem.name === "authors") return true;
       })[0].content = this.consolidatedAuthors;
-      console.log(this.getOriginalSelectedAuthors);
+      /*console.log(this.getOriginalSelectedAuthors);*/
       let formResult = [].concat(
         this.getRequiredFields,
         this.getOptionalFields
       );
+      console.log("formResult", formResult)
       // Emit the appropiate event to superior component with the fields as content of event.
       this.$emit("cc", this.ccContent);
       this.$emit("entryToBeUpdated", formResult);
@@ -225,12 +231,8 @@ export default {
     addNewAuthor: function () {
       this.$refs.NewAuthorModal.showNewAuthorModal();
     },
-    removeAuthor: function (authorId) {
-      this.formContent
-        .filter(function (elem) {
-          if (elem.name === "authors") return true;
-        })[0]
-        .content.pop(authorId);
+    removeOriginalAuthor: function (authorId) {
+      this.originalAuthors.pop(authorId);
     },
     setAdditionalAuthors: function () {
       this.getAuthorOptions();
@@ -244,6 +246,7 @@ export default {
   mounted: function () {
     // On loading of the form, get the existing authors from the server.
     this.getAuthorOptions();
+    this.originalAuthors = this.getOriginalSelectedAuthors;
   },
 };
 </script>
