@@ -70,7 +70,7 @@
             <template #title>
               <b-icon-person-fill aria-hidden="true" font-scale="1.25" shift-v="-1" style="margin-right: 5px;"></b-icon-person-fill>User
             </template>
-            <SearchUserResult></SearchUserResult>
+            <SearchUserResult v-for="item in listed_users" :key="item" v-bind:name="item.name" v-bind:follow_id="item.id" v-bind:follower="item.follower"></SearchUserResult>
           </b-tab>
         </b-tabs>
       </b-col>
@@ -90,6 +90,7 @@ export default {
       return {
         query: null,
         tab: 'literature',
+        listed_users: [],
 
         showFilter: false,
         userFilter: '',
@@ -104,23 +105,40 @@ export default {
         if (this.query === 'r/ich_iel') window.location.href = "https://www.reddit.com/r/ich_iel/";
         this.meme_check();
 
-        var request_url = this.$store.state.proxyBackendUrl + 'search';
+        var component = this;
 
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", request_url, true);
-        xhr.onload = function () {
-          if (xhr.readyState === 4) {
-            if (xhr.status === 200) {
-              console.log(xhr.responseText);
+        var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+        var httpRequest = new XMLHttpRequest();
+
+        httpRequest.open('POST', this.$store.state.proxyBackendUrl + 'search/', true);
+        httpRequest.setRequestHeader(
+          "Content-Type",
+          "application/json;charset=UTF-8"
+        );
+        httpRequest.onreadystatechange = function () {
+          if (httpRequest.readyState === httpRequest.DONE) {
+            let status = httpRequest.status;
+            if (status === 0 || (status >= 200 && status < 400)) {
+              component.callbackResponse(httpRequest.responseText);
             } else {
-              console.error(xhr.statusText);
+              component.callbackError();
             }
           }
         };
-        xhr.onerror = function () {
-          console.error(xhr.statusText);
+
+        let jsonObject = {
+          searchType: this.tab,
+          query: this.query,
+          date: {}
         };
-        xhr.send('{ "searchType": "' + this.tab + '", "query": "' + this.query + '", "date": {}}'); 
+        httpRequest.send(JSON.stringify(jsonObject));
+      },
+      callbackResponse(request) {
+        var obj = JSON.parse(request);
+        this.listed_users = obj["items"];
+      },
+      callbackError() {
+
       },
       meme_check() {
         var meme_src;
@@ -160,14 +178,6 @@ export default {
           target.style.marginBottom = '0em';
         }
       }
-    },
-    mounted() {
-      let jdenticon = document.createElement('script');
-      jdenticon.setAttribute('src', 'https://cdn.jsdelivr.net/npm/jdenticon@3.1.0/dist/jdenticon.min.js');
-      jdenticon.setAttribute('async', '');
-      jdenticon.setAttribute('integrity', 'sha384-VngWWnG9GS4jDgsGEUNaoRQtfBGiIKZTiXwm9KpgAeaRn6Y/1tAFiyXqSzqC8Ga/');
-      jdenticon.setAttribute('crossorigin', 'anonymous');
-      document.head.appendChild(jdenticon);
     }
 }
 </script>

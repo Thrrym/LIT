@@ -21,7 +21,11 @@ export default {
   props: {
       name: {
         type: String,
-        default: 'USER'
+        default: 'User'
+      },
+      follow_id: {
+        type: String,
+        default: ''
       },
       follower: {
         type: Number,
@@ -33,6 +37,16 @@ export default {
       }
   },
   methods: {
+    followUser() {
+    }
+  },
+  mounted() {
+    let jdenticon = document.createElement('script');
+    jdenticon.setAttribute('src', 'https://cdn.jsdelivr.net/npm/jdenticon@3.1.0/dist/jdenticon.min.js');
+    jdenticon.setAttribute('async', '');
+    jdenticon.setAttribute('integrity', 'sha384-VngWWnG9GS4jDgsGEUNaoRQtfBGiIKZTiXwm9KpgAeaRn6Y/1tAFiyXqSzqC8Ga/');
+    jdenticon.setAttribute('crossorigin', 'anonymous');
+    document.head.appendChild(jdenticon);
   }
 }
 </script>

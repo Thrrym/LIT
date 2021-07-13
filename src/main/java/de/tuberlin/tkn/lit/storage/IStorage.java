@@ -6,12 +6,19 @@ import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
-import org.springframework.core.annotation.Order;
 
-import java.util.UUID;
+import java.util.Collection;
 import java.util.List;
 
 public interface IStorage {
+    Collection<ActivityPubObject> getObjectsCollection();
+
+    Collection<Actor> getActorsCollection();
+
+    int getFollowerCount(String actor);
+
+    int getPostCount(String actor);
+
     Actor getActor(String actorName);
 
     ActivityPubCollection getActors();

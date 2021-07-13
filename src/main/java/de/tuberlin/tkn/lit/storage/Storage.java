@@ -2,7 +2,6 @@ package de.tuberlin.tkn.lit.storage;
 
 import de.tuberlin.tkn.lit.constants.UriConstants;
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
-import de.tuberlin.tkn.lit.model.activitypub.activities.Like;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
@@ -41,6 +40,26 @@ public class Storage implements IStorage {
         }
 
         return actor;
+    }
+
+    @Override
+    public Collection<ActivityPubObject> getObjectsCollection() {
+        return objects.values();
+    }
+
+    @Override
+    public Collection<Actor> getActorsCollection() {
+        return actors.values();
+    }
+
+    @Override
+    public int getFollowerCount(String actor) {
+        return getFollowersCollection(actor).getTotalItems();
+    }
+
+    @Override
+    public int getPostCount(String actor) {
+        return getObjectsCreatedByActor(actor).getTotalItems();
     }
 
     @Override

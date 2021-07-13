@@ -1,13 +1,16 @@
 package de.tuberlin.tkn.lit.controller;
 
+import de.tuberlin.tkn.lit.model.Requests.SearchRequest;
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
+import de.tuberlin.tkn.lit.model.lit.BibTeXArticle;
 import de.tuberlin.tkn.lit.processing.IFederationClient;
 import de.tuberlin.tkn.lit.storage.Storage;
+import de.tuberlin.tkn.lit.util.DamerauLevenshteinDistance;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +22,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 @RestController
 public class ClientController {
 
@@ -29,6 +36,40 @@ public class ClientController {
     Storage storage;
     @Value("${server.port}")
     private int serverPort;
+
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    public String search(@RequestBody SearchRequest sRequest) {
+        DamerauLevenshteinDistance distance = new DamerauLevenshteinDistance(sRequest.getQuery().toLowerCase());
+
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode root_node = mapper.createObjectNode();
+        ArrayNode items_array = mapper.createArrayNode();
+        root_node.set("items", items_array);
+
+        if (sRequest.getSearchType().equals("literature")) {
+            for (ActivityPubObject literature : storage.getObjectsCollection()) {
+                if (literature.getType().equals("bibtex_article")) {
+                    System.out.println(((BibTeXArticle) literature).getTitle());
+                }
+            }
+        }
+        else if (sRequest.getSearchType().equals("user")) {
+            for (Actor actor :  storage.getActorsCollection()) {
+                if (distance.getDistanceTo(actor.getName().toLowerCase()) == 0) {
+                    ObjectNode actor_result = mapper.createObjectNode();
+                    actor_result.put("id", actor.getId());
+                    actor_result.put("name", actor.getName());
+                    actor_result.put("follower", storage.getFollowerCount(actor.getName()));
+                    actor_result.put("posts", storage.getPostCount(actor.getName()));
+                    items_array.add(actor_result);
+                }
+            }
+        }
+
+        root_node.put("totalItems", items_array.size());
+
+        return root_node.toPrettyString();
+    }
 
     @RequestMapping(value = "/{actor}", method = RequestMethod.GET)
     public Actor getActor(@PathVariable("actor") String actorName) {
