@@ -3,6 +3,7 @@
     <b-modal
       scrollable
       busy
+      size="xl"
       ref="updateModal"
       v-bind:title="modalTitle"
       @ok="sendUpdateToServer"
@@ -25,7 +26,7 @@
       v-on:requestResponse="setRequestResponse"
       v-on:requestError="setRequestError"
     ></ServerComGetObject>
-    <ServerComUpdatePost ref="ServerComUpdatePost"></ServerComUpdatePost>
+    <ServerComUpdatePost ref="ServerComUpdatePost" v-on:requestResponse="handleUpdateSuccess"></ServerComUpdatePost>
   </div>
 </template>
 
@@ -96,6 +97,9 @@ export default {
     },
     setEntryCc: function (cc) {
       this.cc = cc;
+    },
+    handleUpdateSuccess: function () {
+      this.$emit("updateSuccess");
     },
   },
 

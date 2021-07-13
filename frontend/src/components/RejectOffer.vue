@@ -3,7 +3,9 @@
     <ServerComRejectOffer
         ref="ServerComRejectOffer"
         v-on:requestResponse="requestSuccess"></ServerComRejectOffer>
-    <b-modal ref="rejectSuccessModal" titel="You rejected the offer" ok-only></b-modal>
+    <b-modal ref="rejectSuccessModal" ok-only title="Rejected offer">
+      You rejected the offer.
+    </b-modal>
   </div>
 </template>
 
@@ -29,11 +31,12 @@ export default {
       this.offerId = offerId;
       this.$refs.ServerComRejectOffer.trigger(offerId);
     },
-    requestSuccess: function (response) {
-      this.requestResponse = response;
+    requestSuccess: function () {
+      /*this.requestResponse = response;
       this.responseText = response.responseText;
-      this.responseJson = JSON.parse(this.responseText);
-      this.$refs.acceptSuccessModal.show();
+      this.responseJson = JSON.parse(this.responseText);*/
+      this.$emit("rejectSuccess");
+      this.$refs.rejectSuccessModal.show();
     },
   },
 };

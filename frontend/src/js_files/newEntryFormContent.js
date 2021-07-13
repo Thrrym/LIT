@@ -75,21 +75,21 @@ export default {
         name: "category",
         label: "Category",
         content: "",
-        required: true,
+        required: false,
       },
       {
         id: 5,
         name: "bookAbstract",
         label: "Abstract",
         content: "",
-        required: true,
+        required: false,
       },
       {
         id: 6,
         name: "isbn",
         label: "ISBN",
         content: "",
-        required: true,
+        required: false,
       },
     ],
     Paper: [
@@ -109,26 +109,34 @@ export default {
       },
       {
         id: 2,
+        name: "year",
+        label: "Year",
+        content: "",
+        required: true,
+        inputVerify: "number",
+      },
+      {
+        id: 3,
         name: "category",
         label: "Category",
         content: "",
         required: false,
       },
       {
-        id: 3,
+        id: 4,
         name: "paperAbstract",
         label: "Abstract",
         content: "",
         required: true,
       },
-      {
+      /*{
         id: 4,
         name: "peer_reviewed",
         label: "Peer reviewed",
         content: "",
         required: false,
         inputType: "checkbox",
-      },
+      },*/
     ],
   },
 };

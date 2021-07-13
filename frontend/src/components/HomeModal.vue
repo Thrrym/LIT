@@ -1,8 +1,10 @@
 <template>
   <b-modal
     ref="modal-1"
-    title="T"
+    v-bind:title="getTitle"
+    size="lg"
     ok-only
+    v-on:hide="onClosedModal"
   >
     <div v-for="item in getContents" v-bind:key="item.key">
       <p v-text="item.label + ': ' + item.value"></p>
@@ -65,12 +67,23 @@ export default {
       this.contents = {};
       this.entry = {};
     },
+    onClosedModal: function () {
+      this.$emit("refresh");
+    }
   },
 
   computed: {
     getContents: function () {
       return this.contents;
-    }
+    },
+    getTitle: function () {
+      let title = "Title"
+      for (const i in this.getContents) {
+        if (this.getContents[i].label === "Title") title = this.getContents[i].value
+      }
+      return title;
+      /*return "Title"*/
+    },
   },
 }
 </script>

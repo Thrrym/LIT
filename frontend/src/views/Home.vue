@@ -15,38 +15,39 @@
       </div>
     </section>
 
-    <h3>My Entries
-      <b-button @click="refreshObjects">
-      <b-icon icon="arrow-counterclockwise" font-scale="1"></b-icon>
-      </b-button>
-    </h3>
+    <h4 v-if="showMyEntries">My Entries
+<!--      <b-button @click="refreshObjects">
+        <b-icon icon="arrow-counterclockwise" font-scale="1"></b-icon>
+      </b-button>-->
+    </h4>
 
     <div> 
     <b-card-group deck class="col-md-10">
       <b-card
-        v-for="entry in noAuthors"
+        v-for="entry in getFilteredObjectsByUser"
         v-bind:key="entry.id"
         tag="article"
         style="max-width: 20rem"
         class="mb-2"
         align="center"
       >
-        <b-card-sub-title v-text="entry.journal"></b-card-sub-title>
-        <b-card-text v-text="entry.title"></b-card-text>
+        <b-card-title v-text="entry.title"></b-card-title>
+        <b-card-sub-title v-text="entry.type"></b-card-sub-title>
+        <b-card-text v-text="entry.year"></b-card-text>
 
         <template #footer>
           <small class="text-muted">
-            <b-button href="#" variant="primary-outline" v-if="showLikes(entry.likes)">
+            <b-button href="#" variant="primary-outline" v-if="showLikes(entry.likes)" v-b-tooltip.hover title="Likes">
               <b-icon icon="bookmark-heart"></b-icon>
               {{ entry.likes }}
             </b-button>
-            <b-button href="#" variant="primary-outline">
+            <b-button href="#" variant="primary-outline" v-b-tooltip.hover title="Edit">
               <b-icon icon="pencil-square" v-on:click="editObject(entry.id)"></b-icon>
             </b-button>
-            <b-button href="#" variant="primary-outline">
+            <b-button href="#" variant="primary-outline" v-b-tooltip.hover title="Delete">
               <b-icon icon="trash" v-on:click="deleteEntry(entry)"></b-icon>
             </b-button>
-            <b-button href="#" variant="primary-outline">
+            <b-button href="#" variant="primary-outline" v-b-tooltip.hover title="Show details of lit entry">
               <b-icon icon="chevron-double-up" v-on:click="showModal(entry)"></b-icon>
             </b-button>
           </small>
@@ -55,36 +56,37 @@
     </b-card-group>
     </div>
 
-    <h3 v-if="userHasRelevantObjects">Activityfeed</h3>
+    <h4 v-if="userHasRelevantObjects">Activityfeed</h4>
+    <h5 v-if="userHasRelevantObjects">Activities by people you follow.</h5>
     <b-card-group deck class="col-md-10">
       <b-card
-        v-for="entry in objectsRelevantToUser"
+        v-for="entry in getFilteredObjectsRelevantToUser"
         v-bind:key="entry.id"
         tag="article"
         style="max-width: 20rem"
         class="mb-2"
       >
-        <b-card-title v-text="entry.author"></b-card-title>
-        <b-card-sub-title v-text="entry.journal"></b-card-sub-title>
-        <b-card-text v-text="entry.title"></b-card-text>
+        <b-card-title v-text="entry.title"></b-card-title>
+        <b-card-sub-title v-text="entry.type"></b-card-sub-title>
+        <b-card-text v-text="entry.year"></b-card-text>
 
         <template #footer>
           <small class="text-muted">
-            <b-button href="#" variant="primary" v-if="postCanBeLiked(entry)">
+            <b-button href="#" variant="primary-outline" v-if="postCanBeLiked(entry)" v-b-tooltip.hover title="Like entry">
               <b-icon
-                icon="bookmark-heart"
+                icon="bookmark-heart-fill"
                 v-on:click="likePost(entry.id)"
               ></b-icon>
             </b-button>
-            <b-button href="#" variant="primary-outline" v-else>
+            <b-button href="#" variant="primary-outline" v-else v-b-tooltip.hover title="Already liked">
               <b-icon
                   icon="bookmark-heart"
-              ></b-icon> {{entry.liked}}
+              ></b-icon> {{ entry.likes }}
             </b-button>
-            <b-button href="#" variant="primary-outline">
+            <b-button href="#" variant="primary-outline" v-b-tooltip.hover title="Send offer with changes">
               <b-icon icon="pencil-square" v-on:click="offerObject(entry.id)"></b-icon>
             </b-button>
-            <b-button href="#" variant="primary-outline">
+            <b-button href="#" variant="primary-outline" v-b-tooltip.hover title="Show details of lit entry">
               <b-icon
                   icon="chevron-double-up"
                   v-on:click="showModal(entry)"
@@ -95,7 +97,8 @@
       </b-card>
     </b-card-group>
 
-<h3 v-if="hasOffers">new Offers</h3> <!-- v-if is coming as soon as newOffers is implemented -->
+<h4 v-if="hasOffers">New Offers</h4> <!-- v-if is coming as soon as newOffers is implemented -->
+    <h5 v-if="hasOffers">Other users send you changes to your entries.</h5>
     <b-card-group deck class="col-md-10">
       <b-card
         v-for="entry in getOffers"
@@ -105,7 +108,10 @@
       >
 <!--        <b-card-title v-text="entry.author"></b-card-title>
         <b-card-sub-title v-text="entry.journal"></b-card-sub-title>-->
-        <b-card-text v-text="entry.object.title"></b-card-text>
+<!--        <b-card-text v-text="entry.object.title"></b-card-text>-->
+        <b-card-title v-text="entry.object.title"></b-card-title>
+        <b-card-sub-title v-text="entry.object.type"></b-card-sub-title>
+        <b-card-text v-text="entry.object.year"></b-card-text>
 
         <template #footer>
           <small class="text-muted">
@@ -126,22 +132,22 @@
                   v-on:click="showModal(entry)"
               ></b-icon>
             </b-button>-->
-            <b-button variant="primary-outline">
+            <b-button variant="primary-outline" v-b-tooltip.hover title="Reject offer">
               <b-icon
                   icon="x-circle"
                   v-on:click="rejectOffer(entry)"
               ></b-icon>
             </b-button>
-            <b-button variant="primary-outline">
+            <b-button variant="primary-outline" v-b-tooltip.hover title="Accept offer">
               <b-icon
                   icon="check"
                   v-on:click="acceptOffer(entry)"
               ></b-icon>
             </b-button>
-            <b-button variant="primary-outline">
+            <b-button variant="primary-outline" v-b-tooltip.hover title="Show details of offer">
               <b-icon
                   icon="chevron-double-up"
-                  v-on:click="showModal(entry)"
+                  v-on:click="showModal(entry.object)"
               ></b-icon>
             </b-button>
           </small
@@ -165,13 +171,13 @@
         ref="like"
         v-on:requestResponse="setRequestResponseLike"
     ></ServerComLikePost>
-    <HomeModal ref="modal"></HomeModal>
-    <UpdateModal ref="updateModal"></UpdateModal>
+    <HomeModal ref="modal" v-on:refresh="refreshObjects"></HomeModal>
+    <UpdateModal ref="updateModal" v-on:updateSuccess="refreshObjects"></UpdateModal>
     <OfferModal ref="offerModal"></OfferModal>
     <GetOffers ref="getOffers" v-on:getOffersSuccess="setOffers"></GetOffers>
-    <AcceptOffer ref="acceptOffer"></AcceptOffer>
-    <RejectOffer ref="rejectOffer"></RejectOffer>
-    <Delete ref="delete"></Delete>
+    <AcceptOffer ref="acceptOffer" v-on:acceptSuccess="refreshObjects"></AcceptOffer>
+    <RejectOffer ref="rejectOffer" v-on:rejectSuccess="refreshObjects"></RejectOffer>
+    <Delete ref="delete" v-on:deleteSuccess="refreshObjects"></Delete>
 
   </div>
 </template>
@@ -194,7 +200,7 @@ export default {
     return {
       requestResponse: "",
       objectsByUser: [],
-      objectsRelevantToUser: "",
+      objectsRelevantToUser: [],
       offers: [],
     };
   },
@@ -234,8 +240,8 @@ export default {
     setRequestResponseRelevantUserObjectsError: function () {
       this.objectsRelevantToUser = {};
     },
-    setRequestResponseLike: function (response) {
-      this.setRequestResponse(response);
+    setRequestResponseLike: function () {
+      //this.setRequestResponse(response);
       this.refreshObjects();
     },
     refreshObjects: function () {
@@ -256,12 +262,12 @@ export default {
       if (!Object.prototype.hasOwnProperty.call(entry, "likedBy")) {
         return true;
       }
-      console.log("HIER", entry);
-      if (entry.likedBy.includes(this.$store.state.backendUrl + this.$store.state.currentUser)) {
-        console.log("liked", entry.likedBy.includes(this.$store.state.backendUrl + this.$store.state.currentUser))
+      // console.log("HIER", entry);
+      if (entry.likedBy.includes(this.$store.state.backendUrl + this.$store.getters.getUser)) {
+        console.log("liked", entry.likedBy.includes(this.$store.state.backendUrl + this.$store.getters.getUser))
         return false;
       }
-      if (entry.attributedTo.includes(this.$store.state.backendUrl + this.$store.state.currentUser)) {
+      if (entry.attributedTo.includes(this.$store.state.backendUrl + this.$store.getters.getUser)) {
         return false;
       }
       return true;
@@ -302,9 +308,7 @@ export default {
       return true;
     },
     userHasRelevantObjects: function () {
-      if (this.objectsRelevantToUser === "") return false;
-      if (this.objectsRelevantToUser.length === 0) return false;
-      return true
+      return this.getFilteredObjectsRelevantToUser.length !== 0;
     },
     noAuthors: function()
     {
@@ -316,6 +320,17 @@ export default {
         }
       );
     },
+    getFilteredObjectsByUser: function () {
+      return this.objectsByUser.filter(function (elem) {
+        if (elem.type !== "Author") return true;
+      });
+    },
+    getFilteredObjectsRelevantToUser: function () {
+      const component = this;
+      return this.objectsRelevantToUser.filter(function (elem) {
+        if (elem.type !== "Author" && elem.generator !== component.getThisUser) return true;
+      });
+    },
     getOffers: function () {
       return this.offers;
     },
@@ -324,6 +339,15 @@ export default {
     },
     getUserObjects: function () {
       return this.objectsByUser;
+    },
+    isSignedIn: function() {
+      return this.$store.getters.loggedIn;
+    },
+    showMyEntries: function() {
+      return this.isSignedIn && this.userHasObjects;
+    },
+    getThisUser: function () {
+      return this.$store.state.backendUrl + this.$store.getters.getUser;
     },
   },
   mounted: function () {
