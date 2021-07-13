@@ -166,7 +166,7 @@
         ref="like"
         v-on:requestResponse="setRequestResponseLike"
     ></ServerComLikePost>
-    <HomeModal ref="modal"></HomeModal>
+    <HomeModal ref="modal" v-on:refresh="refreshObjects"></HomeModal>
     <UpdateModal ref="updateModal" v-on:updateSuccess="refreshObjects"></UpdateModal>
     <OfferModal ref="offerModal"></OfferModal>
     <GetOffers ref="getOffers" v-on:getOffersSuccess="setOffers"></GetOffers>

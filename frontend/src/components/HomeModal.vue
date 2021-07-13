@@ -3,6 +3,7 @@
     ref="modal-1"
     v-bind:title="getTitle"
     ok-only
+    v-on:ok="onClosedModal"
   >
     <div v-for="item in getContents" v-bind:key="item.key">
       <p v-text="item.label + ': ' + item.value"></p>
@@ -65,6 +66,9 @@ export default {
       this.contents = {};
       this.entry = {};
     },
+    onClosedModal: function () {
+      this.$emit("refresh");
+    }
   },
 
   computed: {
