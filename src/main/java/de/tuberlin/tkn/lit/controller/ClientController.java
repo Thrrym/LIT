@@ -43,6 +43,7 @@ public class ClientController {
     @RequestMapping(value = "/search", method = RequestMethod.POST)
     public String search(@RequestBody SearchRequest sRequest) {
         DamerauLevenshteinDistance distance = new DamerauLevenshteinDistance(sRequest.getQuery().toLowerCase());
+        int q_len = sRequest.getQuery().length();
 
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode root_node = mapper.createObjectNode();
@@ -52,24 +53,60 @@ public class ClientController {
         if (sRequest.getSearchType().equals("literature")) {
             for (ActivityPubObject literature : storage.getObjectsCollection()) {
                 if (literature.getType().equals("bibtex_article")) {
-                    System.out.println(((BibTeXArticle) literature).getTitle());
+
+                    System.out.println();
+
+                    /**if (distance.getDistanceTo(((BibTeXArticle) literature).getTitle().toLowerCase()) / (float)q_len < 0.5) {
+                        ObjectNode actor_result = mapper.createObjectNode();
+                        actor_result.put("title", ((BibTeXArticle) literature).getTitle());
+                        actor_result.put("likes", ((BibTeXArticle) literature).getLikes());
+                        items_array.add(actor_result);
+                    }*/
+
+                    float error = 1;
+                    String name = "";
+
+                    for (int i = 0; i < ((BibTeXArticle) literature).getTitle().length(); i++) {
+                        name = ((BibTeXArticle) literature).getTitle().substring(i);
+                        error = Math.min((float)distance.getDistanceTo(name.toLowerCase()) / (float)q_len, error);
+
+                        if (error < 0.5) {
+                            ObjectNode actor_result = mapper.createObjectNode();
+                            actor_result.put("title", ((BibTeXArticle) literature).getTitle());
+                            actor_result.put("type", "Article");
+                            actor_result.put("likes", ((BibTeXArticle) literature).getLikes());
+                            actor_result.put("generator", UriUtilities.getActor(literature.getGenerator().getId()));
+                            items_array.add(actor_result);
+                            break;
+                        }
+                    }
                 }
             }
         }
         else if (sRequest.getSearchType().equals("user")) {
             for (Actor actor :  storage.getActorsCollection()) {
-                if (distance.getDistanceTo(actor.getName().toLowerCase()) == 0) {
-                    ObjectNode actor_result = mapper.createObjectNode();
-                    actor_result.put("id", actor.getId());
-                    actor_result.put("name", actor.getName());
-                    actor_result.put("follower", storage.getFollowerCount(actor.getName()));
-                    actor_result.put("posts", storage.getPostCount(actor.getName()));
-                    items_array.add(actor_result);
+                float error = 1;
+                String name = "";
+
+                for (int i = 0; i < actor.getName().length(); i++) {
+                    name = actor.getName().substring(i);
+                    error = Math.min((float)distance.getDistanceTo(name.toLowerCase()) / (float)q_len, error);
+
+                    if (error < 0.5) {
+                        ObjectNode actor_result = mapper.createObjectNode();
+                        actor_result.put("id", actor.getId());
+                        actor_result.put("name", actor.getName());
+                        actor_result.put("follower", storage.getFollowerCount(actor.getName()));
+                        actor_result.put("posts", storage.getPostCount(actor.getName()));
+                        items_array.add(actor_result);
+                        break;
+                    }
                 }
             }
         }
 
         root_node.put("totalItems", items_array.size());
+        root_node.put("searchType", sRequest.getSearchType());
 
         return root_node.toPrettyString();
     }

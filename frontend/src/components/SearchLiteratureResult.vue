@@ -24,7 +24,7 @@
       </b-row>
       <b-row>
         <b-col class="text-left">
-          <h6 style="color: gray; margin: 0px">{{ likes }} Likes | Posted by {{ publisher }}</h6>
+          <h6 style="color: gray; margin: 0px">{{ likes }} Likes | Posted by {{ generator }}</h6>
         </b-col>
       </b-row>
     </b-card>
@@ -55,9 +55,9 @@ export default {
         type: Number,
         default: 0
       },
-      publisher: {
+      generator: {
         type: String,
-        default: 'PubUser'
+        default: ''
       }
   },
   methods: {
