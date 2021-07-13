@@ -36,17 +36,17 @@
 
         <template #footer>
           <small class="text-muted">
-            <b-button href="#" variant="primary-outline" v-if="showLikes(entry.likes)">
+            <b-button href="#" variant="primary-outline" v-if="showLikes(entry.likes)" v-b-tooltip.hover title="Likes">
               <b-icon icon="bookmark-heart"></b-icon>
               {{ entry.likes }}
             </b-button>
-            <b-button href="#" variant="primary-outline">
+            <b-button href="#" variant="primary-outline" v-b-tooltip.hover title="Edit">
               <b-icon icon="pencil-square" v-on:click="editObject(entry.id)"></b-icon>
             </b-button>
-            <b-button href="#" variant="primary-outline">
+            <b-button href="#" variant="primary-outline" v-b-tooltip.hover title="Delete">
               <b-icon icon="trash" v-on:click="deleteEntry(entry)"></b-icon>
             </b-button>
-            <b-button href="#" variant="primary-outline">
+            <b-button href="#" variant="primary-outline" v-b-tooltip.hover title="Show details of lit entry">
               <b-icon icon="chevron-double-up" v-on:click="showModal(entry)"></b-icon>
             </b-button>
           </small>
@@ -71,21 +71,21 @@
 
         <template #footer>
           <small class="text-muted">
-            <b-button href="#" variant="primary-outline" v-if="postCanBeLiked(entry)">
+            <b-button href="#" variant="primary-outline" v-if="postCanBeLiked(entry)" v-b-tooltip.hover title="Like entry">
               <b-icon
                 icon="bookmark-heart-fill"
                 v-on:click="likePost(entry.id)"
               ></b-icon>
             </b-button>
-            <b-button href="#" variant="primary-outline" v-else>
+            <b-button href="#" variant="primary-outline" v-else v-b-tooltip.hover title="Already liked">
               <b-icon
                   icon="bookmark-heart"
               ></b-icon> {{ entry.likes }}
             </b-button>
-            <b-button href="#" variant="primary-outline">
+            <b-button href="#" variant="primary-outline" v-b-tooltip.hover title="Send offer with changes">
               <b-icon icon="pencil-square" v-on:click="offerObject(entry.id)"></b-icon>
             </b-button>
-            <b-button href="#" variant="primary-outline">
+            <b-button href="#" variant="primary-outline" v-b-tooltip.hover title="Show details of lit entry">
               <b-icon
                   icon="chevron-double-up"
                   v-on:click="showModal(entry)"
@@ -127,19 +127,19 @@
                   v-on:click="showModal(entry)"
               ></b-icon>
             </b-button>-->
-            <b-button variant="primary-outline">
+            <b-button variant="primary-outline" v-b-tooltip.hover title="Reject offer">
               <b-icon
                   icon="x-circle"
                   v-on:click="rejectOffer(entry)"
               ></b-icon>
             </b-button>
-            <b-button variant="primary-outline">
+            <b-button variant="primary-outline" v-b-tooltip.hover title="Accept offer">
               <b-icon
                   icon="check"
                   v-on:click="acceptOffer(entry)"
               ></b-icon>
             </b-button>
-            <b-button variant="primary-outline">
+            <b-button variant="primary-outline" v-b-tooltip.hover title="Show details of lit entry">
               <b-icon
                   icon="chevron-double-up"
                   v-on:click="showModal(entry)"
