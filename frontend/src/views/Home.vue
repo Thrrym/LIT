@@ -24,7 +24,7 @@
     <div> 
     <b-card-group deck class="col-md-10">
       <b-card
-        v-for="entry in noAuthors"
+        v-for="entry in getFilteredObjectsByUser"
         v-bind:key="entry.id"
         tag="article"
         style="max-width: 20rem"
@@ -59,7 +59,7 @@
     <h4 v-if="userHasRelevantObjects">Activities by people you follow.</h4>
     <b-card-group deck class="col-md-10">
       <b-card
-        v-for="entry in objectsRelevantToUser"
+        v-for="entry in getFilteredObjectsRelevantToUser"
         v-bind:key="entry.id"
         tag="article"
         style="max-width: 20rem"
@@ -71,9 +71,9 @@
 
         <template #footer>
           <small class="text-muted">
-            <b-button href="#" variant="primary" v-if="postCanBeLiked(entry)">
+            <b-button href="#" variant="primary-outline" v-if="postCanBeLiked(entry)">
               <b-icon
-                icon="bookmark-heart"
+                icon="bookmark-heart-fill"
                 v-on:click="likePost(entry.id)"
               ></b-icon>
             </b-button>
@@ -195,7 +195,7 @@ export default {
     return {
       requestResponse: "",
       objectsByUser: [],
-      objectsRelevantToUser: "",
+      objectsRelevantToUser: [],
       offers: [],
     };
   },
@@ -235,8 +235,8 @@ export default {
     setRequestResponseRelevantUserObjectsError: function () {
       this.objectsRelevantToUser = {};
     },
-    setRequestResponseLike: function (response) {
-      this.setRequestResponse(response);
+    setRequestResponseLike: function () {
+      //this.setRequestResponse(response);
       this.refreshObjects();
     },
     refreshObjects: function () {
@@ -303,9 +303,7 @@ export default {
       return true;
     },
     userHasRelevantObjects: function () {
-      if (this.objectsRelevantToUser === "") return false;
-      if (this.objectsRelevantToUser.length === 0) return false;
-      return true
+      return this.getFilteredObjectsRelevantToUser.length !== 0;
     },
     noAuthors: function()
     {
@@ -316,6 +314,17 @@ export default {
           }
         }
       );
+    },
+    getFilteredObjectsByUser: function () {
+      return this.objectsByUser.filter(function (elem) {
+        if (elem.type !== "Author") return true;
+      });
+    },
+    getFilteredObjectsRelevantToUser: function () {
+      const component = this;
+      return this.objectsRelevantToUser.filter(function (elem) {
+        if (elem.type !== "Author" && elem.generator !== component.getThisUser) return true;
+      });
     },
     getOffers: function () {
       return this.offers;
@@ -331,6 +340,9 @@ export default {
     },
     showMyEntries: function() {
       return this.isSignedIn && this.userHasObjects;
+    },
+    getThisUser: function () {
+      return this.$store.state.backendUrl + this.$store.getters.getUser;
     },
   },
   mounted: function () {

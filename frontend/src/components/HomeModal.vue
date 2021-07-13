@@ -4,7 +4,7 @@
     v-bind:title="getTitle"
     size="lg"
     ok-only
-    v-on:ok="onClosedModal"
+    v-on:hide="onClosedModal"
   >
     <div v-for="item in getContents" v-bind:key="item.key">
       <p v-text="item.label + ': ' + item.value"></p>
