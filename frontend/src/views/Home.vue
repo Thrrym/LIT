@@ -31,8 +31,9 @@
         class="mb-2"
         align="center"
       >
-        <b-card-sub-title v-text="entry.journal"></b-card-sub-title>
-        <b-card-text v-text="entry.title"></b-card-text>
+        <b-card-title v-text="entry.title"></b-card-title>
+        <b-card-sub-title v-text="entry.type"></b-card-sub-title>
+        <b-card-text v-text="entry.year"></b-card-text>
 
         <template #footer>
           <small class="text-muted">
@@ -65,9 +66,9 @@
         style="max-width: 20rem"
         class="mb-2"
       >
-        <b-card-title v-text="entry.author"></b-card-title>
-        <b-card-sub-title v-text="entry.journal"></b-card-sub-title>
-        <b-card-text v-text="entry.title"></b-card-text>
+        <b-card-title v-text="entry.title"></b-card-title>
+        <b-card-sub-title v-text="entry.type"></b-card-sub-title>
+        <b-card-text v-text="entry.year"></b-card-text>
 
         <template #footer>
           <small class="text-muted">
@@ -139,10 +140,10 @@
                   v-on:click="acceptOffer(entry)"
               ></b-icon>
             </b-button>
-            <b-button variant="primary-outline" v-b-tooltip.hover title="Show details of lit entry">
+            <b-button variant="primary-outline" v-b-tooltip.hover title="Show details of offer">
               <b-icon
                   icon="chevron-double-up"
-                  v-on:click="showModal(entry)"
+                  v-on:click="showModal(entry.object)"
               ></b-icon>
             </b-button>
           </small
