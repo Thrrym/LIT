@@ -69,7 +69,7 @@ public abstract class ActivityPubObject {
     @JsonProperty("@context")
     private String context;
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
+    @GeneratedValue(strategy = GenerationType.AUTO, generator="POST_SEQ")
     @JsonIgnore
     public long activityPubID;
 

@@ -47,7 +47,7 @@ public class Create extends Activity {
                 ActivityPubObject apo = getObject().getLitObject();
                 if(apo != null) {
                     String objectType = apo.getType();
-                    if(objectType.equals("bibtex_article")) objectType = ILitObjectConstants.BIBTEXARTICLE;
+                    //if(objectType.equals("bibtex_article")) objectType = ILitObjectConstants.BIBTEXARTICLE;
                     createdObject = storage.createObject(actorName, objectType, apo);
                     setObject(new LinkOrObject(createdObject));
                 }

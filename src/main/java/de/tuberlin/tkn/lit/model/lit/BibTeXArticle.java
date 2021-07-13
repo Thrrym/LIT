@@ -15,8 +15,8 @@ import java.util.List;
 @Entity
 public class BibTeXArticle extends ActivityPubObject {
 
-    @OneToMany(targetEntity = Author.class,cascade = CascadeType.ALL)
-    @JoinColumn(name = "activity_pub_id")
+    @OneToMany(targetEntity = LinkOrObject.class,cascade = CascadeType.ALL)
+    //@JoinColumn(name = "activity_pub_id")
     private List<LinkOrObject> authors;
     private String title;
     private String journal;

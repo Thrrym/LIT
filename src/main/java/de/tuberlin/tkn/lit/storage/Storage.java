@@ -40,6 +40,8 @@ public class Storage implements IStorage {
     @Autowired
     IAuthorService authorService;
     @Autowired
+    IAuthorsWorkService authorsWorkService;
+    @Autowired
     IBibTeXArticleService bibTeXArticleService;
     @Autowired
     IBookService bookService;
@@ -63,8 +65,6 @@ public class Storage implements IStorage {
     IOutboxService outboxService;
     @Autowired
     IRelevantObjectService relevantObjectService;
-
-
 
     //# ACTIVITIES
     @Autowired
@@ -230,7 +230,8 @@ public class Storage implements IStorage {
         String id = UriUtilities.generateId(new String[]{actorName, objectType}, serverPort, uuid);
         object.setId(id);
         String actorId = getActor(actorName).getId();
-        object.setGenerator(new LinkOrObject(getActor(actorName)));
+        Actor actor = getActor(actorName);
+        object.setGenerator(new LinkOrObject(actor));
 
         if(objectType.equals(ILitObjectConstants.AUTHOR)
                 && object instanceof Author) {
@@ -239,22 +240,26 @@ public class Storage implements IStorage {
             return object;
         }
         if(object instanceof BibTeXArticle) {
+            BibTeXArticle newArticle = new BibTeXArticle();
+            String stringID = newArticle.getId();
             IBibTeXArticleRepository bibTeXArticleRepository = bibTeXArticleService.getRepository();
             BibTeXArticle b = (BibTeXArticle) object;
+            bibTeXArticleRepository.save((BibTeXArticle) object);
             List<LinkOrObject> linkOrObjects = b.getAuthors();
-            // if(authors.isEmpty()) authors.add(new LinkOrObject(newAuthor));     //# TODO temporär
             for(LinkOrObject linkOrObject : linkOrObjects) {
                 if(linkOrObject.getLink().isEmpty() == false) {
-                    String linkOrObjectLink =linkOrObject.getLink();
+                    String linkOrObjectLink = linkOrObject.getLink();
                     List<Author> authors = (List<Author>) authorService.getRepository().findAll();
-                    List<Author> authorsNew = new ArrayList<Author>();
-
                     for(Author author : authors) {
                         String authorID = author.getId();
                         if(linkOrObjectLink.equals(authorID)) {
-                            authorsNew.add(author);
-                            String hallo = "JA";
-                            System.out.println("AUTHOR FOUND\n"); //# TODO
+                            IAuthorsWorkRepository awRepo = authorsWorkService.getRepository();
+                            List<AuthorsWork> aw = (List<AuthorsWork>) awRepo.findAll();
+                            AuthorsWork newAW = new AuthorsWork();
+                            newAW.setAuthorID(author.getActivityPubID());
+                            newAW.setWorkID(b.getActivityPubID());
+                            newAW.setWorkType(b.getType());
+                            awRepo.save(newAW);
                         }
                     }
                 }
