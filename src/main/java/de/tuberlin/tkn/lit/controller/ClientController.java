@@ -120,7 +120,7 @@ public class ClientController {
 
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                Activity createdActivity = storage.createActivity(actorName, tempActivity);
+                Activity createdActivity = storage.createActivity(actorName, tempActivity, true);
                 storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
                 createdActivity.handleSendings(storage, federationClient, serverPort);

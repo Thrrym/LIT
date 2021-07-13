@@ -46,7 +46,7 @@ public interface IStorage {
 
     Activity getActivity(String id);
 
-    Activity createActivity(String actorName, Activity activity);
+    Activity createActivity(String actorName, Activity activity,boolean generateId);
 
     ActivityPubObject getObject(String id);
 

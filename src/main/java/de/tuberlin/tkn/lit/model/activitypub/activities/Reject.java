@@ -21,7 +21,7 @@ public class Reject extends Activity {
 
         // Delete rejected Offer from Inbox
         List<LinkOrObject> inbox = storage.getInbox(actorName).getOrderedItems();
-        LinkOrObject offer_to_delete = inbox.stream().filter(item -> item.getLitObject().getId().equals(offer.getId())).findFirst().get();
+        LinkOrObject offer_to_delete = inbox.stream().filter(item -> item.getId().equals(offer.getId())).findFirst().get();
         inbox.remove(offer_to_delete);
 
         return this;
