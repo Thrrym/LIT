@@ -57,7 +57,7 @@ export default {
       },
       publisher: {
         type: String,
-        default: 'PubUser'
+        default: ''
       }
   },
   methods: {

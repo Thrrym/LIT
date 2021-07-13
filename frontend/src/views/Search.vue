@@ -64,13 +64,13 @@
             <template #title>
               <b-icon-journal-bookmark-fill aria-hidden="true" font-scale="1.25" shift-v="-1" style="margin-right: 5px;"></b-icon-journal-bookmark-fill>Literature
             </template>
-            <SearchLiteratureResult></SearchLiteratureResult>
+            <SearchLiteratureResult v-for="l_item in listed_literature" v-bind:key="l_item" v-bind:title="l_item.title" v-bind:type="l_item.type" v-bind:likes="l_item.likes"></SearchLiteratureResult>
           </b-tab>
           <b-tab @click='tab = "user"'>
             <template #title>
               <b-icon-person-fill aria-hidden="true" font-scale="1.25" shift-v="-1" style="margin-right: 5px;"></b-icon-person-fill>User
             </template>
-            <SearchUserResult v-for="item in listed_users" :key="item" v-bind:name="item.name" v-bind:follow_id="item.id" v-bind:follower="item.follower"></SearchUserResult>
+            <SearchUserResult v-for="u_item in listed_users" v-bind:key="u_item" v-bind:name="u_item.name" v-bind:follow_id="u_item.id" v-bind:follower="u_item.follower" v-bind:posts="u_item.posts"></SearchUserResult>
           </b-tab>
         </b-tabs>
       </b-col>
@@ -90,6 +90,7 @@ export default {
       return {
         query: null,
         tab: 'literature',
+        listed_literature: [],
         listed_users: [],
 
         showFilter: false,
@@ -135,7 +136,12 @@ export default {
       },
       callbackResponse(request) {
         var obj = JSON.parse(request);
-        this.listed_users = obj["items"];
+        if (obj["searchType"] === 'literature') {
+          this.listed_literature = obj['items'];
+        }
+        else if (obj["searchType"] === 'user') {
+          this.listed_users = obj['items'];
+        }
       },
       callbackError() {
 
