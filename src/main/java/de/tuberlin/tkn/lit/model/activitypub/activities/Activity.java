@@ -40,6 +40,8 @@ public abstract class Activity extends ActivityPubObject {
     private LinkOrObject origin;
     @OneToOne(targetEntity = LinkOrObject.class, cascade = CascadeType.ALL)
     private LinkOrObject instrument;
+    private long objectAPID;
+    private String objectType;
 
     public Activity() {
     }
@@ -193,4 +195,21 @@ public abstract class Activity extends ActivityPubObject {
     public void setInstrument(JsonNode s) throws JsonProcessingException {
         instrument = LinkOrObjectDeserializer.deserialize(s);
     }
+
+    public long getObjectAPID() {
+        return objectAPID;
+    }
+
+    public void setObjectAPID(long objectAPID) {
+        this.objectAPID = objectAPID;
+    }
+
+    public String getObjectType() {
+        return objectType;
+    }
+
+    public void setObjectType(String objectType) {
+        this.objectType = objectType;
+    }
+
 }

@@ -606,6 +606,14 @@ public class Storage implements IStorage {
         UUID uuid = UUID.randomUUID();
         String id = UriUtilities.generateId(new String[]{actorName}, serverPort, uuid);
         activity.setId(id);
+        if(activity.getObject() != null) {
+            LinkOrObject lor = activity.getObject();
+            if(lor != null) {
+                ActivityPubObject apo = lor.getLitObject();
+                activity.setObjectAPID(apo.getActivityPubID());
+                activity.setObjectType(apo.getType());
+            }
+        }
 
         String type = activity.getType();
         if (activity instanceof Accept) {
@@ -704,9 +712,21 @@ public class Storage implements IStorage {
         for(int i = 0; i<inboxList.size(); i++) {
             Inbox current = inboxList.get(i);
             String name = current.getActorname();
-            if(name.equals(actorName)) {
+            if(name.equals(actorName))             if(name.equals(actorName)) {
                 String objectType = current.getObjectType();
-                long id = current.getObjectID();
+                long id;
+                if(objectType.equals(ISocialConstants.OUTBOX)
+                        || objectType.equals(ISocialConstants.INBOX)
+                        || objectType.equals(ISocialConstants.LIKED )
+                        || objectType.equals(ISocialConstants.RELEVANTOBJECT )
+                        || objectType.equals(ISocialConstants.FOLLOWED)
+                        || objectType.equals(ISocialConstants.FOLLOWING)) {
+                    id = current.getActivityPubID(); //# TODO Müll?
+                }
+                else {
+                    id = current.getObjectID();
+                }
+                ActivityPubObject xobj = findObjectInTable(String.valueOf(id), objectType);
                 returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id), objectType)));
             }
         }
@@ -724,7 +744,9 @@ public class Storage implements IStorage {
             obj = toAdd.getLitObject();
             Inbox inbox = new Inbox();
             if (obj instanceof Activity) {
-                long l = ((Activity) obj).getObject().getLitObject().getActivityPubID();
+                LinkOrObject lor = ((Activity) obj).getObject();
+                ActivityPubObject apo = lor.getLitObject();
+                long l = apo.getActivityPubID();
                 inbox.setObjectID(l);
                 inbox.setObjectType(((Activity) obj).getObject().getLitObject().getType());
             }
@@ -743,8 +765,18 @@ public class Storage implements IStorage {
             String name = current.getActorname();
             if(name.equals(actorName)) {
                 String objectType = current.getObjectType();
-                long id = current.getObjectID();
-                long id2 = current.getActivityPubID();
+                long id;
+                if(objectType.equals(ISocialConstants.OUTBOX)
+                || objectType.equals(ISocialConstants.INBOX)
+                || objectType.equals(ISocialConstants.LIKED )
+                || objectType.equals(ISocialConstants.RELEVANTOBJECT )
+                || objectType.equals(ISocialConstants.FOLLOWED)
+                || objectType.equals(ISocialConstants.FOLLOWING)) {
+                    id = current.getActivityPubID(); //# TODO Müll?
+                }
+                else {
+                    id = current.getObjectID();
+                }
                 ActivityPubObject xobj = findObjectInTable(String.valueOf(id), objectType);
                 returnObjects.add(new LinkOrObject(findObjectInTable(String.valueOf(id), objectType)));
             }
@@ -874,35 +906,35 @@ public class Storage implements IStorage {
             IActivityPubCollectionRepository activityPubCollectionRepository = activityPubCollectionService.getRepository();
             List<ActivityPubCollection> activityPubCollections = (List<ActivityPubCollection>) activityPubCollectionRepository.findAll();
             for(ActivityPubCollection activityPubCollection : activityPubCollections) {
-                if(activityPubCollection.getId().equals(id)) return activityPubCollection;
+                if(activityPubCollection.getActivityPubID() == Long.valueOf(id)) return activityPubCollection;
             }
         }
         if(tableName.equals(ILitObjectConstants.BOOK)) {
             IBookRepository bookRepository = bookService.getRepository();
             List<Book> books = (List<Book>) bookRepository.findAll();
             for(Book book : books) {
-                if(book.getId().equals(id)) return book;
+                if(book.getActivityPubID() == Long.valueOf(id)) return book;
             }
         }
         if(tableName.equals(ILitObjectConstants.JOURNAL)) {
             IJournalRepository journalRepository = journalService.getRepository();
             List<Journal> journals = (List<Journal>) journalRepository.findAll();
             for(Journal journal : journals) {
-                if(journal.getId().equals(id)) return journal;
+                if(journal.getActivityPubID() == Long.valueOf(id)) return journal;
             }
         }
         if(tableName.equals("bibtex_article")) {
             IBibTeXArticleRepository bibTeXArticleRepository = bibTeXArticleService.getRepository();
             List<BibTeXArticle> bibTeXArticles = (List<BibTeXArticle>) bibTeXArticleRepository.findAll();
             for(BibTeXArticle bibTeXArticle : bibTeXArticles) {
-                if(bibTeXArticle.getId().equals(id)) return bibTeXArticle;
+                if(bibTeXArticle.getActivityPubID() == Long.valueOf(id)) return bibTeXArticle;
             }
         }
         if(tableName.equals(ILitObjectConstants.PAPER)) {
             IPaperRepository paperRepository = paperService.getRepository();
             List<Paper> papers = (List<Paper>) paperRepository.findAll();
             for(Paper paper : papers) {
-                if(paper.getId().equals(id)) return paper;
+                if(paper.getActivityPubID() == Long.valueOf(id)) return paper;
             }
         }
         if(tableName.equals(ISocialConstants.INBOX)) {
