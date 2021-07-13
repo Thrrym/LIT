@@ -29,14 +29,20 @@ still works.
 
 The following setup could be used for testing the federation.
 
-Server 1 : 
-```mvn spring-boot:run```
+**Server 1 :**
+```
+mvn spring-boot:run
+```
 Which is a regular server, hence it starts on port 8080.
 
-Server 2 : 
-```mvn spring-boot:run -Dspring-boot.run.arguments="localhost:8080 --server.port=8081"```
+**Server 2 :**
+```
+mvn spring-boot:run -Dspring-boot.run.arguments="localhost:8080 --server.port=8081"
+```
 Which connects to the server running on port 8080.
 
-Server 3 : 
-```mvn spring-boot:run -Dspring-boot.run.arguments="localhost:8081 --server.port=8082"```
+**Server 3 :** 
+```
+mvn spring-boot:run -Dspring-boot.run.arguments="localhost:8081 --server.port=8082"
+```
 Which connects to the server running on port 8081.
