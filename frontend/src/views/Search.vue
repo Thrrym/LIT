@@ -60,13 +60,13 @@
     <b-row>
       <b-col xs="8">
         <b-tabs pills vertical align="center" style="margin-bottom: 15px">
-          <b-tab active>
+          <b-tab active @click='tab = "literature"'>
             <template #title>
               <b-icon-journal-bookmark-fill aria-hidden="true" font-scale="1.25" shift-v="-1" style="margin-right: 5px;"></b-icon-journal-bookmark-fill>Literature
             </template>
             <SearchLiteratureResult></SearchLiteratureResult>
           </b-tab>
-          <b-tab>
+          <b-tab @click='tab = "user"'>
             <template #title>
               <b-icon-person-fill aria-hidden="true" font-scale="1.25" shift-v="-1" style="margin-right: 5px;"></b-icon-person-fill>User
             </template>
@@ -89,6 +89,7 @@ export default {
     data() {
       return {
         query: null,
+        tab: 'literature',
 
         showFilter: false,
         userFilter: '',
@@ -102,6 +103,24 @@ export default {
       startSearch() {
         if (this.query === 'r/ich_iel') window.location.href = "https://www.reddit.com/r/ich_iel/";
         this.meme_check();
+
+        var request_url = this.$store.state.proxyBackendUrl + 'search';
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", request_url, true);
+        xhr.onload = function () {
+          if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+              console.log(xhr.responseText);
+            } else {
+              console.error(xhr.statusText);
+            }
+          }
+        };
+        xhr.onerror = function () {
+          console.error(xhr.statusText);
+        };
+        xhr.send('{ "searchType": "' + this.tab + '", "query": "' + this.query + '", "date": {}}'); 
       },
       meme_check() {
         var meme_src;
