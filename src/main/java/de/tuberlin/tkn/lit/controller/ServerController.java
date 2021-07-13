@@ -117,7 +117,7 @@ public class ServerController {
         } else if (activity instanceof Delete) {
             activity.handle(activity.getActor().getId(), storage, serverPort);
         } else if (activity instanceof Offer) {
-            storage.createActivity(actorname, activity);
+            storage.createActivity(actorname, activity,false);
             activity.handle(activity.getActor().getId(), storage, serverPort);
         }
         // TODO: notify client

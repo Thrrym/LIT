@@ -61,7 +61,7 @@ public abstract class Activity extends ActivityPubObject {
         }
 
         if (this instanceof Reject || this instanceof Accept) {
-            Activity activityToRespond = storage.getActivity(getObject().getLitObject().getId());
+            Activity activityToRespond = storage.getActivity(getObject().getId());
             handleSendingsIntern(new ArrayList<>() {{
                 add(activityToRespond.getActor());
             }}, storage, federationClient, port);

@@ -182,13 +182,19 @@ public class Storage implements IStorage {
     }
 
     @Override
-    public Activity createActivity(String actorName, Activity activity) {
-        UUID uuid = UUID.randomUUID();
-        String id = UriUtilities.generateId(new String[]{actorName}, serverPort, uuid);
-        activity.setId(id);
-        activities.put(id, activity);
+    public Activity createActivity(String actorName, Activity activity, boolean generateId) {
+        if (generateId) {
+            UUID uuid = UUID.randomUUID();
+            String id = UriUtilities.generateId(new String[]{actorName}, serverPort, uuid);
+            activity.setId(id);
+            activities.put(id, activity);
 
-        return activities.get(id);
+            return activities.get(id);
+        } else {
+            activities.put(activity.getId(), activity);
+
+            return activities.get(activity.getId());
+        }
     }
 
     @Override
