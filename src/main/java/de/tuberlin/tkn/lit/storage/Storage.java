@@ -240,9 +240,26 @@ public class Storage implements IStorage {
         }
         if(object instanceof BibTeXArticle) {
             IBibTeXArticleRepository bibTeXArticleRepository = bibTeXArticleService.getRepository();
-            bibTeXArticleRepository.save((BibTeXArticle) object);
-            Author newAuthor = new Author();
+            BibTeXArticle b = (BibTeXArticle) object;
+            List<LinkOrObject> linkOrObjects = b.getAuthors();
+            // if(authors.isEmpty()) authors.add(new LinkOrObject(newAuthor));     //# TODO temporär
+            for(LinkOrObject linkOrObject : linkOrObjects) {
+                if(linkOrObject.getLink().isEmpty() == false) {
+                    String linkOrObjectLink =linkOrObject.getLink();
+                    List<Author> authors = (List<Author>) authorService.getRepository().findAll();
+                    List<Author> authorsNew = new ArrayList<Author>();
 
+                    for(Author author : authors) {
+                        String authorID = author.getId();
+                        if(linkOrObjectLink.equals(authorID)) {
+                            authorsNew.add(author);
+                            String hallo = "JA";
+                            System.out.println("AUTHOR FOUND\n"); //# TODO
+                        }
+                    }
+                }
+            }
+            bibTeXArticleRepository.save((BibTeXArticle) object);
             return object;
         }
         if(objectType.equals(ILitObjectConstants.BOOK)
@@ -806,7 +823,6 @@ public class Storage implements IStorage {
                 else {
                     String link1 = lor.getLink();
                     System.out.println(link1);
-
                 }
             }
             outbox.setActorname(actorName);

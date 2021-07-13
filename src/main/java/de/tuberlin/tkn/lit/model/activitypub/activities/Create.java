@@ -1,5 +1,6 @@
 package de.tuberlin.tkn.lit.model.activitypub.activities;
 
+import de.tuberlin.tkn.lit.constants.ILitObjectConstants;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.lit.Author;
@@ -42,8 +43,15 @@ public class Create extends Activity {
                         }
                     }
             }
-            createdObject = storage.createObject(actorName, getObject().getLitObject().getType(), getObject().getLitObject());
-            setObject(new LinkOrObject(createdObject));
+            if(getObject() != null) {
+                ActivityPubObject apo = getObject().getLitObject();
+                if(apo != null) {
+                    String objectType = apo.getType();
+                    if(objectType.equals("bibtex_article")) objectType = ILitObjectConstants.BIBTEXARTICLE;
+                    createdObject = storage.createObject(actorName, objectType, apo);
+                    setObject(new LinkOrObject(createdObject));
+                }
+            }
 
             return this;
         }
