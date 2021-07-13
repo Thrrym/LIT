@@ -1,7 +1,7 @@
 <template>
   <b-modal
     ref="modal-1"
-    title="T"
+    v-bind:title="getTitle"
     ok-only
   >
     <div v-for="item in getContents" v-bind:key="item.key">
@@ -70,7 +70,15 @@ export default {
   computed: {
     getContents: function () {
       return this.contents;
-    }
+    },
+    getTitle: function () {
+      let title = "Title"
+      for (const i in this.getContents) {
+        if (this.getContents[i].label === "Title") title = this.getContents[i].value
+      }
+      return title;
+      /*return "Title"*/
+    },
   },
 }
 </script>

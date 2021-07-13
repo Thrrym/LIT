@@ -15,10 +15,10 @@
       </div>
     </section>
 
-    <h3>My Entries
-      <b-button @click="refreshObjects">
-      <b-icon icon="arrow-counterclockwise" font-scale="1"></b-icon>
-      </b-button>
+    <h3 v-if="showMyEntries">My Entries
+<!--      <b-button @click="refreshObjects">
+        <b-icon icon="arrow-counterclockwise" font-scale="1"></b-icon>
+      </b-button>-->
     </h3>
 
     <div> 
@@ -56,6 +56,7 @@
     </div>
 
     <h3 v-if="userHasRelevantObjects">Activityfeed</h3>
+    <h4 v-if="userHasRelevantObjects">Activities by people you follow.</h4>
     <b-card-group deck class="col-md-10">
       <b-card
         v-for="entry in objectsRelevantToUser"
@@ -95,7 +96,7 @@
       </b-card>
     </b-card-group>
 
-<h3 v-if="hasOffers">new Offers</h3> <!-- v-if is coming as soon as newOffers is implemented -->
+<h3 v-if="hasOffers">New Offers</h3> <!-- v-if is coming as soon as newOffers is implemented -->
     <b-card-group deck class="col-md-10">
       <b-card
         v-for="entry in getOffers"
@@ -324,6 +325,12 @@ export default {
     },
     getUserObjects: function () {
       return this.objectsByUser;
+    },
+    isSignedIn: function() {
+      return this.$store.getters.loggedIn;
+    },
+    showMyEntries: function() {
+      return this.isSignedIn && this.userHasObjects;
     },
   },
   mounted: function () {
