@@ -50,6 +50,10 @@
                 ></b-form-select>
               </div>
 
+              <div v-else-if="isAbstract(field)">
+                <b-form-textarea v-model="field.content" v-bind:required="field.required"></b-form-textarea>
+              </div>
+
               <b-form-input
                 v-else
                 v-model="field.content"
@@ -228,6 +232,9 @@ export default {
     },
     isAuthor: function (field) {
       return field.name === "authors";
+    },
+    isAbstract: function (field) {
+      return field.name.includes("Abstract");
     },
     getAuthorOptions: function () {
       this.$refs.GetAuthors.triggerGetAuthors();
