@@ -136,7 +136,7 @@ public class Storage implements IStorage {
     @Override
     public OrderedCollection getObjectsCreatedByActor(String actorName) {
         String actorId = getActor(actorName).getId();
-        List<LinkOrObject> results = objects.values().stream().filter(value -> !(value instanceof Tombstone) && value.getGenerator().getLink().equals(actorId)).map(LinkOrObject::new).collect(Collectors.toList());
+        List<LinkOrObject> results = objects.values().stream().filter(value -> !(value instanceof Tombstone) && !(value instanceof Author) && value.getGenerator().getLink().equals(actorId)).map(LinkOrObject::new).collect(Collectors.toList());
         return new OrderedCollection(results);
     }
 
