@@ -44,6 +44,26 @@ public class Storage implements IStorage {
     }
 
     @Override
+    public Collection<ActivityPubObject> getObjectsCollection() {
+        return objects.values();
+    }
+
+    @Override
+    public Collection<Actor> getActorsCollection() {
+        return actors.values();
+    }
+
+    @Override
+    public int getFollowerCount(String actor) {
+        return getFollowersCollection(actor).getTotalItems();
+    }
+
+    @Override
+    public int getPostCount(String actor) {
+        return getObjectsCreatedByActor(actor).getTotalItems();
+    }
+
+    @Override
     public ActivityPubCollection getActors() {
         return new ActivityPubCollection(actors.values().stream().map(LinkOrObject::new).collect(Collectors.toList()));
     }
