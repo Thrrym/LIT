@@ -4,33 +4,30 @@
 
 <script>
 export default {
-  name: "ServerComGetObject",
+  name: "ServerComGetFollowers",
 
   data() {
     return {
       requestResponse: "",
-      gotObject: "",
     };
   },
 
-  props: {},
-
   methods: {
-    triggerGetObject: function (objectUrl) {
-      // Get the Object from the backend based on a provided URL.
+    trigger: function () {
+      // Get the current user.
+      const currentUser = this.$store.getters.getUser;
 
-      // Maintaine reference to this component with `this` via a new reference.
+      // Maintain reference to this component with `this` via a new reference.
       // Reason: Within httpRequest.onreadystatechange the reference changes to httpRequest.
-      var component = this;
+      const component = this;
 
       // Create the HTTP Request. Uses xmlhttprequest npm package.
-      var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
-      var httpRequest = new XMLHttpRequest();
+      const XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+      let httpRequest = new XMLHttpRequest();
 
       // Set the HTTP Method. HTTP Request send via Proxy to backend server.
-      let method = "GET";
-      var apiUrl = this.getApiObjectUrl(objectUrl);
-      console.log("Used Api", apiUrl);
+      const method = "GET";
+      const apiUrl = this.$store.state.proxyBackendUrl + currentUser + "followers/";
 
       httpRequest.open(method, apiUrl, true);
       httpRequest.setRequestHeader(
@@ -50,7 +47,7 @@ export default {
             // Trigger event.
             component.callbackResponse();
           } else {
-            // Error handling.
+            component.requestResponse = httpRequest;
             component.callbackError();
           }
         }
@@ -61,30 +58,13 @@ export default {
     callbackResponse: function () {
       // Function triggered by the onreadystatechange from the HTTP request.
       // Emits event to parent component to pass result of the HTTP request back upstream.
-      //console.log(this.requestResponse);
-      this.gotObject = JSON.parse(this.requestResponse.responseText)
       this.$emit("requestResponse", this.requestResponse);
     },
 
     callbackError: function () {
       // Function triggered by the onreadystatechange from the HTTP request.
       // Emits error to parent component back upstream.
-      this.$emit("requestError");
-    },
-
-    getApiObjectUrl: function (objectUrl) {
-      // Construct correct API URL based on provided identifying URL of the object.
-      // Slice the provided URL and construct a valid backend URL as used by the proxy.
-      //const url = require('url');
-      //console.log("objectUrl", objectUrl);
-      let apiUrl = this.$store.state.proxyUrl;
-      const objectPort = new URL(objectUrl).port;
-      const objectPathname = new URL(objectUrl).pathname;
-      //console.log("objectPort", objectPort);
-      //let url = apiUrl + objectUrl.split("/").slice(1).slice(2).join("/");
-      const url = apiUrl + "/api" + objectPort + objectPathname;
-      // console.log("getApiObjectUrl", url);
-      return url;
+      this.$emit("requestError", this.requestResponse);
     },
   },
 };

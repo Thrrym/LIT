@@ -1,37 +1,46 @@
 <template>
-  <div></div>
+  <div>
+  </div>
 </template>
 
 <script>
+//import ServerComGetObject from "@/components/ServerComGetObject.vue";
+
 export default {
-  name: "ServerComGetUserRelevantObjects",
+  name: "ServerComFollow",
 
   data() {
     return {
       requestResponse: "",
-      jsonPayLoad: {}
+      jsonPayload: {},
     };
   },
 
-  props: {},
-
   methods: {
-    triggerGetRelevantObjects: function () {
-      // Get the current user.
+    triggerFollow: function (userUrl) {
+      this.userToFollow = userUrl;
+
+      // Get the current user and URL of backend.
+      const backendUrl = this.$store.state.backendUrl;
       const currentUser = this.$store.getters.getUser;
+
+      // Prepare content of the http request. Removes unused properties.
+      this.jsonPayload = this.prepareFollowJson(
+        backendUrl,
+        currentUser,
+      );
 
       // Maintain reference to this component with `this` via a new reference.
       // Reason: Within httpRequest.onreadystatechange the reference changes to httpRequest.
-      var component = this;
+      const component = this;
 
       // Create the HTTP Request. Uses xmlhttprequest npm package.
       var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
       var httpRequest = new XMLHttpRequest();
 
       // Set the HTTP Method. HTTP Request send via Proxy to backend server.
-      let method = "GET";
-      var apiUrl =
-        this.$store.state.proxyBackendUrl + currentUser + "relevantobjects/";
+      let method = "POST";
+      var apiUrl = this.$store.state.proxyBackendUrl + currentUser + "outbox";
 
       httpRequest.open(method, apiUrl, true);
       httpRequest.setRequestHeader(
@@ -56,7 +65,7 @@ export default {
           }
         }
       };
-      httpRequest.send(); // Send the HTTP request with no payload.
+      httpRequest.send(JSON.stringify(this.jsonPayload)); // Send the HTTP request with the JSON as payload.
     },
 
     callbackResponse: function () {
@@ -69,6 +78,33 @@ export default {
       // Function triggered by the onreadystatechange from the HTTP request.
       // Emits error to parent component back upstream.
       this.$emit("requestError", this.requestResponse);
+    },
+
+    prepareFollowJson: function () {
+      // Prepare the json as http payload.
+      // var objectJson = JSON.parse(this.objectRequestResponse.responseText); // Transform the base object from string to JSON.
+
+      // Verify if the lit object is contained in parent json object. If so, extract object.
+      // Reason Like maybe called on different URL types:
+      // http://localhost:8080/testuser01/81b8fbd5-5afd-4468-921e-74718d4d439f or
+      // http://localhost:8080/testuser01/bibtex_article/7640aa8a-96d2-4913-a36b-4c3eaef746f7
+      /*if (Object.prototype.hasOwnProperty.call(objectJson, "object")) {
+        objectJson = objectJson.object;
+      }*/
+
+      // Build the JSON payload for the Like activity.
+      let jsonObject = {
+        "@context": "https://www.w3.org/ns/activitystreams/",
+        type: "Follow",
+        /*to: this.userToFollow,
+        actor: {
+          type: "Person",
+          name: backendUrl + currentUser,
+        },*/
+        object: this.userToFollow,
+      };
+
+      return jsonObject;
     },
   },
 };

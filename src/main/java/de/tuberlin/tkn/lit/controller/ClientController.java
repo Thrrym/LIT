@@ -3,6 +3,7 @@ package de.tuberlin.tkn.lit.controller;
 import de.tuberlin.tkn.lit.model.Requests.SearchRequest;
 import de.tuberlin.tkn.lit.model.activitypub.activities.Activity;
 import de.tuberlin.tkn.lit.model.activitypub.actors.Actor;
+import de.tuberlin.tkn.lit.model.activitypub.actors.Person;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
@@ -20,7 +21,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -95,6 +98,26 @@ public class ClientController {
     @RequestMapping(value = "/actors", method = RequestMethod.GET)
     public ActivityPubCollection getActors() {
         return storage.getActors();
+    }
+
+    @RequestMapping(value = "/actorids", method = RequestMethod.GET)
+    public List<String> getActorsList(){
+        ActivityPubCollection actors_collection = storage.getActors();
+
+        // Extract name from each actor in Collection
+        return actors_collection.getItems().stream().map(item -> item.getId()).collect(Collectors.toList());
+    }
+
+    @RequestMapping(value = "/all-actors", method = RequestMethod.GET)
+    public ActivityPubCollection getAllActors() {
+        List<LinkOrObject> local_actors = storage.getActors().getItems();
+        // Convert actor names to Person objects for use in ActivityPubCollection
+        List<LinkOrObject> remote_actors = federationClient.getRemoteActors(storage).stream().map(x -> new LinkOrObject(new Person(x))).collect(Collectors.toList());
+
+        // Concatenate collections
+        local_actors.addAll(remote_actors);
+
+        return new ActivityPubCollection(local_actors);
     }
 
     @RequestMapping(value = "/{actorname}/inbox", method = RequestMethod.GET)
@@ -177,7 +200,7 @@ public class ClientController {
 
                 return new ResponseEntity<>(HttpStatus.OK);
             } else {
-                Activity createdActivity = storage.createActivity(actorName, tempActivity);
+                Activity createdActivity = storage.createActivity(actorName, tempActivity, true);
                 storage.addToOutbox(actorName, new LinkOrObject(createdActivity));
 
                 createdActivity.handleSendings(storage, federationClient, serverPort);

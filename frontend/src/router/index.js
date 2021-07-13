@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import store from "../store.js";
+// import myEntries from './views/MyEntries.vue';
 
 Vue.use(VueRouter);
 
@@ -43,6 +44,14 @@ const routes = [
       requiresAuth: true,
     },
   },
+  // {
+  //   path: "/myentries",
+  //   name: "myentries",
+  //   component: () => import("../views/MyEntries.vue"),
+  //   meta: {
+  //     requiresAuth: true,
+  //   },
+  // },
 ];
 
 const router = new VueRouter({

@@ -1,13 +1,8 @@
 package de.tuberlin.tkn.lit.model.activitypub.activities;
 
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
-import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.objects.Tombstone;
 import de.tuberlin.tkn.lit.storage.IStorage;
-import de.tuberlin.tkn.lit.util.UriUtilities;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Delete extends Activity {
     private static final String type = "Delete";
@@ -29,6 +24,7 @@ public class Delete extends Activity {
         }
         Tombstone newObj = new Tombstone();
         newObj.setId(objId);
+        newObj.setGenerator(toDel.getGenerator());
         storage.updateObject(actorId, newObj);
         return this;
     }

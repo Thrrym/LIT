@@ -7,6 +7,7 @@ import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubCollection;
 import de.tuberlin.tkn.lit.model.activitypub.core.ActivityPubObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.LinkOrObject;
 import de.tuberlin.tkn.lit.model.activitypub.core.OrderedCollection;
+import de.tuberlin.tkn.lit.model.activitypub.objects.Tombstone;
 import de.tuberlin.tkn.lit.model.lit.Author;
 import de.tuberlin.tkn.lit.util.UriUtilities;
 import org.springframework.beans.factory.annotation.Value;
@@ -104,8 +105,7 @@ public class Storage implements IStorage {
             List<Activity> toReturn = federation.get(url);
             federation.replace(url, new ArrayList<Activity>());
             return toReturn;
-        }
-        else {
+        } else {
             List<Activity> l = new ArrayList<Activity>();
             federation.put(url, l);
             return l;
@@ -118,8 +118,7 @@ public class Storage implements IStorage {
             List<Activity> l = federation.get(url);
             l.add(activity);
             federation.replace(url, l);
-        }
-        else {
+        } else {
             List<Activity> l = new ArrayList<Activity>();
             l.add(activity);
             federation.put(url, l);
@@ -137,13 +136,13 @@ public class Storage implements IStorage {
     @Override
     public OrderedCollection getObjectsCreatedByActor(String actorName) {
         String actorId = getActor(actorName).getId();
-        List<LinkOrObject> results = objects.values().stream().filter(value -> value.getGenerator().getLink().equals(actorId)).map(LinkOrObject::new).collect(Collectors.toList());
+        List<LinkOrObject> results = objects.values().stream().filter(value -> !(value instanceof Tombstone) && !(value instanceof Author) && value.getGenerator().getLink().equals(actorId)).map(LinkOrObject::new).collect(Collectors.toList());
         return new OrderedCollection(results);
     }
 
     @Override
     public OrderedCollection getRelevantObjects(String actorName) {
-        return new OrderedCollection(relevantObjects.get(actorName).stream().map((id) -> new LinkOrObject(objects.get(id))).collect(Collectors.toList()));
+        return new OrderedCollection(relevantObjects.get(actorName).stream().map((id) -> new LinkOrObject(objects.get(id))).filter(value -> !(value.getLitObject() instanceof Tombstone)).collect(Collectors.toList()));
     }
 
     public void addToRelevantObjects(String actorName, LinkOrObject toAdd) {
@@ -203,13 +202,19 @@ public class Storage implements IStorage {
     }
 
     @Override
-    public Activity createActivity(String actorName, Activity activity) {
-        UUID uuid = UUID.randomUUID();
-        String id = UriUtilities.generateId(new String[]{actorName}, serverPort, uuid);
-        activity.setId(id);
-        activities.put(id, activity);
+    public Activity createActivity(String actorName, Activity activity, boolean generateId) {
+        if (generateId) {
+            UUID uuid = UUID.randomUUID();
+            String id = UriUtilities.generateId(new String[]{actorName}, serverPort, uuid);
+            activity.setId(id);
+            activities.put(id, activity);
 
-        return activities.get(id);
+            return activities.get(id);
+        } else {
+            activities.put(activity.getId(), activity);
+
+            return activities.get(activity.getId());
+        }
     }
 
     @Override
@@ -224,7 +229,7 @@ public class Storage implements IStorage {
 
     @Override
     public ActivityPubCollection getAuthors() {
-        return new ActivityPubCollection(objects.values().stream().filter(o -> o.getType().equals("Author")).map(LinkOrObject::new).collect(Collectors.toList()));
+        return new ActivityPubCollection(objects.values().stream().filter(o -> o instanceof Author).map(LinkOrObject::new).collect(Collectors.toList()));
     }
 
     @Override
