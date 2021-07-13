@@ -46,3 +46,25 @@ Which connects to the server running on port 8080.
 mvn spring-boot:run -Dspring-boot.run.arguments="localhost:8081 --server.port=8082"
 ```
 Which connects to the server running on port 8081.
+
+### Frontend
+All files for the frontend are in folder `frontend/`. You may find a basic set of instructions in `frontend/README.md`.
+
+#### Requirements
+* [node version 14 LTS](https://nodejs.org/en/) was used during development and needs to be installed.
+
+#### Production Instruction
+* In folder `frontend/` run `npm install` to locally install required packages.
+* In folder `frontend/` run `npm run build` to build the frontend server for production.
+* Folder `dist/` will be created containing required Javascript, HTML and CSS files.
+* To start the frontend server run: `node server.js 8080` with `8080` denoting the port.
+  * File `frontend/server.js` configures an `express` server.
+  * The server expects the associated backend server to run on the next port. Example: Frontend on port 8080 and backend on port 8081.
+* The frontend is now accessible through a browser.
+
+#### Development Instructions
+* In folder `frontend/` run `npm install` to install locally the required development packages.
+* Start the development server: `npm run serve`. Port 8080 or higher is selected.
+* The development server is now reachable.
+* Same port expectations as above: Run the backend server on the next port.
+
