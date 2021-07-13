@@ -25,7 +25,7 @@
         <b-navbar-nav class="ml-auto">
           <b-nav-item v-if="!isUserLoggedIn" v-on:click="showSignUpModal">Sign up</b-nav-item>
           <b-nav-item v-if="!isUserLoggedIn" v-on:click="showSignInModal('normalSignIn')">Sign in</b-nav-item>
-          <b-nav-item v-if="isUserLoggedIn" v-on:click="logOut">Log out</b-nav-item>
+          <b-nav-item v-if="isUserLoggedIn" v-on:click="logOut" v-b-tooltip.hover v-bind:title="getTooltip">Log out</b-nav-item>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -95,6 +95,9 @@ export default {
     },*/
     isUserLoggedIn: function () {
       return this.$store.getters.loggedIn;
+    },
+    getTooltip: function () {
+      return "Current user: " + this.$store.getters.getUser;
     },
   },
 };

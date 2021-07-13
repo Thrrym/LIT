@@ -37,10 +37,10 @@
                     v-bind:options="authorOptions"
                     v-model="selectedAuthors[0]"
                   ></b-form-select>
-                  <b-button v-on:click="addNewAuthor">
+                  <b-button v-on:click="addNewAuthor" variant="outline-secondary">
                     Create new author
                   </b-button>
-                  <b-button v-on:click="setAdditionalAuthors">+</b-button>
+                  <b-button v-on:click="setAdditionalAuthors" v-b-tooltip.hover title="Add more authors to lit entry.">+</b-button>
                 </b-input-group>
                 <b-form-select
                   v-for="index in additionalAuthors"
@@ -48,6 +48,10 @@
                   v-bind:options="authorOptions"
                   v-model="selectedAuthors[index]"
                 ></b-form-select>
+              </div>
+
+              <div v-else-if="isAbstract(field)">
+                <b-form-textarea v-model="field.content" v-bind:required="field.required"></b-form-textarea>
               </div>
 
               <b-form-input
@@ -228,6 +232,9 @@ export default {
     },
     isAuthor: function (field) {
       return field.name === "authors";
+    },
+    isAbstract: function (field) {
+      return field.name.includes("Abstract");
     },
     getAuthorOptions: function () {
       this.$refs.GetAuthors.triggerGetAuthors();

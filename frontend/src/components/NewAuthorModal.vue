@@ -1,10 +1,10 @@
 <template>
   <div>
-    <b-modal ref="modal-1" v-bind:title="getModalTitle">
+    <b-modal ref="modal-1" v-bind:title="getModalTitle" v-on:ok="createNewAuthor" size="lg">
       <b-container>
         <!-- Create the form the get the information for the selected type. -->
-        <b-form v-on:submit="createNewAuthor">
-          <b-card bg-varint="light">
+        <b-form>
+          <b-card bg-varint="light" style="border: none">
             <b-form-group
               label-cols-lg="3"
               label="Required fields"
@@ -27,17 +27,17 @@
             </b-form-group>
           </b-card>
 
-          <b-button
+<!--          <b-button
             variant="outline-primary"
             v-if="showOptionalFieldsButton"
             v-on:click="setShowOptionalFields"
           >
             <b-icon icon="caret-down-square" aria-hidden="true"></b-icon>
             Advanced
-          </b-button>
+          </b-button>-->
 
           <!-- Optional Fields. -->
-          <b-card bg-varint="light" v-if="showOptionalFields">
+<!--          <b-card bg-varint="light" v-if="showOptionalFields">
             <b-form-group
               v-if="showOptionalFields"
               label="Optional Fields"
@@ -56,23 +56,32 @@
                   v-model="field.content"
                   v-bind:required="field.required"
                 ></b-form-input>
-                <!--            <b-form-input
+                &lt;!&ndash;            <b-form-input
                             v-model="field.content"
                             v-bind:required="field.required"
-                          ></b-form-input>-->
+                          ></b-form-input>&ndash;&gt;
               </b-form-group>
             </b-form-group>
-          </b-card>
+          </b-card>-->
 
-          <b-button type="submit" variant="primary">
+<!--          <b-button type="submit" variant="primary">
             <b-icon icon="bookmark-plus" aria-hidden="true"></b-icon>
             Create new author
-          </b-button>
+          </b-button>-->
+
         </b-form>
       </b-container>
+      <template #modal-footer="{ cancel, ok }">
+        <b-button variant="secondary" @click="cancel()">
+          Cancel
+        </b-button>
+        <b-button variant="primary" @click="ok()">
+          Create new author
+        </b-button>
+      </template>
     </b-modal>
 
-    <b-modal ref="successModal">Success</b-modal>
+    <b-modal ref="successModal" title="Author created" ok-only>You created an new author.</b-modal>
 
     <ServerComNewAuthor
       ref="com"
@@ -134,6 +143,7 @@ export default {
       this.responseText = response.responseText;
       this.$refs["modal-1"].hide();
       this.success = true;
+      this.$emit("newAuthorSuccess");
       this.$refs.successModal.show();
     },
     handleRequestError: function () {

@@ -3,7 +3,9 @@
     <ServerComAcceptOffer
         ref="ServerComAcceptOffer"
         v-on:requestResponse="requestSuccess"></ServerComAcceptOffer>
-    <b-modal ref="acceptSuccessModal" titel="You accepted the offer" ok-only></b-modal>
+    <b-modal ref="acceptSuccessModal" ok-only titel="Offer accepted" >
+      You accepted the offer and your entry was updated.
+    </b-modal>
   </div>
 </template>
 
@@ -27,10 +29,12 @@ export default {
     triggerAcceptOffer: function (offerId) {
       this.$refs.ServerComAcceptOffer.trigger(offerId);
     },
-    requestSuccess: function (response) {
-      this.requestResponse = response;
+    requestSuccess: function () {
+      /*this.$emit("acceptSuccess");*/
+      /*this.requestResponse = response;
       this.responseText = response.responseText;
-      this.responseJson = JSON.parse(this.responseText);
+      this.responseJson = JSON.parse(this.responseText);*/
+      this.$emit("acceptSuccess");
       this.$refs.acceptSuccessModal.show();
     },
   },

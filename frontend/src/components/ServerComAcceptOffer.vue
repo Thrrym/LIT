@@ -86,7 +86,7 @@ export default {
       // Build the JSON payload for the Like activity.
       let jsonObject = {
         "@context": "https://www.w3.org/ns/activitystreams/",
-        id: this.offerId,
+        // id: this.offerId,
         type: "Accept",
         actor: backendUrl + currentUser,
         object: this.offerId,

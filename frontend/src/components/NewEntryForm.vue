@@ -33,11 +33,11 @@
                     v-bind:options="authorOptions"
                     v-model="selectedAuthors[0]"
                   ></b-form-select>
-                  <b-button v-on:click="addNewAuthor"
+                  <b-button v-on:click="addNewAuthor" variant="outline-secondary"
                     >Create new author</b-button
                   >
                   <!--              <b-button v-on:click="getAuthorOptions">Get the authors</b-button>-->
-                  <b-button v-on:click="setAdditionalAuthors">+</b-button>
+                  <b-button v-on:click="setAdditionalAuthors" v-b-tooltip.hover title="Add more authors to lit entry.">+</b-button>
                 </b-input-group>
                 <b-form-select
                   v-for="index in additionalAuthors"
@@ -45,6 +45,9 @@
                   v-bind:options="authorOptions"
                   v-model="selectedAuthors[index]"
                 ></b-form-select>
+              </div>
+              <div v-else-if="isAbstract(field)">
+                <b-form-textarea v-model="field.content" v-bind:required="field.required"></b-form-textarea>
               </div>
               <b-form-input
                 v-else
@@ -88,6 +91,9 @@
                 unchecked-value="false"
               >
               </b-form-checkbox>
+              <div v-else-if="isAbstract(field)">
+                <b-form-textarea v-model="field.content" v-bind:required="field.required"></b-form-textarea>
+              </div>
               <b-form-input
                 v-else
                 v-model="field.content"
@@ -269,6 +275,9 @@ export default {
     setAdditionalAuthors: function () {
       this.getAuthorOptions();
       this.additionalAuthors += 1;
+    },
+    isAbstract: function (field) {
+      return field.name.includes("Abstract");
     },
   },
   mounted: function () {

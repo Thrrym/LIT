@@ -4,6 +4,7 @@
       scrollable
       busy
       ref="updateModal"
+      size="xl"
       v-bind:title="modalTitle"
       @ok="sendOfferToServer"
     >

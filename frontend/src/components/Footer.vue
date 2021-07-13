@@ -7,7 +7,7 @@
       <p>
         New to Lit? <router-link to="/">Visit the Homepage</router-link>
       </p>
-      <b-card text-variant="light" style="border: none">
+      <b-card text-variant="secondary" style="border: none">
       <p clas="muted">Frontend server: {{ currentFrontendServer }}</p>
       <p>Backend server: {{ currentBackendServer }}</p>
       <p>Logged in user: {{ getCurrentUser }}, Login status: {{ getLoginStatus }}</p>
