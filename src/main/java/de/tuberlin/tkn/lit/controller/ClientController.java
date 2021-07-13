@@ -53,11 +53,32 @@ public class ClientController {
         if (sRequest.getSearchType().equals("literature")) {
             for (ActivityPubObject literature : storage.getObjectsCollection()) {
                 if (literature.getType().equals("bibtex_article")) {
-                    if (distance.getDistanceTo(((BibTeXArticle) literature).getTitle().toLowerCase()) / (float)q_len < 0.5) {
+
+                    System.out.println();
+
+                    /**if (distance.getDistanceTo(((BibTeXArticle) literature).getTitle().toLowerCase()) / (float)q_len < 0.5) {
                         ObjectNode actor_result = mapper.createObjectNode();
                         actor_result.put("title", ((BibTeXArticle) literature).getTitle());
                         actor_result.put("likes", ((BibTeXArticle) literature).getLikes());
                         items_array.add(actor_result);
+                    }*/
+
+                    float error = 1;
+                    String name = "";
+
+                    for (int i = 0; i < ((BibTeXArticle) literature).getTitle().length(); i++) {
+                        name = ((BibTeXArticle) literature).getTitle().substring(i);
+                        error = Math.min((float)distance.getDistanceTo(name.toLowerCase()) / (float)q_len, error);
+
+                        if (error < 0.5) {
+                            ObjectNode actor_result = mapper.createObjectNode();
+                            actor_result.put("title", ((BibTeXArticle) literature).getTitle());
+                            actor_result.put("type", "Article");
+                            actor_result.put("likes", ((BibTeXArticle) literature).getLikes());
+                            actor_result.put("generator", UriUtilities.getActor(literature.getGenerator().getId()));
+                            items_array.add(actor_result);
+                            break;
+                        }
                     }
                 }
             }

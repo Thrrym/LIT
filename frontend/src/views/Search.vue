@@ -64,7 +64,7 @@
             <template #title>
               <b-icon-journal-bookmark-fill aria-hidden="true" font-scale="1.25" shift-v="-1" style="margin-right: 5px;"></b-icon-journal-bookmark-fill>Literature
             </template>
-            <SearchLiteratureResult v-for="l_item in listed_literature" v-bind:key="l_item" v-bind:title="l_item.title" v-bind:type="l_item.type" v-bind:likes="l_item.likes"></SearchLiteratureResult>
+            <SearchLiteratureResult v-for="l_item in listed_literature" v-bind:key="l_item" v-bind:title="l_item.title" v-bind:type="l_item.type" v-bind:likes="l_item.likes" v-bind:generator="l_item.generator"></SearchLiteratureResult>
           </b-tab>
           <b-tab @click='tab = "user"'>
             <template #title>
@@ -138,6 +138,7 @@ export default {
         var obj = JSON.parse(request);
         if (obj["searchType"] === 'literature') {
           this.listed_literature = obj['items'];
+          console.log(this.listed_literature)
         }
         else if (obj["searchType"] === 'user') {
           this.listed_users = obj['items'];
