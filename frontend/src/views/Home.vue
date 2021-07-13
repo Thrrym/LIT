@@ -80,7 +80,7 @@
             <b-button href="#" variant="primary-outline" v-else>
               <b-icon
                   icon="bookmark-heart"
-              ></b-icon> {{entry.liked}}
+              ></b-icon> {{ entry.likes }}
             </b-button>
             <b-button href="#" variant="primary-outline">
               <b-icon icon="pencil-square" v-on:click="offerObject(entry.id)"></b-icon>
@@ -257,12 +257,12 @@ export default {
       if (!Object.prototype.hasOwnProperty.call(entry, "likedBy")) {
         return true;
       }
-      console.log("HIER", entry);
-      if (entry.likedBy.includes(this.$store.state.backendUrl + this.$store.state.currentUser)) {
-        console.log("liked", entry.likedBy.includes(this.$store.state.backendUrl + this.$store.state.currentUser))
+      // console.log("HIER", entry);
+      if (entry.likedBy.includes(this.$store.state.backendUrl + this.$store.getters.getUser)) {
+        console.log("liked", entry.likedBy.includes(this.$store.state.backendUrl + this.$store.getters.getUser))
         return false;
       }
-      if (entry.attributedTo.includes(this.$store.state.backendUrl + this.$store.state.currentUser)) {
+      if (entry.attributedTo.includes(this.$store.state.backendUrl + this.$store.getters.getUser)) {
         return false;
       }
       return true;

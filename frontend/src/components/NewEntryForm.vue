@@ -46,6 +46,9 @@
                   v-model="selectedAuthors[index]"
                 ></b-form-select>
               </div>
+              <div v-else-if="isAbstract(field)">
+                <b-form-textarea v-model="field.content" v-bind:required="field.required"></b-form-textarea>
+              </div>
               <b-form-input
                 v-else
                 v-model="field.content"
@@ -88,6 +91,9 @@
                 unchecked-value="false"
               >
               </b-form-checkbox>
+              <div v-else-if="isAbstract(field)">
+                <b-form-textarea v-model="field.content" v-bind:required="field.required"></b-form-textarea>
+              </div>
               <b-form-input
                 v-else
                 v-model="field.content"
@@ -269,6 +275,9 @@ export default {
     setAdditionalAuthors: function () {
       this.getAuthorOptions();
       this.additionalAuthors += 1;
+    },
+    isAbstract: function (field) {
+      return field.name.includes("Abstract");
     },
   },
   mounted: function () {
