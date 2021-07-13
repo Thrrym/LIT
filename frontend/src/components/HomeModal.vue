@@ -2,6 +2,7 @@
   <b-modal
     ref="modal-1"
     v-bind:title="getTitle"
+    size="lg"
     ok-only
     v-on:ok="onClosedModal"
   >
