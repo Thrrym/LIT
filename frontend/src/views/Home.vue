@@ -15,11 +15,11 @@
       </div>
     </section>
 
-    <h3 v-if="showMyEntries">My Entries
+    <h4 v-if="showMyEntries">My Entries
 <!--      <b-button @click="refreshObjects">
         <b-icon icon="arrow-counterclockwise" font-scale="1"></b-icon>
       </b-button>-->
-    </h3>
+    </h4>
 
     <div> 
     <b-card-group deck class="col-md-10">
@@ -56,8 +56,8 @@
     </b-card-group>
     </div>
 
-    <h3 v-if="userHasRelevantObjects">Activityfeed</h3>
-    <h4 v-if="userHasRelevantObjects">Activities by people you follow.</h4>
+    <h4 v-if="userHasRelevantObjects">Activityfeed</h4>
+    <h5 v-if="userHasRelevantObjects">Activities by people you follow.</h5>
     <b-card-group deck class="col-md-10">
       <b-card
         v-for="entry in getFilteredObjectsRelevantToUser"
@@ -97,7 +97,8 @@
       </b-card>
     </b-card-group>
 
-<h3 v-if="hasOffers">New Offers</h3> <!-- v-if is coming as soon as newOffers is implemented -->
+<h4 v-if="hasOffers">New Offers</h4> <!-- v-if is coming as soon as newOffers is implemented -->
+    <h5 v-if="hasOffers">Other users send you changes to your entries.</h5>
     <b-card-group deck class="col-md-10">
       <b-card
         v-for="entry in getOffers"
@@ -107,7 +108,10 @@
       >
 <!--        <b-card-title v-text="entry.author"></b-card-title>
         <b-card-sub-title v-text="entry.journal"></b-card-sub-title>-->
-        <b-card-text v-text="entry.object.title"></b-card-text>
+<!--        <b-card-text v-text="entry.object.title"></b-card-text>-->
+        <b-card-title v-text="entry.object.title"></b-card-title>
+        <b-card-sub-title v-text="entry.object.type"></b-card-sub-title>
+        <b-card-text v-text="entry.object.year"></b-card-text>
 
         <template #footer>
           <small class="text-muted">

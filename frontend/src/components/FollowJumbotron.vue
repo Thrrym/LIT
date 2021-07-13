@@ -42,6 +42,7 @@ export default {
       this.$refs.ServerComFollow.triggerFollow(this.getUserToFollow);
     },
     followSuccess: function () {
+      this.$emit("followSuccess");
       this.$refs.successModal.show();
     }
   },
