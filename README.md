@@ -48,6 +48,7 @@ mvn spring-boot:run -Dspring-boot.run.arguments="localhost:8081 --server.port=80
 Which connects to the server running on port 8081.
 
 ### Frontend
+<hr/>
 All files for the frontend are in folder `frontend/`. You may find a basic set of instructions in `frontend/README.md`.
 
 #### Requirements
