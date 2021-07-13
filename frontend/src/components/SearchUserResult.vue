@@ -1,8 +1,8 @@
 <template>
-<b-container style="margin-bottom: 5px">
-  <b-card no-body style="padding: 15px">
-    <b-row>
-      <b-col cols="1"><b-img fluid rounded src="https://picsum.photos/250/250/?image=54" alt="Image 1"></b-img></b-col>
+  <b-container style="margin-bottom: 5px">
+    <b-card no-body style="padding: 15px">
+      <b-row>
+        <b-col cols="1"><svg width="46" height="46" v-bind:data-jdenticon-value="name"></svg></b-col>
         <b-col cols="9" class="text-left">
           <h5 style="color: dark; margin-bottom: 4px">{{ name }}</h5>
           <h6 style="color: gray; margin: 0px">{{ follower +  ' Follower  | ' + posts + ' Posts' }}</h6>
@@ -33,7 +33,7 @@ export default {
       }
   },
   methods: {
-  },
+  }
 }
 </script>
 

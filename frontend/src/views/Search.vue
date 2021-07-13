@@ -6,7 +6,7 @@
         <b-input-group>
           <b-form-input v-on:keyup.enter="startSearch" class="minifocus" type="search" placeholder="Search..." v-model="query"></b-form-input>
           <b-input-group-append>
-            <b-button v-on:click="toggle_filter" variant="primary"><b-icon-filter aria-hidden="true" font-scale="1.25" shift-v="-1"></b-icon-filter></b-button>
+            <b-button :pressed.sync="showFilter" variant="primary"><b-icon-filter aria-hidden="true" font-scale="1.25" shift-v="-1"></b-icon-filter></b-button>
           </b-input-group-append>
         </b-input-group>
       </b-col>
@@ -64,6 +64,7 @@
             <template #title>
               <b-icon-journal-bookmark-fill aria-hidden="true" font-scale="1.25" shift-v="-1" style="margin-right: 5px;"></b-icon-journal-bookmark-fill>Literature
             </template>
+            <SearchLiteratureResult></SearchLiteratureResult>
           </b-tab>
           <b-tab>
             <template #title>
@@ -82,7 +83,8 @@
 export default {
     name: "Search",
     components: {
-      SearchUserResult: () => import('@/components/SearchUserResult.vue')
+      SearchUserResult: () => import('@/components/SearchUserResult.vue'),
+      SearchLiteratureResult: () => import('@/components/SearchLiteratureResult.vue')
     },
     data() {
       return {
@@ -138,10 +140,15 @@ export default {
           document.getElementById('meme-content').innerHTML = '';
           target.style.marginBottom = '0em';
         }
-      },
-      toggle_filter() {
-        this.showFilter = !this.showFilter;
       }
+    },
+    mounted() {
+      let jdenticon = document.createElement('script');
+      jdenticon.setAttribute('src', 'https://cdn.jsdelivr.net/npm/jdenticon@3.1.0/dist/jdenticon.min.js');
+      jdenticon.setAttribute('async', '');
+      jdenticon.setAttribute('integrity', 'sha384-VngWWnG9GS4jDgsGEUNaoRQtfBGiIKZTiXwm9KpgAeaRn6Y/1tAFiyXqSzqC8Ga/');
+      jdenticon.setAttribute('crossorigin', 'anonymous');
+      document.head.appendChild(jdenticon);
     }
 }
 </script>
