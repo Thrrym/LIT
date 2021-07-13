@@ -46,3 +46,5 @@ jobs:
         path: |
           ./frontend/dist/
           ./frontend/server.js
+          ./frontend/package.json
+          ./frontend/package-lock.json
